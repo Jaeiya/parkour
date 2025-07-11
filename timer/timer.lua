@@ -21,7 +21,6 @@ rednet.open(peripheral.getName(modem))
 
 
 local function getTimeStr()
-    -- How many milliseconds are in 60 iterations
     local seconds     = math.floor(milliseconds / 1000)
     local minutes     = math.floor(seconds / 60)
     local hours       = math.floor(minutes / 60)
@@ -48,7 +47,7 @@ end
 local function startTimer()
     local timerID = os.startTimer(speed)
     -- It takes one iteration to detect pull event
-    iterations   = iterations + 1
+    iterations = 1
     while true do
         local event, param = os.pullEvent()
 
@@ -72,8 +71,6 @@ print(" BroadcastingOn: ".. protocol)
 while true do
     os.pullEvent("redstone")
     if redstone.getInput(redstoneDir) then
-        -- Always start timer at 0
-        iterations = 0
         startTimer()
     end
 end
