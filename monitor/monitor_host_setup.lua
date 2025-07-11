@@ -1,3 +1,17 @@
+--
+-- Sets up the monitor hosting listener, allowing you
+-- to set the host name and protocol.
+--
+-- The hostname must be unique but the protocol is
+-- designed to be broadcasted to. This means multiple
+-- monitor hosts can receive messages from the same
+-- protocol. This means we can create multiple timers
+-- on a single parkour level and they'll all be synced.
+--
+-- It creates all the necessary files for running the
+-- monitor host. Just setup and restart computer. It
+-- will run automatically.
+--
 local monHostPath = "disk/monhost"
 local xmonHostPath = "disk/xmonhost"
 

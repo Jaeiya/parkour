@@ -1,3 +1,4 @@
+-- Executes the monitor host and any other scripts in parallel if needed
 parallel.waitForAny(
     function ()
         print("")

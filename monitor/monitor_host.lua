@@ -1,3 +1,8 @@
+
+--
+-- Allows writing to the monitor wirelessly, by listening
+-- on a specific protocol.
+--
 local hostnameFile = "hostname.txt"
 local protocolFile = "protocol.txt"
 

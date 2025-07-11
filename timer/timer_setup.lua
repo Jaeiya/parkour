@@ -1,3 +1,13 @@
+
+--
+-- Copies all the files necessary to run a timer on
+-- the computer, which is designed to write to a monitor
+-- constellation. It will write to all monitors connected
+-- to the specified protocol, via the monitor host script.
+--
+-- Once the setup is finished, restarting the server
+-- will run the timer script.
+--
 local timerPath = "disk/timer"
 local xtimerPath = "disk/xtimer"
 

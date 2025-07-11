@@ -1,3 +1,13 @@
+--
+-- Gets or updates known scripts on a floppy disk
+--
+-- This removes the need to constantly be calling the
+-- pastebin function, with a code, every time I need
+-- to update a script.
+--
+-- This also facilitates creating multiple setup floppy
+-- disks very quickly, if needed.
+--
 local scriptCodes = {
     get          = "LYJdFKns",
     timer        = "t3ka7Qfc",

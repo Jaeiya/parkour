@@ -1,4 +1,4 @@
-
+-- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
     function ()
         print("")
