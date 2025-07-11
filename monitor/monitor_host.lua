@@ -48,6 +48,10 @@ if not isValidMonitorSize() then error("Must be 5 blocks long") end
 print("Hostname: " .. hostname)
 print("Protocol: " .. protocol)
 
+-- Default to zero values
+mon.setCursorPos(1, 1)
+mon.write("00:00:00.00")
+
 while true do
     local senderID, msg = rednet.receive(protocol)
 
