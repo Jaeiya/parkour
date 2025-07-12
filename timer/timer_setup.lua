@@ -10,6 +10,7 @@
 --
 local timerPath = "disk/timer"
 local xtimerPath = "disk/xtimer"
+local leaderBoardPath = "disk/leaderboard"
 
 local function writeFile(filepath, text)
     local file = fs.open(filepath, "w")
@@ -44,6 +45,10 @@ writeFile("startpos.txt", startPos)
 
 local f = fs.open(timerPath, "r")
 writeFile("/timer", f.readAll())
+f.close()
+
+f = fs.open(leaderBoardPath, "r")
+writeFile("/leaderboard", f.readAll())
 f.close()
 
 f = fs.open(xtimerPath, "r")

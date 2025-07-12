@@ -3,7 +3,11 @@ parallel.waitForAny(
     function ()
         print("")
         print("... Running Timer ...")
-        print("")
         shell.run("timer")
+    end,
+    function ()
+        print()
+        print("... Running Leader Board ...")
+        shell.run("leaderboard")
     end
 )
