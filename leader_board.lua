@@ -1,5 +1,9 @@
 
 local pd = peripheral.find("player_detector")
+if not pd then
+    error("missing player detector")
+end
+
 local mon = peripheral.find("monitor")
 
 local lastPlayer = nil
