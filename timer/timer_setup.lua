@@ -30,10 +30,17 @@ print("Enter Constellation Protocol")
 write("> ")
 local protocol = read()
 
+print()
+print("Start Pos")
+write("> ")
+local startPos = read()
+
+
 -- All file operations below, will overwrite
 -- any existing files.
 
 writeFile("protocol.txt", protocol)
+writeFile("startpos.txt", startPos)
 
 local f = fs.open(timerPath, "r")
 writeFile("/timer", f.readAll())
