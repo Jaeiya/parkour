@@ -81,6 +81,9 @@ local function startTimer()
 
             if right then
                 milliseconds = 0
+                -- Delegates to leaderboard, because it tracks what player
+                -- is actively running. Will only cancel if the player
+                -- who started the run, is trying to cancel the run.
                 os.queueEvent(leaderBoardEvent, {action="try_cancel_run"})
             elseif left then
                 os.cancelTimer(timerID)
