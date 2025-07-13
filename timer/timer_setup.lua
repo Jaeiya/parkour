@@ -1,4 +1,4 @@
-
+local utils = require("utils")
 --
 -- Copies all the files necessary to run a timer on
 -- the computer, which is designed to write to a monitor
@@ -8,21 +8,18 @@
 -- Once the setup is finished, restarting the server
 -- will run the timer script.
 --
-local timerPath = "disk/timer"
-local xtimerPath = "disk/xtimer"
-local leaderBoardPath = "disk/leaderboard"
+local paths = {
+    timer       = "disk/timer",
+    xtimer      = "disk/xtimer",
+    leaderBoard = "disk/leaderboard",
+    utils       = "disk/utils",
+}
 
-local function writeFile(filepath, text)
-    local file = fs.open(filepath, "w")
-    file.write(text)
-    file.close()
-end
-
-if not fs.exists(timerPath) then
+if not fs.exists(paths.timer) then
     error("missing timer script")
 end
 
-if not fs.exists(xtimerPath) then
+if not fs.exists(paths.xtimer) then
     error("missing xtimer script")
 end
 
@@ -40,17 +37,21 @@ local startPos = read()
 -- All file operations below, will overwrite
 -- any existing files.
 
-writeFile("protocol.txt", protocol)
-writeFile("startpos.txt", startPos)
+utils.writeFile("protocol.txt", protocol)
+utils.writeFile("startpos.txt", startPos)
 
-local f = fs.open(timerPath, "r")
-writeFile("/timer", f.readAll())
+local f = fs.open(paths.timer, "r")
+utils.writeFile("/timer", f.readAll())
 f.close()
 
-f = fs.open(leaderBoardPath, "r")
-writeFile("/leaderboard", f.readAll())
+f = fs.open(paths.leaderBoard, "r")
+utils.writeFile("/leaderboard", f.readAll())
 f.close()
 
-f = fs.open(xtimerPath, "r")
-writeFile("/startup", f.readAll())
+f = fs.open(paths.xtimer, "r")
+utils.writeFile("/startup", f.readAll())
+f.close()
+
+f = fs.open(paths.utils, "r")
+utils.writeFile("/utils", f.readAll())
 f.close()
