@@ -102,6 +102,23 @@ local function isValidPlayer(pos)
     return false
 end
 
+local function displayActiveRunner(playerName)
+    local text = "Active Runner"
+    mon.setTextScale(2.5)
+    local w = mon.getSize()
+    local textWidthDiff = w - #text
+    mon.setBackgroundColor(colors.black)
+    mon.clear()
+    mon.setCursorPos(1, 1)
+    mon.setBackgroundColor(colors.blue)
+    mon.setTextColor(colors.yellow)
+    mon.write(string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2)))
+    mon.setBackgroundColor(colors.black)
+    mon.setCursorPos(1, 3)
+    mon.setTextColor(colors.lime)
+    mon.write(utils.centerText(playerName, mon))
+end
+
 local function displayBoard()
     mon.clear()
     mon.setTextScale(2)
@@ -153,20 +170,7 @@ while true do
         local nearestPlayer = utils.getNearestPlayer(startPos.x, startPos.y, startPos.z, pd)
         if nearestPlayer.distance <= 3 then
             currentPlayer = nearestPlayer.name
-            local text = "Active Runner"
-            mon.setTextScale(2.5)
-            local w = mon.getSize()
-            local textWidthDiff = w - #text
-            mon.setBackgroundColor(colors.black)
-            mon.clear()
-            mon.setCursorPos(1, 1)
-            mon.setBackgroundColor(colors.blue)
-            mon.setTextColor(colors.yellow)
-            mon.write(string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2)))
-            mon.setBackgroundColor(colors.black)
-            mon.setCursorPos(1, 3)
-            mon.setTextColor(colors.lime)
-            mon.write(utils.centerText(currentPlayer, mon))
+            displayActiveRunner(currentPlayer)
         end
 
     elseif data.action == "try_cancel_run" then
