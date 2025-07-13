@@ -1,5 +1,7 @@
 
 local utils = {}
+
+-- splitString at every space character
 utils.splitString = function(str)
     local result = {}
     for word in str:gmatch("%S+") do
@@ -15,6 +17,15 @@ utils.writeFile = function(filepath, text)
     file.close()
 end
 
+-- centerText on a specified monitor
+utils.centerText = function(text, mon)
+    local w = mon.getSize()
+    return string.rep(" ", (w - #text) / 2) .. text
+end
+
+
+-- getTimerStr in the format 00:00:00.00, from the
+-- specified milliseconds.
 utils.getTimerStr = function(milliseconds)
     local ticks   = math.floor(milliseconds / 50)
     local seconds = math.floor(milliseconds / 1000)
