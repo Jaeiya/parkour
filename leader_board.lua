@@ -1,10 +1,7 @@
+local utils = require("utils")
 
-local pd = peripheral.find("player_detector")
-if not pd then
-    error("missing player detector")
-end
-
-local mon = peripheral.find("monitor")
+local pd  = utils.getPeripheral("player_detector")
+local mon = utils.getPeripheral("monitor")
 mon.clear()
 mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
@@ -14,21 +11,6 @@ local lastPlayer = nil
 local timesPath = "/leaderboard.txt"
 local times = {}
 local startPos = {}
-
-local function splitString(str)
-    local result = {}
-    for word in str:gmatch("%S+") do
-        table.insert(result, word)
-    end
-    return result
-end
-
-local function writeFile(filepath, text)
-    local file = fs.open(filepath, "w")
-    file.write(text)
-    file.close()
-end
-
 
 local function addTime(name, newTime)
     for i = 1, #times do
@@ -50,25 +32,7 @@ local function writeTimes()
     for i = 1, #times do
         timeData[i] = times[i].name .. "@" .. times[i].time
     end
-    writeFile(timesPath, table.concat(timeData, "\n"))
-end
-
-
-local function getTimeStr(milliseconds)
-    local ticks   = math.floor(milliseconds / 50)
-    local seconds = math.floor(milliseconds / 1000)
-    local minutes = math.floor(seconds / 60)
-    local hours   = math.floor(minutes / 60)
-
-
-    local str = string.format(
-        "%02d:%02d:%02d.%02d",
-        hours   % 60,
-        minutes % 60,
-        seconds % 60,
-        ticks   % 20
-    )
-    return str
+    utils.writeFile(timesPath, table.concat(timeData, "\n"))
 end
 
 
@@ -79,7 +43,7 @@ if not fs.exists("startpos.txt") then
     error("missing start position file")
 end
 local f = fs.open("startpos.txt", "r")
-local posParts = splitString(f.readAll())
+local posParts = utils.splitString(f.readAll())
 if #posParts ~= 3 then
     error("invalid start position")
 end
@@ -116,19 +80,13 @@ end
 ----------------------------------
 
 
-local function centerText(str)
-    local w = mon.getSize()
-    return string.rep(" ", (w - #str) / 2) .. str
-end
-
-
 local function displayBoard()
     mon.clear()
     mon.setTextScale(2)
     local yPos = 1
     mon.setCursorPos(1, yPos)
     mon.setTextColor(colors.lime)
-    mon.write(centerText("Leader Board"))
+    mon.write(utils.centerText("Leader Board", mon))
     local maxNameWidth = 0
     for i = 1, #times do
         local nameWidth = #times[i].name
@@ -150,59 +108,10 @@ local function displayBoard()
         mon.write(name)
         mon.write("     ")
         mon.setTextColor(colors.lightBlue)
-        mon.write(getTimeStr(times[i].time))
+        mon.write(utils.getTimerStr(times[i].time))
     end
 end
 
-
--- sum adds all variadic arguments together
-local function sum(...)
-    local total = 0
-    for _, num in ipairs({...}) do
-        total = total + num
-    end
-    return total
-end
-
--- diffCoords compares two coordinates and determines
--- their absolute distance from each other.
-local function diffCoords(coord1, coord2)
-    if coord1 == coord2 then
-        return 0
-    elseif coord1 <= 0 and coord2 > 0 then
-        return math.abs(coord1) + coord2
-    elseif coord1 >= 0 and coord2 < 0 then
-        return coord1 + math.abs(coord2)
-    else
-        -- Both coords are either positive or negative
-        return math.abs(math.abs(coord1) - math.abs(coord2))
-    end
-end
-
-
-local function getNearestPlayer(x, y, z)
-    local players = pd.getOnlinePlayers()
-    local nearestPlayer = ""
-    local nearestPos   = math.huge
-
-    for i = 1, #players do
-        local playerPosObj = pd.getPlayerPos(players[i])
-        local playerPosDiff = sum(
-            diffCoords(x, playerPosObj.x),
-            diffCoords(y, playerPosObj.y),
-            diffCoords(z, playerPosObj.z)
-        )
-        if playerPosDiff < nearestPos then
-            nearestPos = playerPosDiff
-            nearestPlayer = players[i]
-        end
-    end
-
-    return {
-        name = nearestPlayer,
-        distance = nearestPos
-    }
-end
 
 
 
@@ -218,7 +127,7 @@ while true do
     end
 
     if data.action == "get_player" then
-        local nearestPlayer = getNearestPlayer(startPos.x, startPos.y, startPos.z)
+        local nearestPlayer = utils.getNearestPlayer(startPos.x, startPos.y, startPos.z, pd)
         if nearestPlayer.distance <= 3 then
             lastPlayer = nearestPlayer.name
             local text = "Active Runner"
@@ -234,11 +143,11 @@ while true do
             mon.setBackgroundColor(colors.black)
             mon.setCursorPos(1, 3)
             mon.setTextColor(colors.lime)
-            mon.write(centerText(lastPlayer))
+            mon.write(utils.centerText(lastPlayer, mon))
         end
 
     elseif data.action == "try_cancel_run" then
-        local nearestPlayer = getNearestPlayer(startPos.x, startPos.y, startPos.z)
+        local nearestPlayer = utils.getNearestPlayer(startPos.x, startPos.y, startPos.z, pd)
         if nearestPlayer.distance <= 3 then
             if nearestPlayer.name == lastPlayer then
                 os.queueEvent("cancel_run")
