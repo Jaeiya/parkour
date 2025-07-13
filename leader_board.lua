@@ -123,36 +123,47 @@ local function displayActiveRunner(playerName)
     mon.write(utils.centerText(playerName, mon))
 end
 
-local function displayBoard()
+local function displayTimes(colWidth, yPos)
+    local monWidth = mon.getSize()
+    local timeLen = #"00:00:00.00"
+    local separator = "....."
+    local lineLen = colWidth + timeLen + #separator
+    local linePadding = math.ceil((monWidth - lineLen) / 2)
+
+    for i = 1, #times do
+        yPos = yPos + 1
+        mon.setCursorPos(1, yPos)
+        local name = times[i].name
+        local padding = string.rep(" ", linePadding + (colWidth - #name))
+        mon.write(padding)
+        mon.setTextColor(colors.white)
+        mon.write(name)
+        mon.setTextColor(colors.gray)
+        mon.write(separator)
+        mon.setTextColor(colors.lightBlue)
+        mon.write(utils.getTimerStr(times[i].time))
+    end
+end
+
+
+local function renderBoard()
     mon.clear()
     mon.setTextScale(2)
     local yPos = 1
     mon.setCursorPos(1, yPos)
     mon.setTextColor(colors.lime)
     mon.write(utils.centerText("Leader Board", mon))
-    local maxNameWidth = 0
+    local columnWidth = 0
     for i = 1, #times do
         local nameWidth = #times[i].name
-        if nameWidth > maxNameWidth then
-            maxNameWidth = nameWidth
+        if nameWidth > columnWidth then
+            columnWidth = nameWidth
         end
     end
 
     -- Add padding between times and title
     yPos = yPos + 1
-
-    for i = 1, #times do
-        yPos = yPos + 1
-        mon.setCursorPos(3, yPos)
-        local name = times[i].name
-        local padding = string.rep(" ", maxNameWidth - #name)
-        mon.write(padding)
-        mon.setTextColor(colors.white)
-        mon.write(name)
-        mon.write("     ")
-        mon.setTextColor(colors.lightBlue)
-        mon.write(utils.getTimerStr(times[i].time))
-    end
+    displayTimes(columnWidth, yPos)
 end
 
 
@@ -161,7 +172,7 @@ end
 print("   StartPos: "..actuationStart.x..", "..actuationStart.y..", "..actuationStart.z)
 print("  FinishPos: "..actuationEnd.x..", "..actuationEnd.y..", "..actuationEnd.z)
 print(" SavedTimes: "..#times)
-displayBoard()
+renderBoard()
 
 while true do
     local _, data = os.pullEvent("leaderboard")
@@ -182,7 +193,7 @@ while true do
             os.queueEvent("cancel_run")
             currentPlayer = nil
             mon.setBackgroundColor(colors.black)
-            displayBoard()
+            renderBoard()
         end
 
     elseif data.action == "save_player_time" then
@@ -190,7 +201,7 @@ while true do
             os.queueEvent("finish_run", data.time)
             updateTimes(currentPlayer, data.time)
             writeTimes()
-            displayBoard()
+            renderBoard()
         end
     end
 end
