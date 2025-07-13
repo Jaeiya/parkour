@@ -88,6 +88,10 @@ local function startTimer()
             elseif left then
                 os.cancelTimer(timerID)
                 rednet.broadcast(getTimeStr(), protocol)
+                os.queueEvent(leaderBoardEvent, {
+                    action  = "save_player_time",
+                    time = milliseconds,
+                })
                 break
             end
         end

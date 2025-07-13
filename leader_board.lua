@@ -12,6 +12,8 @@ mon.setBackgroundColor(colors.black)
 
 local lastPlayer = nil
 local timesPath = "/leaderboard.txt"
+local times = {}
+local startPos = {}
 
 local function splitString(str)
     local result = {}
@@ -28,6 +30,48 @@ local function writeFile(filepath, text)
 end
 
 
+local function addTime(name, newTime)
+    for i = 1, #times do
+        if times[i].name == name then
+            if times[i].time > newTime then
+                times[i].time = newTime
+            end
+            return
+        end
+    end
+    times[#times + 1] = {name = name, time = newTime}
+end
+
+
+local function writeTimes()
+    table.sort(times, function(a, b) return a.time < b.time end)
+    -- Serialize times
+    local timeData = {}
+    for i = 1, #times do
+        timeData[i] = times[i].name .. "@" .. times[i].time
+    end
+    writeFile(timesPath, table.concat(timeData, "\n"))
+end
+
+
+local function getTimeStr(milliseconds)
+    local ticks   = math.floor(milliseconds / 50)
+    local seconds = math.floor(milliseconds / 1000)
+    local minutes = math.floor(seconds / 60)
+    local hours   = math.floor(minutes / 60)
+
+
+    local str = string.format(
+        "%02d:%02d:%02d.%02d",
+        hours   % 60,
+        minutes % 60,
+        seconds % 60,
+        ticks   % 20
+    )
+    return str
+end
+
+
 --
 -- Load Start Position
 --
@@ -39,7 +83,7 @@ local posParts = splitString(f.readAll())
 if #posParts ~= 3 then
     error("invalid start position")
 end
-local startPos = {
+startPos = {
     x = tonumber(posParts[1]),
     y = tonumber(posParts[2]),
     z = tonumber(posParts[3]),
@@ -50,7 +94,6 @@ f.close()
 --
 -- Load times from file
 --
-local times = {}
 if fs.exists(timesPath) then
     local file = fs.open(timesPath, "r")
     while true do
@@ -64,12 +107,52 @@ if fs.exists(timesPath) then
         end
 
         local name = string.sub(line, 1, atPos-1)
-        local time = string.sub(line, atPos+1)
-        times[name] = time
+        -- This should be in milliseconds
+        local time = tonumber(string.sub(line, atPos+1))
+        addTime(name, time)
     end
     file.close()
 end
 ----------------------------------
+
+
+local function centerText(str)
+    local w = mon.getSize()
+    return string.rep(" ", (w - #str) / 2) .. str
+end
+
+
+local function displayBoard()
+    mon.clear()
+    mon.setTextScale(2)
+    local yPos = 1
+    mon.setCursorPos(1, yPos)
+    mon.setTextColor(colors.lime)
+    mon.write(centerText("Leader Board"))
+    local maxNameWidth = 0
+    for i = 1, #times do
+        local nameWidth = #times[i].name
+        if nameWidth > maxNameWidth then
+            maxNameWidth = nameWidth
+        end
+    end
+
+    -- Add padding between times and title
+    yPos = yPos + 1
+
+    for i = 1, #times do
+        yPos = yPos + 1
+        mon.setCursorPos(3, yPos)
+        local name = times[i].name
+        local padding = string.rep(" ", maxNameWidth - #name)
+        mon.write(padding)
+        mon.setTextColor(colors.white)
+        mon.write(name)
+        mon.write("     ")
+        mon.setTextColor(colors.lightBlue)
+        mon.write(getTimeStr(times[i].time))
+    end
+end
 
 
 -- sum adds all variadic arguments together
@@ -79,11 +162,6 @@ local function sum(...)
         total = total + num
     end
     return total
-end
-
-local function centerText(str)
-    local w = mon.getSize()
-    return string.rep(" ", (w - #str) / 2) .. str
 end
 
 -- diffCoords compares two coordinates and determines
@@ -130,6 +208,7 @@ end
 
 print("   StartPos: "..startPos.x..", "..startPos.y..", "..startPos.z)
 print(" SavedTimes: "..#times)
+displayBoard()
 
 while true do
     local _, data = os.pullEvent("leaderboard_update")
@@ -165,13 +244,15 @@ while true do
                 os.queueEvent("cancel_run")
                 lastPlayer = nil
                 mon.setBackgroundColor(colors.black)
-                mon.clear()
+                displayBoard()
             end
         end
 
-    elseif data.action == "save_time" then
+    elseif data.action == "save_player_time" then
         if lastPlayer then
-            times[lastPlayer] = data.time
+            addTime(lastPlayer, data.time)
+            writeTimes()
+            displayBoard()
         end
     end
 end
