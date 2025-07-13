@@ -21,6 +21,12 @@ local function splitString(str)
     return result
 end
 
+local function writeFile(filepath, text)
+    local file = fs.open(filepath, "w")
+    file.write(text)
+    file.close()
+end
+
 
 --
 -- Load Start Position
@@ -39,7 +45,6 @@ local startPos = {
     z = tonumber(posParts[3]),
 }
 f.close()
-print(" StartPos: "..startPos.x..", "..startPos.y..", "..startPos.z)
 -----------------------------------
 
 --
@@ -64,7 +69,6 @@ if fs.exists(timesPath) then
     end
     file.close()
 end
-print("SavedTimes: "..#times)
 ----------------------------------
 
 
@@ -123,6 +127,9 @@ local function getNearestPlayer(x, y, z)
 end
 
 
+
+print("   StartPos: "..startPos.x..", "..startPos.y..", "..startPos.z)
+print(" SavedTimes: "..#times)
 
 while true do
     local _, data = os.pullEvent("leaderboard_update")
