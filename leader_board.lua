@@ -7,10 +7,11 @@ mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
 
-local lastPlayer = nil
-local timesPath = "/leaderboard.txt"
-local times = {}
-local startPos = {}
+local currentPlayer = nil
+local timesPath     = "/leaderboard.txt"
+local times         = {}
+local startPos      = {}
+local endPos        = {}
 
 local function addTime(name, newTime)
     for i = 1, #times do
@@ -39,18 +40,30 @@ end
 --
 -- Load Start Position
 --
-if not fs.exists("startpos.txt") then
+if not fs.exists("positions.txt") then
     error("missing start position file")
 end
-local f = fs.open("startpos.txt", "r")
-local posParts = utils.splitString(f.readAll())
-if #posParts ~= 3 then
-    error("invalid start position")
+local f = fs.open("positions.txt", "r")
+local posStr = f.readAll()
+local atPos = string.find(posStr, "@")
+if not atPos then
+    error("invalid start/finish value")
+end
+
+local startPosParts  = utils.splitString(string.sub(posStr, 1, atPos-1))
+local finishPosParts = utils.splitString(string.sub(posStr, atPos+1))
+if #startPosParts ~=3 or #finishPosParts ~= 3 then
+    error("found invalid start/finish position")
 end
 startPos = {
-    x = tonumber(posParts[1]),
-    y = tonumber(posParts[2]),
-    z = tonumber(posParts[3]),
+    x = tonumber(startPosParts[1]),
+    y = tonumber(startPosParts[2]),
+    z = tonumber(startPosParts[3]),
+}
+endPos = {
+    x = tonumber(finishPosParts[1]),
+    y = tonumber(finishPosParts[2]),
+    z = tonumber(finishPosParts[3]),
 }
 f.close()
 -----------------------------------
@@ -79,6 +92,15 @@ if fs.exists(timesPath) then
 end
 ----------------------------------
 
+local function isValidPlayer(pos)
+    local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd)
+    if nearestPlayer.distance <= 3 then
+        if nearestPlayer.name == currentPlayer then
+            return true
+        end
+    end
+    return false
+end
 
 local function displayBoard()
     mon.clear()
@@ -116,20 +138,21 @@ end
 
 
 print("   StartPos: "..startPos.x..", "..startPos.y..", "..startPos.z)
+print("  FinishPos: "..endPos.x..", "..endPos.y..", "..endPos.z)
 print(" SavedTimes: "..#times)
 displayBoard()
 
 while true do
-    local _, data = os.pullEvent("leaderboard_update")
+    local _, data = os.pullEvent("leaderboard")
 
     if type(data) ~= "table" then
        error("tried to send non-table data to leaderboard")
     end
 
-    if data.action == "get_player" then
+    if data.action == "starting_run" then
         local nearestPlayer = utils.getNearestPlayer(startPos.x, startPos.y, startPos.z, pd)
         if nearestPlayer.distance <= 3 then
-            lastPlayer = nearestPlayer.name
+            currentPlayer = nearestPlayer.name
             local text = "Active Runner"
             mon.setTextScale(2.5)
             local w = mon.getSize()
@@ -143,23 +166,21 @@ while true do
             mon.setBackgroundColor(colors.black)
             mon.setCursorPos(1, 3)
             mon.setTextColor(colors.lime)
-            mon.write(utils.centerText(lastPlayer, mon))
+            mon.write(utils.centerText(currentPlayer, mon))
         end
 
     elseif data.action == "try_cancel_run" then
-        local nearestPlayer = utils.getNearestPlayer(startPos.x, startPos.y, startPos.z, pd)
-        if nearestPlayer.distance <= 3 then
-            if nearestPlayer.name == lastPlayer then
-                os.queueEvent("cancel_run")
-                lastPlayer = nil
-                mon.setBackgroundColor(colors.black)
-                displayBoard()
-            end
+        if isValidPlayer(startPos) then
+            os.queueEvent("cancel_run")
+            currentPlayer = nil
+            mon.setBackgroundColor(colors.black)
+            displayBoard()
         end
 
     elseif data.action == "save_player_time" then
-        if lastPlayer then
-            addTime(lastPlayer, data.time)
+        if isValidPlayer(endPos) then
+            os.queueEvent("finish_run", data.time)
+            addTime(currentPlayer, data.time)
             writeTimes()
             displayBoard()
         end

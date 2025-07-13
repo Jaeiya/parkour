@@ -22,7 +22,7 @@ local utils = require("utils")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local milliseconds = 0
-local leaderBoardEvent = "leaderboard_update"
+local leaderBoardEvent = "leaderboard"
 
 local modem = peripheral.find("modem")
 if not modem then
@@ -55,8 +55,16 @@ local function startTimer()
 
         elseif event == "cancel_run" then
             os.cancelTimer(timerID)
+            -- Param should always be the millisecond time
             milliseconds = 0
             rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
+            break
+
+        elseif event == "finish_run" then
+            os.cancelTimer(timerID)
+            -- Param should always be the millisecond time when user
+            -- pressed pressure plate.
+            rednet.broadcast(utils.getTimerStr(param), protocol)
             break
 
         elseif event == "redstone" then
@@ -64,19 +72,15 @@ local function startTimer()
             local left = redstone.getInput("left")
 
             if right then
-                milliseconds = 0
                 -- Delegates to leaderboard, because it tracks what player
                 -- is actively running. Will only cancel if the player
                 -- who started the run, is trying to cancel the run.
-                os.queueEvent(leaderBoardEvent, {action="try_cancel_run"})
+                os.queueEvent(leaderBoardEvent, {action="try_cancel_run", time = milliseconds})
             elseif left then
-                os.cancelTimer(timerID)
-                rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
                 os.queueEvent(leaderBoardEvent, {
                     action  = "save_player_time",
                     time = milliseconds,
                 })
-                break
             end
         end
     end
@@ -86,7 +90,7 @@ print(" BroadcastingOn: ".. protocol)
 while true do
     os.pullEvent("redstone")
     if redstone.getInput("right") then
-        os.queueEvent("leaderboard_update", {action="get_player"})
+        os.queueEvent(leaderBoardEvent, {action="starting_run"})
         startTimer()
     end
 end
