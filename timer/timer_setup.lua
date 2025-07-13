@@ -13,7 +13,10 @@ local paths = {
     xtimer      = "disk/xtimer",
     leaderBoard = "disk/leaderboard",
     utils       = "disk/utils",
+    protocol    = "protocol.txt",
+    positions   = "positions.txt"
 }
+
 
 if not fs.exists(paths.timer) then
     error("missing timer script")
@@ -33,12 +36,19 @@ print("Start Pos")
 write("> ")
 local startPos = read()
 
+print()
+print("Finish Pos")
+write("> ")
+local finishPos = read()
+
+
+
 
 -- All file operations below, will overwrite
 -- any existing files.
 
-utils.writeFile("protocol.txt", protocol)
-utils.writeFile("startpos.txt", startPos)
+utils.writeFile(paths.protocol, protocol)
+utils.writeFile(paths.positions, startPos .. "@" .. finishPos)
 
 local f = fs.open(paths.timer, "r")
 utils.writeFile("/timer", f.readAll())
