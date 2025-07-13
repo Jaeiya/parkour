@@ -18,6 +18,7 @@
 -- Max Time: 59:59:59:19 (resets to 0 if exceeded)
 -- Min Time: 00:00:00:01
 --
+local utils = require("utils")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local milliseconds = 0
@@ -38,23 +39,6 @@ f.close()
 
 rednet.open(peripheral.getName(modem))
 
-local function getTimeStr()
-    local ticks   = math.floor(milliseconds / 50)
-    local seconds = math.floor(milliseconds / 1000)
-    local minutes = math.floor(seconds / 60)
-    local hours   = math.floor(minutes / 60)
-
-
-    local str = string.format(
-        "%02d:%02d:%02d.%02d",
-        hours   % 60,
-        minutes % 60,
-        seconds % 60,
-        ticks   % 20
-    )
-    return str
-end
-
 
 local function startTimer()
     local timerID = os.startTimer(speed)
@@ -66,13 +50,13 @@ local function startTimer()
         if event == "timer" and param == timerID then
             iterations   = iterations + 1
             milliseconds = iterations * (speed * 1000)
-            rednet.broadcast(getTimeStr(), protocol)
+            rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
             timerID = os.startTimer(speed)
 
         elseif event == "cancel_run" then
             os.cancelTimer(timerID)
             milliseconds = 0
-            rednet.broadcast(getTimeStr(), protocol)
+            rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
             break
 
         elseif event == "redstone" then
@@ -87,7 +71,7 @@ local function startTimer()
                 os.queueEvent(leaderBoardEvent, {action="try_cancel_run"})
             elseif left then
                 os.cancelTimer(timerID)
-                rednet.broadcast(getTimeStr(), protocol)
+                rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
                 os.queueEvent(leaderBoardEvent, {
                     action  = "save_player_time",
                     time = milliseconds,
