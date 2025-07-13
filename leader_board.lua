@@ -106,7 +106,7 @@ local function isPlayerRunning(pos)
     return false
 end
 
-local function displayActiveRunner(playerName)
+local function renderActiveRunner(playerName)
     local text = "Active Runner"
     mon.setTextScale(2.5)
     local w = mon.getSize()
@@ -185,7 +185,7 @@ while true do
         local nearestPlayer = utils.getNearestPlayer(actuationStart.x, actuationStart.y, actuationStart.z, pd)
         if nearestPlayer.distance <= maxActuationDist then
             currentPlayer = nearestPlayer.name
-            displayActiveRunner(currentPlayer)
+            renderActiveRunner(currentPlayer)
         end
 
     elseif data.action == "try_cancel_run" then
