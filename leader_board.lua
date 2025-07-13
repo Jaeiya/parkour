@@ -125,7 +125,7 @@ end
 
 
 while true do
-    local event, data = os.pullEvent("leaderboard_update")
+    local _, data = os.pullEvent("leaderboard_update")
 
     if type(data) ~= "table" then
        error("tried to send non-table data to leaderboard")
