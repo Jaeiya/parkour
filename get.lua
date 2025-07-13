@@ -16,7 +16,8 @@ local scriptCodes = {
     monhost      = "UFStnxDa",
     xmonhost     = "xN6qzppK",
     setupmonhost = "ywQ78fsZ",
-    leaderboard  = "9eU7yHT7"
+    leaderboard  = "9eU7yHT7",
+    utils        = "FjGC63m3",
 }
 
 local scriptNameMap = {
@@ -28,6 +29,7 @@ local scriptNameMap = {
     xmonhost     = "xmonhost",
     setupmonhost = "setupmonhost",
     leaderboard  = "leaderboard",
+    utils        = "utils",
 }
 
 local function downloadScript(code, scriptName)
