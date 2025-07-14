@@ -83,6 +83,7 @@ if #args > 1 then
 
     fs.copy("/disk/" .. scriptName, rootPath)
     print("Updated '" .. scriptName .. "' on Computer")
+
 else
     local scriptName = args[1]
 
