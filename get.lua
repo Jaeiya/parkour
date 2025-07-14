@@ -32,8 +32,11 @@ local scriptNameMap = {
     utils        = "utils",
 }
 
-local function downloadScript(code, scriptName)
+local function downloadScript(code, scriptName, saveToComputer)
     local targetFile = "/disk/" .. scriptNameMap[scriptName]
+    if saveToComputer then
+        targetFile = "/" .. scriptNameMap[scriptName]
+    end
 
     if fs.exists(targetFile) then
         fs.delete(targetFile)
@@ -50,11 +53,30 @@ local function downloadScript(code, scriptName)
     end
 end
 
-local scriptName = ...
+local args = {...}
+local scriptName = args[1]
+
+if #args > 1 then
+    if args[1] ~= "l" or not args[2] then
+       print("Usage: get <flag> <script_name>")
+       return
+    end
+    scriptName = args[2]
+
+    local code = scriptCodes[scriptName]
+    if not code then
+        print("'"..scriptName.."' could not be found")
+        return
+    end
+
+    downloadScript(code, scriptName, true)
+end
+
 if not scriptName then
     print("Usage: get <script_name>")
     return
 end
+
 
 if scriptName == "all" then
     for key, val in pairs(scriptCodes) do
