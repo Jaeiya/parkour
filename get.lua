@@ -54,6 +54,8 @@ end
 local args = {...}
 
 if not args[1] then
+    print("Get overwrites an existing script with the one specified.")
+    print()
     print("Usage: get <flag> <script_name>")
     return
 end
