@@ -47,7 +47,7 @@ leaderboard.getPlayer = function (name)
 end
 
 
-leaderboard.addAttempt = function (name)
+leaderboard.updateAttempt = function (name)
     local playerData = leaderboard.getPlayer(name)
     playerData.attempts.current = playerData.attempts.current + 1
     playerData.attempts.total = playerData.attempts.total + 1
