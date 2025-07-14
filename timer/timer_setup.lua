@@ -11,7 +11,7 @@ local utils = require("utils")
 local paths = {
     timer       = "disk/timer",
     xtimer      = "disk/xtimer",
-    leaderBoard = "disk/leaderboard",
+    leaderBoard = "disk/board",
     utils       = "disk/utils",
 }
 
@@ -80,7 +80,7 @@ utils.writeFile("/timer", f.readAll())
 f.close()
 
 f = fs.open(paths.leaderBoard, "r")
-utils.writeFile("/leaderboard", f.readAll())
+utils.writeFile("/board", f.readAll())
 f.close()
 
 f = fs.open(paths.xtimer, "r")

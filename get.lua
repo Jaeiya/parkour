@@ -16,7 +16,8 @@ local scriptCodes = {
     monhost      = "UFStnxDa",
     xmonhost     = "xN6qzppK",
     setupmonhost = "ywQ78fsZ",
-    leaderboard  = "9eU7yHT7",
+    board        = "9eU7yHT7",
+    boardData    = "2SuQAVdT",
     utils        = "FjGC63m3",
 }
 
@@ -28,7 +29,8 @@ local scriptNameMap = {
     monhost      = "monhost",
     xmonhost     = "xmonhost",
     setupmonhost = "setupmonhost",
-    leaderboard  = "leaderboard",
+    board        = "board",
+    boarddata    = "boarddata",
     utils        = "utils",
 }
 

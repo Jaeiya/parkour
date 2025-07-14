@@ -8,6 +8,6 @@ parallel.waitForAny(
     function ()
         print()
         print("... Running Leader Board ...")
-        shell.run("leaderboard")
+        shell.run("board")
     end
 )
