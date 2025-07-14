@@ -32,11 +32,8 @@ local scriptNameMap = {
     utils        = "utils",
 }
 
-local function downloadScript(code, scriptName, saveToComputer)
+local function downloadScript(code, scriptName)
     local targetFile = "/disk/" .. scriptNameMap[scriptName]
-    if saveToComputer then
-        targetFile = "/" .. scriptNameMap[scriptName]
-    end
 
     if fs.exists(targetFile) then
         fs.delete(targetFile)
@@ -54,14 +51,18 @@ local function downloadScript(code, scriptName, saveToComputer)
 end
 
 local args = {...}
-local scriptName = args[1]
+
+if not args[1] then
+    print("Usage: get <flag> <script_name>")
+    return
+end
 
 if #args > 1 then
     if args[1] ~= "l" or not args[2] then
        print("Usage: get <flag> <script_name>")
        return
     end
-    scriptName = args[2]
+    local scriptName = args[2]
 
     local code = scriptCodes[scriptName]
     if not code then
@@ -69,27 +70,30 @@ if #args > 1 then
         return
     end
 
-    downloadScript(code, scriptName, true)
-end
-
-if not scriptName then
-    print("Usage: get <script_name>")
-    return
-end
-
-
-if scriptName == "all" then
-    for key, val in pairs(scriptCodes) do
-        downloadScript(val, key)
+    downloadScript(code, scriptName)
+    local success = shell.run("copy /disk/" .. scriptName .. " /" .. scriptName)
+    if not success then
+        print("failed to copy '" .. scriptName .. "' to computer")
+    else
+        print("Copied '" .. scriptName .. "' to computer storage")
     end
-    return
+else
+    local scriptName = args[1]
+
+    if scriptName == "all" then
+        for key, val in pairs(scriptCodes) do
+            downloadScript(val, key)
+        end
+        return
+    end
+
+    local code = scriptCodes[scriptName]
+    if not code then
+        print("'"..scriptName.."' could not be found")
+        return
+    end
+
+    downloadScript(code, scriptName)
 end
 
-local code = scriptCodes[scriptName]
-if not code then
-    print("'"..scriptName.."' could not be found")
-    return
-end
-
-downloadScript(code, scriptName)
 
