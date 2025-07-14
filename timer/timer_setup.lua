@@ -9,10 +9,12 @@ local utils = require("utils")
 -- will run the timer script.
 --
 local paths = {
-    timer       = "disk/timer",
-    xtimer      = "disk/xtimer",
-    leaderBoard = "disk/board",
-    utils       = "disk/utils",
+    timer     = "disk/timer",
+    xtimer    = "disk/xtimer",
+    board     = "disk/board",
+    boardData = "disk/board_data",
+    utils     = "disk/utils",
+
 }
 
 
@@ -79,8 +81,12 @@ local f = fs.open(paths.timer, "r")
 utils.writeFile("/timer", f.readAll())
 f.close()
 
-f = fs.open(paths.leaderBoard, "r")
+f = fs.open(paths.board, "r")
 utils.writeFile("/board", f.readAll())
+f.close()
+
+f = fs.open(paths.boardData, "r")
+utils.writeFile("/board_data", f.readAll())
 f.close()
 
 f = fs.open(paths.xtimer, "r")
