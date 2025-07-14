@@ -8,15 +8,15 @@
 -- 50ms has passed, and the total number of frames per second
 -- is 20.
 --               hr m  s  f
--- Example time: 00:00:00:00
+-- Example time: 00:00:00.00
 -- hr = hour
 -- m = minute
 -- s = second
 -- f = frame
 --
 -- Frames will only count up to 20 before resetting.
--- Max Time: 59:59:59:19 (resets to 0 if exceeded)
--- Min Time: 00:00:00:01
+-- Max Time: 59:59:59.19 (resets to 0 if exceeded)
+-- Min Time: 00:00:00.01
 --
 local utils = require("utils")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
@@ -63,7 +63,7 @@ local function startTimer()
         elseif event == "finish_run" then
             os.cancelTimer(timerID)
             -- Param should always be the millisecond time when user
-            -- pressed pressure plate.
+            -- pressed actuation (button/pressure plate).
             rednet.broadcast(utils.getTimerStr(param), protocol)
             break
 
@@ -72,11 +72,20 @@ local function startTimer()
             local left = redstone.getInput("left")
 
             if right then
-                -- Delegates to leaderboard, because it tracks what player
-                -- is actively running. Will only cancel if the player
-                -- who started the run, is trying to cancel the run.
-                os.queueEvent(leaderBoardEvent, {action="try_cancel_run", time = milliseconds})
+                -- The run will only be canceled if the active runner
+                -- is the same player who triggered this action.
+                os.queueEvent(leaderBoardEvent, {
+                    action="try_cancel_run",
+                    time = milliseconds
+                })
+
             elseif left then
+                -- This action will be ignored entirely, if the player who
+                -- triggered this action, is not the active runner.
+                --
+                -- Otherwise...if the active runner does not have a time on
+                -- record, one will be created for them. If the active runner
+                -- already has a faster time, a slower time will not be saved.
                 os.queueEvent(leaderBoardEvent, {
                     action  = "save_player_time",
                     time = milliseconds,
