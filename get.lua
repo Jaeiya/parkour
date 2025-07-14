@@ -17,7 +17,7 @@ local scriptCodes = {
     xmonhost     = "xN6qzppK",
     setupmonhost = "ywQ78fsZ",
     board        = "9eU7yHT7",
-    boardData    = "2SuQAVdT",
+    boarddata    = "2SuQAVdT",
     utils        = "FjGC63m3",
 }
 
