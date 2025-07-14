@@ -40,28 +40,36 @@ leaderboard.getPlayer = function (name)
             total   = data.attempts.total,
         },
         time = {
-            pb = data.time.pb,
-            last = data.time.last,
+            pb      = data.time.pb,
+            current = data.time.current,
         }
     }
 end
 
 
 leaderboard.addAttempt = function (name)
-    local player = leaderboard.getPlayer(name)
-    player.attempts.current = player.attempts.current + 1
-    player.attempts.total = player.attempts.total + 1
+    local playerData = leaderboard.getPlayer(name)
+    playerData.attempts.current = playerData.attempts.current + 1
+    playerData.attempts.total = playerData.attempts.total + 1
+    leaderboard.savePlayer(name, playerData)
 end
 
 
 leaderboard.trySetPB = function (name, currentTime)
-    local player = leaderboard.getPlayer(name)
-    if currentTime < player.time.pb then
-        player.time.pb = time
-        player.attempts.pb = player.attempts.current
-        player.attempts.current = 0
-        leaderboard.save()
+    local playerData = leaderboard.getPlayer(name)
+    if playerData.time.pb == 0 or currentTime < playerData.time.pb then
+        playerData.time.pb = currentTime
+        playerData.attempts.pb = playerData.attempts.pb + playerData.attempts.current
+        playerData.attempts.current = 0
+        leaderboard.savePlayer(name, playerData)
     end
+end
+
+
+leaderboard.updateCurrentTime = function (name, time)
+    local playerData = leaderboard.getPlayer(name)
+    playerData.time.current = time
+    leaderboard.savePlayer(name, playerData)
 end
 
 
@@ -71,12 +79,12 @@ leaderboard.tryAddPlayer = function (name)
     leaderboard.data[name] = {
         attempts = {
             pb = 0,
-            current = 1,
-            total = 1,
+            current = 0,
+            total = 0,
         },
         time = {
             pb = 0,
-            last = 0,
+            current = 0,
         }
     }
 
@@ -89,8 +97,14 @@ leaderboard.getAll = function ()
 end
 
 
+leaderboard.savePlayer = function (name, data)
+    leaderboard.data[name] = data
+    leaderboard.save()
+end
+
+
 leaderboard.save = function ()
-   utils.writeFile(filePath, textutils.serialize(leaderboard.data))
+    utils.writeFile(filePath, textutils.serialize(leaderboard.data))
 end
 
 
