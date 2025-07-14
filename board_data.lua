@@ -72,6 +72,7 @@ leaderboard.tryAddPlayer = function (name)
         attempts = {
             pb = 0,
             current = 1,
+            total = 1,
         },
         time = {
             pb = 0,
