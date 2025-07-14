@@ -7,14 +7,14 @@
 -- The smallest increments displayed are frames. For every frame,
 -- 50ms has passed, and the total number of frames per second
 -- is 20.
---               hr m  s  f
+--               hr m  s  t
 -- Example time: 00:00:00.00
 -- hr = hour
 -- m = minute
 -- s = second
--- f = frame
+-- t = tick
 --
--- Frames will only count up to 20 before resetting.
+-- Ticks will only count up to 20 before resetting.
 -- Max Time: 59:59:59.19 (resets to 0 if exceeded)
 -- Min Time: 00:00:00.01
 --
@@ -55,7 +55,6 @@ local function startTimer()
 
         elseif event == "cancel_run" then
             os.cancelTimer(timerID)
-            -- Param should always be the millisecond time
             milliseconds = 0
             rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
             break
