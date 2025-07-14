@@ -128,7 +128,7 @@ local function displayTimes(colWidth, yPos)
     local timeLen = #"00:00:00.00"
     local separator = "....."
     local lineLen = colWidth + timeLen + #separator
-    local linePadding = math.ceil((monWidth - lineLen) / 2)
+    local linePadding = (monWidth - lineLen) / 2
 
     for i = 1, #times do
         yPos = yPos + 1
