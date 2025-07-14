@@ -33,18 +33,19 @@ local scriptNameMap = {
 }
 
 local function downloadScript(code, scriptName)
-    local targetFile = "/disk/" .. scriptNameMap[scriptName]
+    local diskPath = "/disk/" .. scriptNameMap[scriptName]
 
-    if fs.exists(targetFile) then
-        fs.delete(targetFile)
+    -- Overwrite existing file
+    if fs.exists(diskPath) then
+        fs.delete(diskPath)
     end
 
     local success = shell.run(
-        "pastebin get " .. code .. " " .. targetFile
+        "pastebin get " .. code .. " " .. diskPath
     )
 
     if success then
-        print(scriptName .. " Updated!")
+        print("Updated '" .. scriptName .. "' on Disk")
     else
         print("command failed to download file")
     end
@@ -63,6 +64,7 @@ if #args > 1 then
        return
     end
     local scriptName = args[2]
+    local rootPath = "/" .. scriptName
 
     local code = scriptCodes[scriptName]
     if not code then
@@ -71,12 +73,14 @@ if #args > 1 then
     end
 
     downloadScript(code, scriptName)
-    local success = shell.run("copy /disk/" .. scriptName .. " /" .. scriptName)
-    if not success then
-        print("failed to copy '" .. scriptName .. "' to computer")
-    else
-        print("Copied '" .. scriptName .. "' to computer storage")
+
+    -- Overwrite existing file
+    if fs.exists(rootPath) then
+        fs.delete(rootPath)
     end
+
+    fs.copy("/disk/" .. scriptName, rootPath)
+    print("Updated '" .. scriptName .. "' on Computer")
 else
     local scriptName = args[1]
 
