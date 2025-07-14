@@ -13,9 +13,43 @@ local paths = {
     xtimer      = "disk/xtimer",
     leaderBoard = "disk/leaderboard",
     utils       = "disk/utils",
-    protocol    = "protocol.txt",
-    positions   = "positions.txt"
 }
+
+
+local function promptCoords(prompt)
+::restart::
+    print()
+    term.setTextColor(colors.lightBlue)
+    print(prompt)
+    term.setTextColor(colors.white)
+    write("> ")
+    local coords = read()
+
+    -- Validate coord entry
+    local coordParts = utils.splitString(coords)
+    if #coordParts ~= 3 then
+        term.setTextColor(colors.red)
+        print("invalid coord length; try again!")
+        goto restart
+    end
+
+    -- Convert coords to numbers
+    for i = 1, #coordParts do
+        local coord = coordParts[i]
+        coordParts[i] = tonumber(coord)
+        if not coordParts[i] then
+            term.setTextColor(colors.red)
+            print("coordinate '" .. coord .. "' is not a number; try again!")
+            goto restart
+        end
+    end
+
+    return {
+        x = coordParts[1],
+        y = coordParts[2],
+        z = coordParts[3],
+    }
+end
 
 
 if not fs.exists(paths.timer) then
@@ -31,24 +65,15 @@ print("Enter Constellation Protocol")
 write("> ")
 local protocol = read()
 
-print()
-print("Start Pos")
-write("> ")
-local startPos = read()
-
-print()
-print("Finish Pos")
-write("> ")
-local finishPos = read()
-
-
-
 
 -- All file operations below, will overwrite
 -- any existing files.
 
-utils.writeFile(paths.protocol, protocol)
-utils.writeFile(paths.positions, startPos .. "@" .. finishPos)
+utils.saveTimerConfig(
+    protocol,
+    promptCoords("Enter Start Pos"),
+    promptCoords("Enter End Pos")
+)
 
 local f = fs.open(paths.timer, "r")
 utils.writeFile("/timer", f.readAll())

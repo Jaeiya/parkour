@@ -10,10 +10,9 @@ mon.setBackgroundColor(colors.black)
 local currentPlayer = nil
 local timesPath     = "/leaderboard.txt"
 local times         = {}
+local config        = utils.loadTimerConfig()
 
-local actuationStart   = {x=0, y=0, z=0} -- position of timer-start actuation (pressure plate/button)
-local actuationEnd     = {x=0, y=0, z=0} -- position of timer-end   actuation (pressure plate/button)
-local maxActuationDist = 3
+local maxActuationDist = 3 -- Max distance from configured start and end positions
 
 
 
@@ -41,36 +40,6 @@ local function writeTimes()
 end
 
 
---
--- Load Start Position
---
-if not fs.exists("positions.txt") then
-    error("missing start position file")
-end
-local f = fs.open("positions.txt", "r")
-local posStr = f.readAll()
-local atPos = string.find(posStr, "@")
-if not atPos then
-    error("invalid start/finish value")
-end
-
-local startPosParts  = utils.splitString(string.sub(posStr, 1, atPos-1))
-local finishPosParts = utils.splitString(string.sub(posStr, atPos+1))
-if #startPosParts ~=3 or #finishPosParts ~= 3 then
-    error("found invalid start/finish position")
-end
-actuationStart = {
-    x = tonumber(startPosParts[1]),
-    y = tonumber(startPosParts[2]),
-    z = tonumber(startPosParts[3]),
-}
-actuationEnd = {
-    x = tonumber(finishPosParts[1]),
-    y = tonumber(finishPosParts[2]),
-    z = tonumber(finishPosParts[3]),
-}
-f.close()
------------------------------------
 
 --
 -- Load times from file
@@ -169,8 +138,8 @@ end
 
 
 
-print("   StartPos: "..actuationStart.x..", "..actuationStart.y..", "..actuationStart.z)
-print("  FinishPos: "..actuationEnd.x..", "..actuationEnd.y..", "..actuationEnd.z)
+print("   StartPos: "..config.startPos.x..", "..config.startPos.y..", "..config.startPos.z)
+print("  FinishPos: "..config.endPos.x..", "..config.endPos.y..", "..config.endPos.z)
 print(" SavedTimes: "..#times)
 renderBoard()
 
@@ -182,14 +151,19 @@ while true do
     end
 
     if data.action == "starting_run" then
-        local nearestPlayer = utils.getNearestPlayer(actuationStart.x, actuationStart.y, actuationStart.z, pd)
+        local nearestPlayer = utils.getNearestPlayer(
+            config.startPos.x,
+            config.startPos.y,
+            config.startPos.z,
+            pd
+        )
         if nearestPlayer.distance <= maxActuationDist then
             currentPlayer = nearestPlayer.name
             renderActiveRunner(currentPlayer)
         end
 
     elseif data.action == "try_cancel_run" then
-        if isPlayerRunning(actuationStart) then
+        if isPlayerRunning(config.startPos) then
             os.queueEvent("cancel_run")
             currentPlayer = nil
             mon.setBackgroundColor(colors.black)
@@ -197,7 +171,7 @@ while true do
         end
 
     elseif data.action == "save_player_time" then
-        if isPlayerRunning(actuationEnd) then
+        if isPlayerRunning(config.endPos) then
             os.queueEvent("finish_run", data.time)
             updateTimes(currentPlayer, data.time)
             writeTimes()

@@ -29,14 +29,7 @@ if not modem then
     error("missing modem")
 end
 
-if not fs.exists("protocol.txt") then
-    error("missing protocol file")
-end
-
-local f = fs.open("protocol.txt", "r")
-local protocol = f.readAll()
-f.close()
-
+local config = utils.loadTimerConfig()
 rednet.open(peripheral.getName(modem))
 
 
@@ -50,20 +43,20 @@ local function startTimer()
         if event == "timer" and param == timerID then
             iterations   = iterations + 1
             milliseconds = iterations * (speed * 1000)
-            rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
+            rednet.broadcast(utils.getTimerStr(milliseconds), config.monitor.protocol)
             timerID = os.startTimer(speed)
 
         elseif event == "cancel_run" then
             os.cancelTimer(timerID)
             milliseconds = 0
-            rednet.broadcast(utils.getTimerStr(milliseconds), protocol)
+            rednet.broadcast(utils.getTimerStr(milliseconds), config.monitor.protocol)
             break
 
         elseif event == "finish_run" then
             os.cancelTimer(timerID)
             -- Param should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
-            rednet.broadcast(utils.getTimerStr(param), protocol)
+            rednet.broadcast(utils.getTimerStr(param), config.monitor.protocol)
             break
 
         elseif event == "redstone" then
@@ -94,7 +87,7 @@ local function startTimer()
     end
 end
 
-print(" BroadcastingOn: ".. protocol)
+print(" ConstellationProtocol: ".. config.monitor.protocol)
 while true do
     os.pullEvent("redstone")
     if redstone.getInput("right") then
