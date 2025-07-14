@@ -30,7 +30,7 @@ local scriptNameMap = {
     xmonhost     = "xmonhost",
     setupmonhost = "setupmonhost",
     board        = "board",
-    boarddata    = "boarddata",
+    boarddata    = "board_data",
     utils        = "utils",
 }
 
@@ -68,7 +68,7 @@ if #args > 1 then
        return
     end
     local scriptName = args[2]
-    local rootPath = "/" .. scriptName
+    local rootPath = "/" .. scriptNameMap[scriptName]
 
     local code = scriptCodes[scriptName]
     if not code then
@@ -83,7 +83,7 @@ if #args > 1 then
         fs.delete(rootPath)
     end
 
-    fs.copy("/disk/" .. scriptName, rootPath)
+    fs.copy("/disk/" .. scriptNameMap[scriptName], rootPath)
     print("Updated '" .. scriptName .. "' on Computer")
 
 else
