@@ -1,4 +1,5 @@
 local utils = require("utils")
+local leaderboard = require("board_data")
 
 local pd  = utils.getPeripheral("player_detector")
 local mon = utils.getPeripheral("monitor")
@@ -7,63 +8,10 @@ mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
 
-local currentPlayer = nil
-local timesPath     = "/leaderboard.txt"
-local times         = {}
-local config        = utils.loadTimerConfig()
-
+local currentPlayer    = nil
+local config           = utils.loadTimerConfig()
 local maxActuationDist = 3 -- Max distance from configured start and end positions
 
-
-
-local function updateTimes(name, newTime)
-    for i = 1, #times do
-        if times[i].name == name then
-            if times[i].time > newTime then
-                times[i].time = newTime
-            end
-            return
-        end
-    end
-    times[#times + 1] = {name = name, time = newTime}
-end
-
-
-local function writeTimes()
-    table.sort(times, function(a, b) return a.time < b.time end)
-    -- Serialize times
-    local timeData = {}
-    for i = 1, #times do
-        timeData[i] = times[i].name .. "@" .. times[i].time
-    end
-    utils.writeFile(timesPath, table.concat(timeData, "\n"))
-end
-
-
-
---
--- Load times from file
---
-if fs.exists(timesPath) then
-    local file = fs.open(timesPath, "r")
-    while true do
-        local line = file.readLine()
-        if not line then break end
-
-        -- Parse line as name@time
-        local atPos = string.find(line, "@")
-        if not atPos then
-            error("invalid leaderboard value")
-        end
-
-        local name = string.sub(line, 1, atPos-1)
-        -- This should be in milliseconds
-        local time = tonumber(string.sub(line, atPos+1))
-        updateTimes(name, time)
-    end
-    file.close()
-end
-----------------------------------
 
 local function isPlayerRunning(pos)
     local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd)
@@ -75,11 +23,13 @@ local function isPlayerRunning(pos)
     return false
 end
 
+
 local function renderActiveRunner(playerName)
     local text = "Active Runner"
     mon.setTextScale(2.5)
     local w = mon.getSize()
     local textWidthDiff = w - #text
+    local player = leaderboard.getPlayer(playerName)
     mon.setBackgroundColor(colors.black)
     mon.clear()
     mon.setCursorPos(1, 1)
@@ -90,27 +40,43 @@ local function renderActiveRunner(playerName)
     mon.setCursorPos(1, 3)
     mon.setTextColor(colors.lime)
     mon.write(utils.centerText(playerName, mon))
+    mon.setCursorPos(1, 5)
+    local attemptText = "Attempt: "
+    local textWidth = #attemptText + #tostring(player.attempts.current)
+    local textPadding = (w - textWidth) / 2
+    mon.setTextColor(colors.white)
+    mon.write(string.rep(" ", textPadding) .. attemptText)
+    mon.setTextColor(colors.yellow)
+    mon.write(player.attempts.current)
 end
 
-local function displayTimes(colWidth, yPos)
-    local monWidth = mon.getSize()
-    local timeLen = #"00:00:00.00"
-    local separator = "....."
-    local lineLen = colWidth + timeLen + #separator
-    local linePadding = (monWidth - lineLen) / 2
 
-    for i = 1, #times do
-        yPos = yPos + 1
-        mon.setCursorPos(1, yPos)
-        local name = times[i].name
-        local padding = string.rep(" ", linePadding + (colWidth - #name))
-        mon.write(padding)
-        mon.setTextColor(colors.white)
-        mon.write(name)
-        mon.setTextColor(colors.gray)
-        mon.write(separator)
-        mon.setTextColor(colors.lightBlue)
-        mon.write(utils.getTimerStr(times[i].time))
+local function displayTimes(colWidth, yPos)
+    local monWidth    = mon.getSize()
+    local timeLen     = #"00:00:00.00"
+    local separator   = "....."
+    local attemptsLen = #" (x000)"
+    local lineLen     = colWidth + timeLen + #separator + attemptsLen
+    local linePadding = (monWidth - lineLen) / 2
+    local players     = leaderboard.get()
+
+    for i = 1, #players do
+        local player = leaderboard.getPlayer(players[i].name)
+        if player.time.pb > 0 then
+            local attemptStr = string.format(" (x%03d)", player.attempts.pb)
+            local padding = string.rep(" ", linePadding + (colWidth - #player.name))
+            yPos = yPos + 1
+            mon.setCursorPos(1, yPos)
+            mon.write(padding)
+            mon.setTextColor(colors.white)
+            mon.write(player.name)
+            mon.setTextColor(colors.gray)
+            mon.write(separator)
+            mon.setTextColor(colors.lightBlue)
+            mon.write(utils.getTimerStr(player.time.pb))
+            mon.setTextColor(colors.purple)
+            mon.write(attemptStr)
+        end
     end
 end
 
@@ -123,9 +89,11 @@ local function renderBoard()
     mon.setTextColor(colors.lime)
     mon.write(utils.centerText("Leader Board", mon))
     local columnWidth = 0
-    for i = 1, #times do
-        local nameWidth = #times[i].name
-        if nameWidth > columnWidth then
+    local players = leaderboard.get()
+    for i = 1, #players do
+        local player = leaderboard.getPlayer(players[i].name)
+        local nameWidth = #player.name
+        if nameWidth > columnWidth and player.time.pb > 0 then
             columnWidth = nameWidth
         end
     end
@@ -137,10 +105,8 @@ end
 
 
 
-
 print("   StartPos: "..config.startPos.x..", "..config.startPos.y..", "..config.startPos.z)
 print("  FinishPos: "..config.endPos.x..", "..config.endPos.y..", "..config.endPos.z)
-print(" SavedTimes: "..#times)
 renderBoard()
 
 while true do
@@ -157,6 +123,9 @@ while true do
             config.startPos.z,
             pd
         )
+        leaderboard.tryAddPlayer(nearestPlayer.name)
+        leaderboard.updateAttempt(nearestPlayer.name)
+
         if nearestPlayer.distance <= maxActuationDist then
             currentPlayer = nearestPlayer.name
             renderActiveRunner(currentPlayer)
@@ -173,8 +142,7 @@ while true do
     elseif data.action == "save_player_time" then
         if isPlayerRunning(config.endPos) then
             os.queueEvent("finish_run", data.time)
-            updateTimes(currentPlayer, data.time)
-            writeTimes()
+            leaderboard.savePlayerTime(currentPlayer, data.time)
             renderBoard()
         end
     end
