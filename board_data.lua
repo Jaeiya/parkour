@@ -1,24 +1,41 @@
 local utils = require('utils')
 local leaderboard = {}
-local filePath = "leaderboard.cfg"
+local filePath    = "players.db"
 
 
-local function loadLeaderboard()
+local function loadPlayers()
     if not fs.exists(filePath) then
         utils.writeFile(filePath, textutils.serialize({}))
     end
 
     local f = fs.open(filePath, "r")
-    local data = textutils.unserialize(f.readAll())
+    local playerList = textutils.unserialize(f.readAll())
+    local playerMap = {}
+    for i = 1, #playerList do
+        local p = playerList[i]
+        playerMap[p.name] = {
+            name = p.name,
+            time = {
+                pb      = p.time.pb,
+                current = p.time.current,
+            },
+            attempts = {
+                pb      = p.attempts.pb,
+                current = p.attempts.current,
+                total   = p.attempts.total,
+            }
+        }
+    end
     f.close()
-    return data
+    return playerList, playerMap
 end
 
-leaderboard.data = loadLeaderboard()
+-- Initialize internal database objects
+leaderboard.playerList, leaderboard.playerMap = loadPlayers()
 
 
 local function playerExists(name)
-    if leaderboard.data[name] then
+    if leaderboard.playerMap[name] then
         return true
     end
     return false
@@ -29,19 +46,20 @@ leaderboard.playerExists = playerExists
 
 leaderboard.getPlayer = function (name)
     if not playerExists(name) then
-        error("player does not exist")
+        error("player not found: '" .. name "'")
     end
 
-    local data = leaderboard.data[name]
+    local player = leaderboard.playerMap[name]
     return {
+        name = player.name,
         attempts = {
-            pb      = data.attempts.pb,
-            current = data.attempts.current,
-            total   = data.attempts.total,
+            pb      = player.attempts.pb,
+            current = player.attempts.current,
+            total   = player.attempts.total,
         },
         time = {
-            pb      = data.time.pb,
-            current = data.time.current,
+            pb      = player.time.pb,
+            current = player.time.current,
         }
     }
 end
@@ -76,7 +94,9 @@ end
 leaderboard.tryAddPlayer = function (name)
     if playerExists(name) then return end
 
-    leaderboard.data[name] = {
+    local index = #leaderboard.playerList+1
+    leaderboard.playerList[index] = {
+        name = name,
         attempts = {
             pb = 0,
             current = 0,
@@ -87,24 +107,34 @@ leaderboard.tryAddPlayer = function (name)
             current = 0,
         }
     }
-
+    leaderboard.playerMap[name] = leaderboard.playerList[index]
     leaderboard.save()
 end
 
 
-leaderboard.getAll = function ()
-    return leaderboard.data
+leaderboard.get = function ()
+    return leaderboard.playerList
 end
 
 
 leaderboard.savePlayer = function (name, data)
-    leaderboard.data[name] = data
+    if not leaderboard.playerExists(name) then
+        error("player not found: '" .. name .. "'")
+    end
+
+    leaderboard.playerMap[name] = data
     leaderboard.save()
 end
 
 
 leaderboard.save = function ()
-    utils.writeFile(filePath, textutils.serialize(leaderboard.data))
+    for i = 1, #leaderboard.playerList do
+        local player = leaderboard.playerList[i]
+        leaderboard.playerList[i] = leaderboard.playerMap[player.name]
+    end
+
+    table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
+    utils.writeFile(filePath, textutils.serialize(leaderboard.playerList))
 end
 
 
