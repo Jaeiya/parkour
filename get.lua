@@ -20,7 +20,6 @@ local scriptCodes = {
     boarddata      = "2SuQAVdT",
     utils          = "FjGC63m3",
     display        = "uCHiLgtd",
-    installdisplay = "fdnkg9Wr"
 }
 
 local scriptNameMap = {
@@ -35,7 +34,6 @@ local scriptNameMap = {
     boarddata      = "board_data",
     utils          = "utils",
     display        = "display",
-    installdisplay = "installdisplay"
 }
 
 local function downloadScript(code, scriptName)
@@ -110,9 +108,8 @@ local scriptName = args[1]
 if scriptName == "display_disk" then
     downloadScript(scriptCodes.display, scriptNameMap.display)
     downloadScript(scriptCodes.utils, scriptNameMap.utils)
-    downloadScript(scriptCodes.installdisplay, scriptNameMap.installdisplay)
     term.setTextColor(colors.lime)
-    shell.run("rename", "/disk/" .. scriptNameMap.installdisplay, "/disk/install")
+    shell.run("rename", "/disk/" .. scriptNameMap.display, "/disk/run")
     local d = peripheral.find("drive")
     if d then
         d.setDiskLabel("Display Setup")
