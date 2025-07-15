@@ -113,7 +113,6 @@ local choices = {
     setStarRating,
 }
 
-render()
 
 ::menu::
 term.clear()
