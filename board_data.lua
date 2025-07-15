@@ -73,27 +73,21 @@ leaderboard.updateAttempt = function (name)
     leaderboard.savePlayer(player)
 end
 
+
 -- Tries to save a specified players run time, but if it
 -- is not faster than the players current PB, then it does
 -- nothing.
-leaderboard.trySetPB = function (name)
+leaderboard.savePlayerTime = function (name, time)
     local player = leaderboard.getPlayer(name)
+
+    player.time.current = time
 
     if player.time.current < player.time.pb or player.time.pb == 0 then
         player.time.pb = player.time.current
         player.attempts.pb = player.attempts.pb + player.attempts.current
         player.attempts.current = 0
-        leaderboard.savePlayer(player)
     end
-end
 
-
--- Should be used to save each of the players latest
--- run times. This value is used to update a players
--- PB, when trySetPB() is executed.
-leaderboard.updateCurrentTime = function (name, time)
-    local player = leaderboard.getPlayer(name)
-    player.time.current = time
     leaderboard.savePlayer(player)
 end
 
