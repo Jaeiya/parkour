@@ -55,7 +55,7 @@ local function displayTimes(colWidth, yPos)
     local monWidth    = mon.getSize()
     local timeLen     = #"00:00:00.00"
     local separator   = "....."
-    local attemptsLen = #" (x000)"
+    local attemptsLen = #"..x000"
     local lineLen     = colWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
     local players     = leaderboard.get()
@@ -63,7 +63,7 @@ local function displayTimes(colWidth, yPos)
     for i = 1, #players do
         local player = leaderboard.getPlayer(players[i].name)
         if player.time.pb > 0 then
-            local attemptStr = string.format(" (x%03d)", player.attempts.pb)
+            local attemptStr = string.format("%03d", player.attempts.pb)
             local padding = string.rep(" ", linePadding + (colWidth - #player.name))
             yPos = yPos + 1
             mon.setCursorPos(1, yPos)
@@ -74,7 +74,11 @@ local function displayTimes(colWidth, yPos)
             mon.write(separator)
             mon.setTextColor(colors.lightBlue)
             mon.write(utils.getTimerStr(player.time.pb))
-            mon.setTextColor(colors.purple)
+            mon.setTextColor(colors.gray)
+            mon.write("..")
+            mon.setTextColor(colors.lightGray)
+            mon.write("x")
+            mon.setTextColor(colors.cyan)
             mon.write(attemptStr)
         end
     end
