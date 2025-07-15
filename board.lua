@@ -25,7 +25,7 @@ end
 
 
 local function renderActiveRunner(playerName)
-    local text = "Active Runner"
+    local text = "WARNING: Active Runner"
     mon.setTextScale(2.5)
     local w = mon.getSize()
     local textWidthDiff = w - #text
@@ -33,7 +33,7 @@ local function renderActiveRunner(playerName)
     mon.setBackgroundColor(colors.black)
     mon.clear()
     mon.setCursorPos(1, 1)
-    mon.setBackgroundColor(colors.blue)
+    mon.setBackgroundColor(colors.red)
     mon.setTextColor(colors.yellow)
     mon.write(string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2)))
     mon.setBackgroundColor(colors.black)
