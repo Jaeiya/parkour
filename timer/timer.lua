@@ -88,6 +88,9 @@ local function startTimer()
 end
 
 print(" ConstellationProtocol: ".. config.monitor.protocol)
+-- Always startup with monitors zero'd out
+rednet.broadcast("00:00:00.00", config.monitor.protocol)
+
 while true do
     os.pullEvent("redstone")
     if redstone.getInput("right") then
