@@ -63,11 +63,19 @@ if not args[1] then
 end
 
 if #args > 1 then
-    if args[1] ~= "l" or not args[2] then
+    local flag       = args[1]
+    local scriptName = args[2]
+
+    if flag ~= "l" or not scriptName then
        print("Usage: get <flag> <script_name>")
        return
     end
-    local scriptName = args[2]
+
+    if not scriptNameMap[scriptName] then
+        print("'" .. scriptName .. "' could not be found")
+        return
+    end
+
     local rootPath = "/" .. scriptNameMap[scriptName]
 
     local code = scriptCodes[scriptName]
