@@ -79,10 +79,13 @@ local function renderBoard()
     local attemptsLen = #"..x000"
     local lineLen     = columnWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
+    local noPlayersStr = "Be the first to run this level!"
+    local hasPlayers = false
 
     for i = 1, #players do
         local player = leaderboard.getPlayer(players[i].name)
         if player.time.pb > 0 then
+            hasPlayers = true
             local attemptStr = string.format("%03d", player.attempts.pb)
             local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
@@ -101,6 +104,12 @@ local function renderBoard()
             mon.setTextColor(colors.cyan)
             mon.write(attemptStr)
         end
+    end
+
+    if not hasPlayers then
+        mon.setCursorPos(1, yPos + 3)
+        mon.setTextColor(colors.orange)
+        mon.write(utils.centerText(noPlayersStr, mon))
     end
 end
 
