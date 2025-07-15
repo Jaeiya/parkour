@@ -51,20 +51,40 @@ local function renderActiveRunner(playerName)
 end
 
 
-local function displayTimes(colWidth, yPos)
+local function renderBoard()
+    mon.clear()
+    mon.setTextScale(2)
+    local yPos = 1
+    mon.setCursorPos(1, yPos)
+    mon.setTextColor(colors.lime)
+    mon.write(utils.centerText("Leader Board", mon))
+
+    -- Add padding between times and title
+    yPos = yPos + 1
+
+    -- Calculate name column width
+    local columnWidth = 0
+    local players = leaderboard.get()
+    for i = 1, #players do
+        local player = leaderboard.getPlayer(players[i].name)
+        local nameWidth = #player.name
+        if nameWidth > columnWidth and player.time.pb > 0 then
+            columnWidth = nameWidth
+        end
+    end
+
     local monWidth    = mon.getSize()
     local timeLen     = #"00:00:00.00"
     local separator   = "....."
     local attemptsLen = #"..x000"
-    local lineLen     = colWidth + timeLen + #separator + attemptsLen
+    local lineLen     = columnWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
-    local players     = leaderboard.get()
 
     for i = 1, #players do
         local player = leaderboard.getPlayer(players[i].name)
         if player.time.pb > 0 then
             local attemptStr = string.format("%03d", player.attempts.pb)
-            local padding = string.rep(" ", linePadding + (colWidth - #player.name))
+            local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
             mon.setCursorPos(1, yPos)
             mon.write(padding)
@@ -82,29 +102,6 @@ local function displayTimes(colWidth, yPos)
             mon.write(attemptStr)
         end
     end
-end
-
-
-local function renderBoard()
-    mon.clear()
-    mon.setTextScale(2)
-    local yPos = 1
-    mon.setCursorPos(1, yPos)
-    mon.setTextColor(colors.lime)
-    mon.write(utils.centerText("Leader Board", mon))
-    local columnWidth = 0
-    local players = leaderboard.get()
-    for i = 1, #players do
-        local player = leaderboard.getPlayer(players[i].name)
-        local nameWidth = #player.name
-        if nameWidth > columnWidth and player.time.pb > 0 then
-            columnWidth = nameWidth
-        end
-    end
-
-    -- Add padding between times and title
-    yPos = yPos + 1
-    displayTimes(columnWidth, yPos)
 end
 
 
