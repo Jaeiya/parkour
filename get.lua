@@ -52,8 +52,10 @@ local function downloadScript(code, scriptName)
 
     if success then
         print("Updated '" .. scriptName .. "' on Disk")
+        return true
     else
         print("command failed to download file")
+        return false
     end
 end
 
@@ -88,7 +90,10 @@ if #args > 1 then
         return
     end
 
-    downloadScript(code, scriptName)
+    local success = downloadScript(code, scriptName)
+    if not success then
+        return
+    end
 
     -- Overwrite existing file
     if fs.exists(rootPath) then
