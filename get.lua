@@ -102,24 +102,41 @@ if #args > 1 then
 
     fs.copy("/disk/" .. scriptNameMap[scriptName], rootPath)
     print("Updated '" .. scriptName .. "' on Computer")
-
-else
-    local scriptName = args[1]
-
-    if scriptName == "all" then
-        for key, val in pairs(scriptCodes) do
-            downloadScript(val, key)
-        end
-        return
-    end
-
-    local code = scriptCodes[scriptName]
-    if not code then
-        print("'"..scriptName.."' could not be found")
-        return
-    end
-
-    downloadScript(code, scriptName)
+    return
 end
+
+local scriptName = args[1]
+
+if scriptName == "display_disk" then
+    downloadScript(scriptCodes.display, scriptNameMap.display)
+    downloadScript(scriptCodes.utils, scriptNameMap.utils)
+    downloadScript(scriptCodes.installdisplay, scriptNameMap.installdisplay)
+    term.setTextColor(colors.lime)
+    shell.run("rename", "/disk/" .. scriptNameMap.installdisplay, "/disk/install")
+    local d = peripheral.find("drive")
+    if d then
+        d.setDiskLabel("Display Setup")
+    end
+    print("Display disk created!")
+    if fs.exists("/disk/get") then
+        fs.delete("/disk/get")
+    end
+    return
+end
+
+if scriptName == "all" then
+    for key, val in pairs(scriptCodes) do
+        downloadScript(val, key)
+    end
+    return
+end
+
+local code = scriptCodes[scriptName]
+if not code then
+    print("'"..scriptName.."' could not be found")
+    return
+end
+
+downloadScript(code, scriptName)
 
 
