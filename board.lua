@@ -54,7 +54,7 @@ end
 local function renderBoard()
     mon.clear()
     mon.setTextScale(2)
-    local yPos = 1
+    local yPos = 2
     mon.setCursorPos(1, yPos)
     mon.setTextColor(colors.lime)
     mon.write(utils.centerText("Leader Board", mon))
@@ -81,6 +81,7 @@ local function renderBoard()
     local linePadding = (monWidth - lineLen) / 2
     local noPlayersStr = "Be the first to run this level!"
     local hasPlayers = false
+
 
     for i = 1, #players do
         local player = leaderboard.getPlayer(players[i].name)
