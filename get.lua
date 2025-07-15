@@ -9,29 +9,33 @@
 -- disks very quickly, if needed.
 --
 local scriptCodes = {
-    get          = "LYJdFKns",
-    timer        = "t3ka7Qfc",
-    xtimer       = "Knhfg3fM",
-    setuptimer   = "YHxwpyMa",
-    monhost      = "UFStnxDa",
-    xmonhost     = "xN6qzppK",
-    setupmonhost = "ywQ78fsZ",
-    board        = "9eU7yHT7",
-    boarddata    = "2SuQAVdT",
-    utils        = "FjGC63m3",
+    get            = "LYJdFKns",
+    timer          = "t3ka7Qfc",
+    xtimer         = "Knhfg3fM",
+    setuptimer     = "YHxwpyMa",
+    monhost        = "UFStnxDa",
+    xmonhost       = "xN6qzppK",
+    setupmonhost   = "ywQ78fsZ",
+    board          = "9eU7yHT7",
+    boarddata      = "2SuQAVdT",
+    utils          = "FjGC63m3",
+    display        = "uCHiLgtd",
+    installdisplay = "fdnkg9Wr"
 }
 
 local scriptNameMap = {
-    get          = "get",
-    timer        = "timer",
-    xtimer       = "xtimer",
-    setuptimer   = "setuptimer",
-    monhost      = "monhost",
-    xmonhost     = "xmonhost",
-    setupmonhost = "setupmonhost",
-    board        = "board",
-    boarddata    = "board_data",
-    utils        = "utils",
+    get            = "get",
+    timer          = "timer",
+    xtimer         = "xtimer",
+    setuptimer     = "setuptimer",
+    monhost        = "monhost",
+    xmonhost       = "xmonhost",
+    setupmonhost   = "setupmonhost",
+    board          = "board",
+    boarddata      = "board_data",
+    utils          = "utils",
+    display        = "display",
+    installdisplay = "installdisplay"
 }
 
 local function downloadScript(code, scriptName)
