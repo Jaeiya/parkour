@@ -125,7 +125,7 @@ leaderboard.savePlayer = function (player)
         error("player not found: '" .. name .. "'")
     end
 
-    leaderboard.playerMap[name] = player
+    leaderboard.playerMap[player.name] = player
     leaderboard.save()
 end
 
