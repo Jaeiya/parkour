@@ -65,32 +65,41 @@ leaderboard.getPlayer = function (name)
 end
 
 
+-- Updates the current & total attempts for the specified player.
 leaderboard.updateAttempt = function (name)
-    local playerData = leaderboard.getPlayer(name)
-    playerData.attempts.current = playerData.attempts.current + 1
-    playerData.attempts.total = playerData.attempts.total + 1
-    leaderboard.savePlayer(name, playerData)
+    local player = leaderboard.getPlayer(name)
+    player.attempts.current = player.attempts.current + 1
+    player.attempts.total = player.attempts.total + 1
+    leaderboard.savePlayer(player)
 end
 
+-- Tries to save a specified players run time, but if it
+-- is not faster than the players current PB, then it does
+-- nothing.
+leaderboard.trySetPB = function (name)
+    local player = leaderboard.getPlayer(name)
 
-leaderboard.trySetPB = function (name, currentTime)
-    local playerData = leaderboard.getPlayer(name)
-    if playerData.time.pb == 0 or currentTime < playerData.time.pb then
-        playerData.time.pb = currentTime
-        playerData.attempts.pb = playerData.attempts.pb + playerData.attempts.current
-        playerData.attempts.current = 0
-        leaderboard.savePlayer(name, playerData)
+    if player.time.current < player.time.pb or player.time.pb == 0 then
+        player.time.pb = player.time.current
+        player.attempts.pb = player.attempts.pb + player.attempts.current
+        player.attempts.current = 0
+        leaderboard.savePlayer(player)
     end
 end
 
 
+-- Should be used to save each of the players latest
+-- run times. This value is used to update a players
+-- PB, when trySetPB() is executed.
 leaderboard.updateCurrentTime = function (name, time)
-    local playerData = leaderboard.getPlayer(name)
-    playerData.time.current = time
-    leaderboard.savePlayer(name, playerData)
+    local player = leaderboard.getPlayer(name)
+    player.time.current = time
+    leaderboard.savePlayer(player)
 end
 
 
+-- Tries to add a player to the database if they don't
+-- already exist, otherwise it does nothing.
 leaderboard.tryAddPlayer = function (name)
     if playerExists(name) then return end
 
@@ -117,12 +126,12 @@ leaderboard.get = function ()
 end
 
 
-leaderboard.savePlayer = function (name, data)
-    if not leaderboard.playerExists(name) then
+leaderboard.savePlayer = function (player)
+    if not leaderboard.playerExists(player.name) then
         error("player not found: '" .. name .. "'")
     end
 
-    leaderboard.playerMap[name] = data
+    leaderboard.playerMap[name] = player
     leaderboard.save()
 end
 
