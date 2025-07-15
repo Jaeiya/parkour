@@ -1,7 +1,11 @@
 
 local utils = require("utils")
-local mon = peripheral.wrap("monitor_0")
-if not mon then error("monitor not connected") end
+local mon = peripheral.find("monitor")
+if not mon then
+    term.setTextColor(colors.red)
+    print("no monitor found; connect a monitor!")
+
+end
 
 local textScale  = 1
 local xPos       = 1
