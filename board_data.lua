@@ -30,6 +30,7 @@ local function loadPlayers()
     return playerList, playerMap
 end
 
+
 -- Initialize internal database objects
 leaderboard.playerList, leaderboard.playerMap = loadPlayers()
 
@@ -43,8 +44,30 @@ end
 leaderboard.playerExists = playerExists
 
 
+local function save()
+    for i = 1, #leaderboard.playerList do
+        local player = leaderboard.playerList[i]
+        leaderboard.playerList[i] = leaderboard.playerMap[player.name]
+    end
 
-leaderboard.getPlayer = function (name)
+    table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
+    utils.writeFile(filePath, textutils.serialize(leaderboard.playerList))
+end
+leaderboard.save = save
+
+
+local function savePlayer(player)
+    if not playerExists(player.name) then
+        error("player not found: '" .. name .. "'")
+    end
+
+    leaderboard.playerMap[player.name] = player
+    save()
+end
+leaderboard.savePlayer = savePlayer
+
+
+local function getPlayer(name)
     if not playerExists(name) then
         error("player not found: '" .. name "'")
     end
@@ -63,22 +86,24 @@ leaderboard.getPlayer = function (name)
         }
     }
 end
+leaderboard.getPlayer = getPlayer
 
 
 -- Updates the current & total attempts for the specified player.
-leaderboard.updateAttempt = function (name)
-    local player = leaderboard.getPlayer(name)
+local function updateAttempt(name)
+    local player = getPlayer(name)
     player.attempts.current = player.attempts.current + 1
     player.attempts.total = player.attempts.total + 1
-    leaderboard.savePlayer(player)
+    savePlayer(player)
 end
+leaderboard.updateAttempt = updateAttempt
 
 
 -- Tries to save a specified players run time, but if it
 -- is not faster than the players current PB, then it does
 -- nothing.
-leaderboard.savePlayerTime = function (name, time)
-    local player = leaderboard.getPlayer(name)
+local function savePlayerTime(name, time)
+    local player = getPlayer(name)
 
     player.time.current = time
 
@@ -88,8 +113,9 @@ leaderboard.savePlayerTime = function (name, time)
         player.attempts.current = 0
     end
 
-    leaderboard.savePlayer(player)
+    savePlayer(player)
 end
+leaderboard.savePlayerTime = savePlayerTime
 
 
 -- Tries to add a player to the database if they don't
@@ -111,33 +137,12 @@ leaderboard.tryAddPlayer = function (name)
         }
     }
     leaderboard.playerMap[name] = leaderboard.playerList[index]
-    leaderboard.save()
+    save()
 end
 
 
 leaderboard.get = function ()
     return leaderboard.playerList
-end
-
-
-leaderboard.savePlayer = function (player)
-    if not leaderboard.playerExists(player.name) then
-        error("player not found: '" .. name .. "'")
-    end
-
-    leaderboard.playerMap[player.name] = player
-    leaderboard.save()
-end
-
-
-leaderboard.save = function ()
-    for i = 1, #leaderboard.playerList do
-        local player = leaderboard.playerList[i]
-        leaderboard.playerList[i] = leaderboard.playerMap[player.name]
-    end
-
-    table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
-    utils.writeFile(filePath, textutils.serialize(leaderboard.playerList))
 end
 
 
