@@ -48,11 +48,11 @@ local protocol = read()
 writeFile("hostname.txt", hostname)
 writeFile("protocol.txt", protocol)
 
-local f = fs.open(monHostPath, "r")
+local f = fs.open(paths.monhost, "r")
 writeFile("/monhost", f.readAll())
 f.close()
 
-f = fs.open(monHostStartupPath, "r")
+f = fs.open(paths.startup, "r")
 writeFile("/startup", f.readAll())
 f.close()
 
