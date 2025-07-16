@@ -81,10 +81,6 @@ utils.centerText = function(text, mon)
 end
 
 
-
-
-
-
 -- getTimerStr in the format 00:00:00.00, from the
 -- specified milliseconds.
 utils.getTimerStr = function(milliseconds)
