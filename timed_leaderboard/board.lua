@@ -1,5 +1,5 @@
 local utils = require("utils")
-local leaderboard = require("board_data")
+local leaderboard = require("board_lib")
 
 local pd  = utils.getPeripheral("player_detector")
 local mon = utils.getPeripheral("monitor")

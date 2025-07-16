@@ -10,14 +10,17 @@
 --
 local scriptCodes = {
     get            = "LYJdFKns",
-    timer          = "t3ka7Qfc",
-    xtimer         = "Knhfg3fM",
-    setuptimer     = "YHxwpyMa",
-    monhost        = "UFStnxDa",
-    xmonhost       = "xN6qzppK",
-    setupmonhost   = "ywQ78fsZ",
+
+    installboard   = "YHxwpyMa",
     board          = "9eU7yHT7",
-    boarddata      = "2SuQAVdT",
+    boardlib       = "2SuQAVdT",
+    boardstartup   = "Knhfg3fM",
+    boardtimer     = "t3ka7Qfc",
+
+    installmonhost = "ywQ78fsZ",
+    monhoststartup = "xN6qzppK",
+    monhost        = "UFStnxDa",
+
     utils          = "FjGC63m3",
     display        = "uCHiLgtd",
     detectPlayer   = "GnQkWuaX"
@@ -25,14 +28,17 @@ local scriptCodes = {
 
 local scriptNameMap = {
     get            = "get",
-    timer          = "timer",
-    xtimer         = "xtimer",
-    setuptimer     = "setuptimer",
-    monhost        = "monhost",
-    xmonhost       = "xmonhost",
-    setupmonhost   = "setupmonhost",
+
+    installboard   = "install_board",
     board          = "board",
-    boarddata      = "board_data",
+    boarddata      = "board_lib",
+    boardstartup   = "board_startup",
+    timer          = "board_timer",
+
+    installmonhost = "install_monhost",
+    monhoststartup = "monhost_startup",
+    monhost        = "monhost",
+
     utils          = "utils",
     display        = "display",
     detectPlayer   = "detect_player"

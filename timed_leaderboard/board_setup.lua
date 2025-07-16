@@ -9,11 +9,11 @@ local utils = require("utils")
 -- will run the timer script.
 --
 local paths = {
-    timer     = "disk/timer",
-    xtimer    = "disk/xtimer",
-    board     = "disk/board",
-    boardData = "disk/board_data",
-    utils     = "disk/utils",
+    timer          = "disk/board_timer",
+    boardStartup   = "disk/board_startup",
+    board          = "disk/board",
+    boardData      = "disk/board_lib",
+    utils          = "disk/utils",
     playerDetector = "disk/detect_player"
 }
 
@@ -58,7 +58,7 @@ if not fs.exists(paths.timer) then
     error("missing timer script")
 end
 
-if not fs.exists(paths.xtimer) then
+if not fs.exists(paths.boardStartup) then
     error("missing xtimer script")
 end
 
@@ -78,7 +78,7 @@ utils.saveTimerConfig(
 )
 
 local f = fs.open(paths.timer, "r")
-utils.writeFile("/timer", f.readAll())
+utils.writeFile("/board_timer", f.readAll())
 f.close()
 
 f = fs.open(paths.board, "r")
@@ -86,10 +86,10 @@ utils.writeFile("/board", f.readAll())
 f.close()
 
 f = fs.open(paths.boardData, "r")
-utils.writeFile("/board_data", f.readAll())
+utils.writeFile("/board_lib", f.readAll())
 f.close()
 
-f = fs.open(paths.xtimer, "r")
+f = fs.open(paths.boardStartup, "r")
 utils.writeFile("/startup", f.readAll())
 f.close()
 

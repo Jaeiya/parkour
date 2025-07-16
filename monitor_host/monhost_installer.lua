@@ -13,7 +13,7 @@
 -- will run automatically.
 --
 local monHostPath = "disk/monhost"
-local xmonHostPath = "disk/xmonhost"
+local xmonHostPath = "disk/monhost_startup"
 
 local function writeFile(filepath, text)
     local file = fs.open(filepath, "w")
