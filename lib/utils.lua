@@ -37,16 +37,7 @@ end
 -- diffCoords compares two coordinates and determines
 -- their absolute distance.
 local function diffCoords(coord1, coord2)
-    if coord1 == coord2 then
-        return 0
-    elseif coord1 <= 0 and coord2 > 0 then
-        return math.abs(coord1) + coord2
-    elseif coord1 >= 0 and coord2 < 0 then
-        return coord1 + math.abs(coord2)
-    else
-        -- Both coords are either positive or negative
-        return math.abs(coord1 - coord2)
-    end
+    return math.abs(coord1 - coord2)
 end
 
 
