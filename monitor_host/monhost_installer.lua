@@ -12,8 +12,10 @@
 -- monitor host. Just setup and restart computer. It
 -- will run automatically.
 --
-local monHostPath = "disk/monhost"
-local xmonHostPath = "disk/monhost_startup"
+local paths = {
+    monhost = "disk/monhost",
+    startup = "disk/monhost_startup"
+}
 
 local function writeFile(filepath, text)
     local file = fs.open(filepath, "w")
@@ -21,12 +23,12 @@ local function writeFile(filepath, text)
     file.close()
 end
 
-if not fs.exists(monHostPath) then
+if not fs.exists(paths.monhost) then
     error("missing monhost script")
 end
 
-if not fs.exists(xmonHostPath) then
-    error("missing xmonhost host script")
+if not fs.exists(paths.startup) then
+    error("missing monhost startup script")
 end
 
 print()
@@ -50,7 +52,7 @@ local f = fs.open(monHostPath, "r")
 writeFile("/monhost", f.readAll())
 f.close()
 
-f = fs.open(xmonHostPath, "r")
+f = fs.open(monHostStartupPath, "r")
 writeFile("/startup", f.readAll())
 f.close()
 
