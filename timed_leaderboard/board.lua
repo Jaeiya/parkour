@@ -1,5 +1,5 @@
 local utils = require("utils")
-local leaderboard = require("board_lib")
+local lib = require("board_lib")
 
 local pd  = utils.getPeripheral("player_detector")
 local mon = utils.getPeripheral("monitor")
@@ -9,7 +9,7 @@ mon.setBackgroundColor(colors.black)
 
 
 local currentPlayer    = nil
-local config           = utils.loadTimerConfig()
+local config           = lib.loadBoardConfig()
 local maxActuationDist = 3 -- Max distance from configured start and end positions
 local players          = {}
 
@@ -30,7 +30,7 @@ local function renderActiveRunner(playerName)
     mon.setTextScale(2.5)
     local w = mon.getSize()
     local textWidthDiff = w - #text
-    local player = leaderboard.getPlayer(playerName)
+    local player = lib.getPlayer(playerName)
     mon.setBackgroundColor(colors.black)
     mon.clear()
     mon.setCursorPos(1, 1)
@@ -65,9 +65,9 @@ local function renderBoard()
 
     -- Calculate name column width
     local columnWidth = 0
-    local players = leaderboard.get()
+    local players = lib.get()
     for i = 1, #players do
-        local player = leaderboard.getPlayer(players[i].name)
+        local player = lib.getPlayer(players[i].name)
         local nameWidth = #player.name
         if nameWidth > columnWidth and player.time.pb > 0 then
             columnWidth = nameWidth
@@ -85,7 +85,7 @@ local function renderBoard()
 
 
     for i = 1, #players do
-        local player = leaderboard.getPlayer(players[i].name)
+        local player = lib.getPlayer(players[i].name)
         if player.time.pb > 0 then
             hasPlayers = true
             local attemptStr = string.format("%03d", player.attempts.pb)
@@ -129,8 +129,8 @@ local function handleLeaderboard(data)
             pd,
             players
         )
-        leaderboard.tryAddPlayer(nearestPlayer.name)
-        leaderboard.updateAttempt(nearestPlayer.name)
+        lib.tryAddPlayer(nearestPlayer.name)
+        lib.updateAttempt(nearestPlayer.name)
 
         if nearestPlayer.distance <= maxActuationDist then
             currentPlayer = nearestPlayer.name
@@ -148,7 +148,7 @@ local function handleLeaderboard(data)
     elseif data.action == "save_player_time" then
         if isPlayerRunning(config.endPos) then
             os.queueEvent("finish_run", data.time)
-            leaderboard.savePlayerTime(currentPlayer, data.time)
+            lib.savePlayerTime(currentPlayer, data.time)
             renderBoard()
         end
     end

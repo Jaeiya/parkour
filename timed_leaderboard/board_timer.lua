@@ -19,6 +19,7 @@
 -- Min Time: 00:00:00.01
 --
 local utils = require("utils")
+local lib = require("board_lib")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local milliseconds = 0
@@ -29,7 +30,7 @@ if not modem then
     error("missing modem")
 end
 
-local config = utils.loadTimerConfig()
+local config = lib.loadBoardConfig()
 rednet.open(peripheral.getName(modem))
 
 

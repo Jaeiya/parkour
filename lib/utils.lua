@@ -81,41 +81,8 @@ utils.centerText = function(text, mon)
 end
 
 
-utils.loadTimerConfig = function()
-    if not fs.exists("timer.cfg") then
-        error("missing timer config file")
-    end
-
-    local f = fs.open("timer.cfg", "r")
-    local data = textutils.unserialize(f.readAll())
-    f.close()
-
-    return {
-        monitor = {
-            protocol = data.protocol
-        },
-        startPos = {
-            x = data.startPos.x,
-            y = data.startPos.y,
-            z = data.startPos.z,
-        },
-        endPos = {
-            x = data.endPos.x,
-            y = data.endPos.y,
-            z = data.endPos.z,
-        },
-    }
-end
 
 
-utils.saveTimerConfig = function (protocol, startPos, endPos)
-    local data = textutils.serialize({
-        protocol = protocol,
-        startPos = startPos,
-        endPos   = endPos
-    })
-    utils.writeFile("timer.cfg", data)
-end
 
 
 -- getTimerStr in the format 00:00:00.00, from the

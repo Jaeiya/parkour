@@ -1,4 +1,5 @@
 local utils = require("utils")
+local lib = require("board_lib")
 --
 -- Copies all the files necessary to run a timer on
 -- the computer, which is designed to write to a monitor
@@ -71,7 +72,7 @@ local protocol = read()
 -- All file operations below, will overwrite
 -- any existing files.
 
-utils.saveTimerConfig(
+lib.saveBoardConfig(
     protocol,
     promptCoords("Enter Start Pos"),
     promptCoords("Enter End Pos")

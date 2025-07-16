@@ -1,14 +1,15 @@
 local utils = require('utils')
-local leaderboard = {}
-local filePath    = "players.db"
+local leaderboard  = {}
+local playerDBPath = "players.db"
+local configPath   = "board.cfg"
 
 
 local function loadPlayers()
-    if not fs.exists(filePath) then
-        utils.writeFile(filePath, textutils.serialize({}))
+    if not fs.exists(playerDBPath) then
+        utils.writeFile(playerDBPath, textutils.serialize({}))
     end
 
-    local f = fs.open(filePath, "r")
+    local f = fs.open(playerDBPath, "r")
     local playerList = textutils.unserialize(f.readAll())
     local playerMap = {}
     for i = 1, #playerList do
@@ -51,7 +52,7 @@ local function save()
     end
 
     table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
-    utils.writeFile(filePath, textutils.serialize(leaderboard.playerList))
+    utils.writeFile(playerDBPath, textutils.serialize(leaderboard.playerList))
 end
 leaderboard.save = save
 
@@ -144,6 +145,45 @@ end
 leaderboard.get = function ()
     return leaderboard.playerList
 end
+
+
+local function loadBoardConfig()
+    if not fs.exists(configPath) then
+        error("missing timer config file")
+    end
+
+    local f = fs.open(configPath, "r")
+    local data = textutils.unserialize(f.readAll())
+    f.close()
+
+    return {
+        monitor = {
+            protocol = data.protocol
+        },
+        startPos = {
+            x = data.startPos.x,
+            y = data.startPos.y,
+            z = data.startPos.z,
+        },
+        endPos = {
+            x = data.endPos.x,
+            y = data.endPos.y,
+            z = data.endPos.z,
+        },
+    }
+end
+leaderboard.loadBoardConfig = loadBoardConfig
+
+
+local function saveBoardConfig(protocol, startPos, endPos)
+    local data = textutils.serialize({
+        protocol = protocol,
+        startPos = startPos,
+        endPos   = endPos
+    })
+    utils.writeFile(configPath, data)
+end
+leaderboard.saveBoardConfig = saveBoardConfig
 
 
 return leaderboard
