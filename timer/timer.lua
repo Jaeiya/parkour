@@ -38,9 +38,9 @@ local function startTimer()
     -- It takes one iteration to detect pull event
     iterations = 1
     while true do
-        local event, param = os.pullEvent()
+        local event, data = os.pullEvent()
 
-        if event == "timer" and param == timerID then
+        if event == "timer" and data == timerID then
             iterations   = iterations + 1
             milliseconds = iterations * (speed * 1000)
             rednet.broadcast(utils.getTimerStr(milliseconds), config.monitor.protocol)
@@ -56,7 +56,7 @@ local function startTimer()
             os.cancelTimer(timerID)
             -- Param should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
-            rednet.broadcast(utils.getTimerStr(param), config.monitor.protocol)
+            rednet.broadcast(utils.getTimerStr(data), config.monitor.protocol)
             break
 
         elseif event == "redstone" then

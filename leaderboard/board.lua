@@ -11,6 +11,7 @@ mon.setBackgroundColor(colors.black)
 local currentPlayer    = nil
 local config           = utils.loadTimerConfig()
 local maxActuationDist = 3 -- Max distance from configured start and end positions
+local players          = {}
 
 
 local function isPlayerRunning(pos)
@@ -115,14 +116,7 @@ local function renderBoard()
 end
 
 
-
-print("   StartPos: "..config.startPos.x..", "..config.startPos.y..", "..config.startPos.z)
-print("  FinishPos: "..config.endPos.x..", "..config.endPos.y..", "..config.endPos.z)
-renderBoard()
-
-while true do
-    local _, data = os.pullEvent("leaderboard")
-
+local function handleLeaderboard(data)
     if type(data) ~= "table" then
        error("tried to send non-table data to leaderboard")
     end
@@ -132,7 +126,8 @@ while true do
             config.startPos.x,
             config.startPos.y,
             config.startPos.z,
-            pd
+            pd,
+            players
         )
         leaderboard.tryAddPlayer(nearestPlayer.name)
         leaderboard.updateAttempt(nearestPlayer.name)
@@ -156,5 +151,25 @@ while true do
             leaderboard.savePlayerTime(currentPlayer, data.time)
             renderBoard()
         end
+    end
+end
+
+
+
+print("   StartPos: "..config.startPos.x..", "..config.startPos.y..", "..config.startPos.z)
+print("  FinishPos: "..config.endPos.x..", "..config.endPos.y..", "..config.endPos.z)
+renderBoard()
+
+-- Initialize players through player detection script
+os.queueEvent("get_players")
+
+while true do
+    local event, data = os.pullEvent()
+
+    if event == "leaderboard" then
+        handleLeaderboard(data)
+
+    elseif event == "player_list" then
+        players = data
     end
 end

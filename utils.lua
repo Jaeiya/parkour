@@ -50,8 +50,7 @@ local function diffCoords(coord1, coord2)
 end
 
 
-utils.getNearestPlayer = function(x, y, z, playerDetector)
-    local players = playerDetector.getOnlinePlayers()
+utils.getNearestPlayer = function(x, y, z, playerDetector, players)
     local nearestPlayer = ""
     local nearestPos   = math.huge
 
