@@ -7,8 +7,9 @@ if not pd then
 end
 
 local detectPlayerEvent = "player_detection_timer"
-local detectionSpeed = 0.5 -- seconds
+local detectionSpeed = 1 -- seconds
 
+print("  Online")
 local players = pd.getOnlinePlayers()
 utils.startTimer(detectionSpeed, detectPlayerEvent)
 
