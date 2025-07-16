@@ -9,7 +9,7 @@ local utils = require("utils")
 -- will run the timer script.
 --
 local paths = {
-    timer          = "disk/board_timer",
+    boardTimer     = "disk/board_timer",
     boardStartup   = "disk/board_startup",
     board          = "disk/board",
     boardData      = "disk/board_lib",
@@ -54,12 +54,12 @@ local function promptCoords(prompt)
 end
 
 
-if not fs.exists(paths.timer) then
-    error("missing timer script")
+if not fs.exists(paths.boardTimer) then
+    error("missing board timer script")
 end
 
 if not fs.exists(paths.boardStartup) then
-    error("missing xtimer script")
+    error("missing board startup script")
 end
 
 print()
@@ -77,7 +77,7 @@ utils.saveTimerConfig(
     promptCoords("Enter End Pos")
 )
 
-local f = fs.open(paths.timer, "r")
+local f = fs.open(paths.boardTimer, "r")
 utils.writeFile("/board_timer", f.readAll())
 f.close()
 
