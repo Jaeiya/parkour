@@ -14,7 +14,7 @@ local paths = {
     board     = "disk/board",
     boardData = "disk/board_data",
     utils     = "disk/utils",
-    playerDetector = "disk/player_detector"
+    playerDetector = "disk/detect_player"
 }
 
 
@@ -98,5 +98,5 @@ utils.writeFile("/utils", f.readAll())
 f.close()
 
 f = fs.open(paths.playerDetector, "r")
-utils.writeFile("/player_detector", f.readAll())
+utils.writeFile("/detect_player", f.readAll())
 f.close()
