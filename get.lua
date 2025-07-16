@@ -20,6 +20,7 @@ local scriptCodes = {
     boarddata      = "2SuQAVdT",
     utils          = "FjGC63m3",
     display        = "uCHiLgtd",
+    detectPlayer   = "GnQkWuaX"
 }
 
 local scriptNameMap = {
@@ -34,6 +35,7 @@ local scriptNameMap = {
     boarddata      = "board_data",
     utils          = "utils",
     display        = "display",
+    detectPlayer   = "detect_player"
 }
 
 local function downloadScript(code, scriptName)
