@@ -56,3 +56,4 @@ f = fs.open(paths.startup, "r")
 writeFile("/startup", f.readAll())
 f.close()
 
+os.reboot()

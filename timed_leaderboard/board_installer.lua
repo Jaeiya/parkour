@@ -100,3 +100,5 @@ f.close()
 f = fs.open(paths.playerDetector, "r")
 utils.writeFile("/detect_player", f.readAll())
 f.close()
+
+os.reboot()
