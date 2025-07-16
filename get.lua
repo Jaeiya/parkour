@@ -17,9 +17,9 @@ local scriptCodes = {
     boardstartup   = "Knhfg3fM",
     boardtimer     = "t3ka7Qfc",
 
-    installmonhost = "ywQ78fsZ",
-    monhoststartup = "xN6qzppK",
-    monhost        = "UFStnxDa",
+    monhostinstaller = "ywQ78fsZ",
+    monhoststartup   = "xN6qzppK",
+    monhost          = "UFStnxDa",
 
     utils          = "FjGC63m3",
     display        = "uCHiLgtd",
@@ -35,9 +35,9 @@ local scriptNameMap = {
     boardstartup   = "board_startup",
     boardtimer     = "board_timer",
 
-    installmonhost = "install_monhost",
-    monhoststartup = "monhost_startup",
-    monhost        = "monhost",
+    monhostinstaller = "install_monhost",
+    monhoststartup   = "monhost_startup",
+    monhost          = "monhost",
 
     utils          = "utils",
     display        = "display",
@@ -141,6 +141,22 @@ if scriptName == "leaderboard_disk" then
     local d = peripheral.find("drive")
     if d then
         d.setDiskLabel("Setup Leaderboard")
+    end
+    print("Leaderboard disk created!")
+    if fs.exists("/disk/get") then
+        fs.delete("/disk/get")
+    end
+    return
+end
+
+if scriptName == "monhost_disk" then
+    downloadScript(scriptCodes.monhost,          "monhost")
+    downloadScript(scriptCodes.monhoststartup,   "monhoststartup")
+    downloadScript(scriptCodes.monhostinstaller, "monhostinstaller")
+    term.setTextColor(colors.lime)
+    local d = peripheral.find("drive")
+    if d then
+        d.setDiskLabel("Setup Monitor Host")
     end
     print("Leaderboard disk created!")
     if fs.exists("/disk/get") then
