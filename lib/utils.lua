@@ -45,7 +45,7 @@ local function diffCoords(coord1, coord2)
         return coord1 + math.abs(coord2)
     else
         -- Both coords are either positive or negative
-        return math.abs(math.abs(coord1) - math.abs(coord2))
+        return math.abs(coord1 - coord2)
     end
 end
 
