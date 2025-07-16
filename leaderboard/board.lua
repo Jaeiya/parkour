@@ -15,7 +15,7 @@ local players          = {}
 
 
 local function isPlayerRunning(pos)
-    local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd)
+    local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd, players)
     if nearestPlayer.distance <= maxActuationDist then
         if nearestPlayer.name == currentPlayer then
             return true
