@@ -8,7 +8,7 @@ parallel.waitForAny(
     function ()
         print("")
         print("... Running Timer ...")
-        shell.run("timer")
+        shell.run("board_timer")
     end,
     function ()
         print()
