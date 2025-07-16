@@ -11,7 +11,7 @@
 local scriptCodes = {
     get            = "LYJdFKns",
 
-    installboard   = "YHxwpyMa",
+    boardinstaller = "YHxwpyMa",
     board          = "9eU7yHT7",
     boardlib       = "2SuQAVdT",
     boardstartup   = "Knhfg3fM",
@@ -23,17 +23,17 @@ local scriptCodes = {
 
     utils          = "FjGC63m3",
     display        = "uCHiLgtd",
-    detectPlayer   = "GnQkWuaX"
+    detectplayer   = "GnQkWuaX"
 }
 
 local scriptNameMap = {
     get            = "get",
 
-    installboard   = "install_board",
+    boardinstaller = "install_board",
     board          = "board",
-    boarddata      = "board_lib",
+    boardlib       = "board_lib",
     boardstartup   = "board_startup",
-    timer          = "board_timer",
+    boardtimer     = "board_timer",
 
     installmonhost = "install_monhost",
     monhoststartup = "monhost_startup",
@@ -41,7 +41,7 @@ local scriptNameMap = {
 
     utils          = "utils",
     display        = "display",
-    detectPlayer   = "detect_player"
+    detectplayer   = "detect_player"
 }
 
 local function downloadScript(code, scriptName)
@@ -114,8 +114,8 @@ end
 local scriptName = args[1]
 
 if scriptName == "display_disk" then
-    downloadScript(scriptCodes.display, scriptNameMap.display)
-    downloadScript(scriptCodes.utils, scriptNameMap.utils)
+    downloadScript(scriptCodes.display, "display")
+    downloadScript(scriptCodes.utils,   "utils")
     term.setTextColor(colors.lime)
     shell.run("rename", "/disk/" .. scriptNameMap.display, "/disk/run")
     local d = peripheral.find("drive")
@@ -123,6 +123,26 @@ if scriptName == "display_disk" then
         d.setDiskLabel("Display Setup")
     end
     print("Display disk created!")
+    if fs.exists("/disk/get") then
+        fs.delete("/disk/get")
+    end
+    return
+end
+
+if scriptName == "leaderboard_disk" then
+    downloadScript(scriptCodes.board,          "board")
+    downloadScript(scriptCodes.boardlib,       "boardlib")
+    downloadScript(scriptCodes.boardinstaller, "boardinstaller")
+    downloadScript(scriptCodes.boardstartup,   "boardstartup")
+    downloadScript(scriptCodes.boardtimer,     "boardtimer")
+    downloadScript(scriptCodes.utils,          "utils")
+    downloadScript(scriptCodes.detectplayer,   "detectplayer")
+    term.setTextColor(colors.lime)
+    local d = peripheral.find("drive")
+    if d then
+        d.setDiskLabel("Setup Leaderboard")
+    end
+    print("Leaderboard disk created!")
     if fs.exists("/disk/get") then
         fs.delete("/disk/get")
     end
