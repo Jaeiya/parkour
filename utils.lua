@@ -139,4 +139,11 @@ utils.getTimerStr = function(milliseconds)
 end
 
 
+utils.startTimer = function(seconds, eventName)
+    sleep(seconds)
+    os.queueEvent(eventName)
+end
+
+
 return utils
+
