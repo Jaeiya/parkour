@@ -3,31 +3,28 @@
 -- Allows writing to the monitor wirelessly, by listening
 -- on a specific protocol.
 --
-local hostnameFile = "hostname.txt"
-local protocolFile = "protocol.txt"
+local configFile = "monhost.cfg"
+local config = {
+    protocol = "",
+    hostname = ""
+}
 
-if not fs.exists(hostnameFile) then
-    error("could not find host name")
+if not fs.exists(configFile) then
+    error("missing config file")
 end
 
-if not fs.exists(protocolFile) then
-    error("could not find protocol")
-end
-
-local f = fs.open(hostnameFile, "r")
-local hostname = f.readAll()
+local f = fs.open(configFile, "r")
+local data = textutils.unserialize(f.readAll())
 f.close()
-
-f = fs.open(protocolFile, "r")
-local protocol = f.readAll()
-f.close()
+config.protocol = data.protocol
+config.hostname = data.hostname
 
 
 local modem = peripheral.find("modem")
 if not modem then error("missing modem") end
 
 rednet.open(peripheral.getName(modem))
-rednet.host(protocol, hostname)
+rednet.host(config.protocol, config.hostname)
 
 local mon = peripheral.find("monitor")
 if not mon then error("missing monitors") end
@@ -45,18 +42,18 @@ end
 
 if not isValidMonitorSize() then error("Must be 5 blocks long") end
 
-print("Hostname: " .. hostname)
-print("Protocol: " .. protocol)
+print("Hostname: " .. config.hostname)
+print("Protocol: " .. config.protocol)
 
 -- Default to zero values
 mon.setCursorPos(1, 1)
 mon.write("00:00:00.00")
 
 while true do
-    local senderID, msg = rednet.receive(protocol)
+    local senderID, msg = rednet.receive(config.protocol)
 
     if type(msg) ~= "string" then
-        rednet.send(senderID, "error: invalid message type", protocol)
+        rednet.send(senderID, "error: invalid message type", config.protocol)
     else
         mon.setCursorPos(1, 1)
         mon.write(msg)

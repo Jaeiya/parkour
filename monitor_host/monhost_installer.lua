@@ -31,22 +31,29 @@ if not fs.exists(paths.startup) then
     error("missing monhost startup script")
 end
 
+local config = {
+    hostname = "",
+    protocol = ""
+}
+
 print()
 print("Enter monitor host name")
 write("> ")
-local hostname = read()
+config.hostname = read()
+
 
 print()
 print("Enter Constellation Protocol")
 write("> ")
-local protocol = read()
+config.protocol = read()
 
 
 -- All file operations below, will overwrite
 -- any existing files.
 
-writeFile("hostname.txt", hostname)
-writeFile("protocol.txt", protocol)
+
+
+writeFile("monhost.cfg", textutils.serialize(config))
 
 local f = fs.open(paths.monhost, "r")
 writeFile("/monhost", f.readAll())
