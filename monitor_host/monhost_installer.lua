@@ -14,7 +14,8 @@
 --
 local paths = {
     monhost = "disk/monhost",
-    startup = "disk/monhost_startup"
+    startup = "disk/monhost_startup",
+    utils   = "disk/utils",
 }
 
 local function writeFile(filepath, text)
@@ -62,5 +63,10 @@ f.close()
 f = fs.open(paths.startup, "r")
 writeFile("/startup", f.readAll())
 f.close()
+
+f = fs.open(paths.utils, "r")
+writeFile("/utils", f.readAll())
+f.close()
+
 
 os.reboot()
