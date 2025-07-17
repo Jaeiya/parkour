@@ -22,7 +22,6 @@ local utils = require("utils")
 local lib = require("board_lib")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
-local milliseconds = 0
 local leaderBoardEvent = "leaderboard"
 
 local modem = peripheral.find("modem")
@@ -34,68 +33,38 @@ local config = lib.loadBoardConfig()
 rednet.open(peripheral.getName(modem))
 
 
-local function startTimer()
-    local timerID = os.startTimer(speed)
-    -- It takes one iteration to detect pull event
-    iterations = 1
-    while true do
-        local event, data = os.pullEvent()
 
-        if event == "timer" and data == timerID then
-            iterations   = iterations + 1
-            milliseconds = iterations * (speed * 1000)
-            rednet.broadcast(utils.getTimerStr(milliseconds), config.monitor.protocol)
-            timerID = os.startTimer(speed)
-
-        elseif event == "cancel_run" then
-            os.cancelTimer(timerID)
-            milliseconds = 0
-            rednet.broadcast(utils.getTimerStr(milliseconds), config.monitor.protocol)
-            break
-
-        elseif event == "finish_run" then
-            os.cancelTimer(timerID)
-            -- Param should always be the millisecond time when user
-            -- pressed actuation (button/pressure plate).
-            rednet.broadcast(utils.getTimerStr(data), config.monitor.protocol)
-            break
-
-        elseif event == "redstone" then
-            local right = redstone.getInput("right")
-            local left = redstone.getInput("left")
-
-            if right then
-                -- The run will only be canceled if the active runner
-                -- is the same player who triggered this action.
-                os.queueEvent(leaderBoardEvent, {
-                    action="try_cancel_run",
-                    time = milliseconds
-                })
-
-            elseif left then
-                -- This action will be ignored entirely, if the player who
-                -- triggered this action, is not the active runner.
-                --
-                -- Otherwise...if the active runner does not have a time on
-                -- record, one will be created for them. If the active runner
-                -- already has a faster time, a slower time will not be saved.
-                os.queueEvent(leaderBoardEvent, {
-                    action  = "save_player_time",
-                    time = milliseconds,
-                })
-            end
-        end
-    end
-end
-
-print(" ConstellationProtocol: ".. config.monitor.protocol)
 -- Always startup with monitors zero'd out
 rednet.broadcast("00:00:00.00", config.monitor.protocol)
 
-while true do
-    os.pullEvent("redstone")
-    if redstone.getInput("right") then
-        os.queueEvent(leaderBoardEvent, {action="starting_run"})
-        startTimer()
+return function()
+    local timerID = 0
+    while true do
+        local _, data = os.pullEvent("timer")
+
+        if type(data) == "number" then
+            if data == timerID then
+                iterations         = iterations + 1
+                utils.milliseconds = iterations * (speed * 1000)
+                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.monitor.protocol)
+                timerID = os.startTimer(speed)
+            end
+
+        elseif data.action == "start" then
+            iterations = 1
+            os.queueEvent(leaderBoardEvent, {action="start_run"})
+            timerID = os.startTimer(speed)
+
+        elseif data.action == "cancel_run" then
+            os.cancelTimer(timerID)
+            utils.milliseconds = 0
+            rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.monitor.protocol)
+
+        elseif data.action == "finish_run" then
+            os.cancelTimer(timerID)
+            -- Payload should always be the millisecond time when user
+            -- pressed actuation (button/pressure plate).
+            rednet.broadcast(utils.getTimerStr(data.payload), config.monitor.protocol)
+        end
     end
 end

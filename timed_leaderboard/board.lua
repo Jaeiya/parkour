@@ -121,7 +121,7 @@ local function handleLeaderboard(data)
        error("tried to send non-table data to leaderboard")
     end
 
-    if data.action == "starting_run" then
+    if data.action == "start_run" then
         local nearestPlayer = utils.getNearestPlayer(
             config.startPos.x,
             config.startPos.y,
@@ -129,6 +129,7 @@ local function handleLeaderboard(data)
             pd,
             players
         )
+
         lib.tryAddPlayer(nearestPlayer.name)
         lib.updateAttempt(nearestPlayer.name)
 
@@ -139,7 +140,7 @@ local function handleLeaderboard(data)
 
     elseif data.action == "try_cancel_run" then
         if isPlayerRunning(config.startPos) then
-            os.queueEvent("cancel_run")
+            os.queueEvent("timer", { action = "cancel_run" })
             currentPlayer = nil
             mon.setBackgroundColor(colors.black)
             renderBoard()
@@ -147,29 +148,25 @@ local function handleLeaderboard(data)
 
     elseif data.action == "save_player_time" then
         if isPlayerRunning(config.endPos) then
-            os.queueEvent("finish_run", data.time)
-            lib.savePlayerTime(currentPlayer, data.time)
+            os.queueEvent("timer", {action = "finish_run", payload = data.payload})
+            lib.savePlayerTime(currentPlayer, data.payload)
             renderBoard()
         end
+
+    elseif data.action == "set_player_list" then
+        players = data.payload
+
+    elseif data.action == "reload_config" then
+        config = lib.loadBoardConfig()
     end
 end
 
-
-
-print("   StartPos: "..config.startPos.x..", "..config.startPos.y..", "..config.startPos.z)
-print("  FinishPos: "..config.endPos.x..", "..config.endPos.y..", "..config.endPos.z)
 renderBoard()
 
--- Initialize players through player detection script
-os.queueEvent("get_players")
-
-while true do
-    local event, data = os.pullEvent()
-
-    if event == "leaderboard" then
+return function()
+    while true do
+        local _, data = os.pullEvent("leaderboard")
         handleLeaderboard(data)
-
-    elseif event == "player_list" then
-        players = data
     end
 end
+

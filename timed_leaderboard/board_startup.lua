@@ -1,18 +1,12 @@
+local execBoard = require("board")
+local execTimer = require("board_timer")
+local execRedstone = require("board_redstone")
+local execPlayerDetection = require("detect_player")
+
 -- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
-    function()
-        print()
-        print("... Running Player Detection ...")
-        shell.run("detect_player")
-    end,
-    function ()
-        print("")
-        print("... Running Timer ...")
-        shell.run("board_timer")
-    end,
-    function ()
-        print()
-        print("... Running Leader Board ...")
-        shell.run("board")
-    end
+    function() execTimer() end,
+    function() execBoard() end,
+    function() execRedstone() end,
+    function() execPlayerDetection() end
 )
