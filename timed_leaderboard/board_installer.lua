@@ -54,6 +54,13 @@ local function promptCoords(prompt)
     }
 end
 
+local function promptProtocol()
+    print()
+    print("Enter Constellation Protocol")
+    write("> ")
+    return read()
+end
+
 
 if not fs.exists(paths.boardTimer) then
     error("missing board timer script")
@@ -63,17 +70,12 @@ if not fs.exists(paths.boardStartup) then
     error("missing board startup script")
 end
 
-print()
-print("Enter Constellation Protocol")
-write("> ")
-local protocol = read()
-
 
 -- All file operations below, will overwrite
 -- any existing files.
 
 lib.saveBoardConfig(
-    protocol,
+    promptProtocol(),
     promptCoords("Enter Start Pos"),
     promptCoords("Enter End Pos")
 )
