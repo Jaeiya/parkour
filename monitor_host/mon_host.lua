@@ -3,6 +3,7 @@
 -- Allows writing to the monitor wirelessly, by listening
 -- on a specific protocol.
 --
+local utils = require("utils")
 local modem = peripheral.find("modem")
 if not modem then error("missing modem") end
 
@@ -16,15 +17,12 @@ local config = {
     hostname = ""
 }
 
+-- Config file should be created by installer
 if not fs.exists(configFile) then
     error("missing config file")
 end
 
-local f = fs.open(configFile, "r")
-local data = textutils.unserialize(f.readAll())
-f.close()
-config.protocol = data.protocol
-config.hostname = data.hostname
+config = utils.loadConfig(configFile, config)
 
 rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)

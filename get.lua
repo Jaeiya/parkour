@@ -106,6 +106,7 @@ local function createMonHostDisk()
     getScript(scriptCodes.monhost,          "monhost")
     getScript(scriptCodes.monhoststartup,   "monhoststartup")
     getScript(scriptCodes.monhostinstaller, "monhostinstaller")
+    getScript(scriptCodes.utils,            "utils")
 end
 
 
