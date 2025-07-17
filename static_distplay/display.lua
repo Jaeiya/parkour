@@ -16,13 +16,14 @@ end
 -- Prevents linter warnings
 assert(mon, "monitor should not be nil")
 
+local configFile = "display.cfg"
 local config = {
     text = "default text",
     scale = 1,
     color = 1,
     stars = "1",
 }
-config = utils.loadConfig("display.cfg", config)
+config = utils.loadConfig(configFile, config)
 
 
 local textScale  = config.scale
