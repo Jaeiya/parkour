@@ -14,6 +14,7 @@ local paths = {
     boardStartup   = "disk/board_startup",
     board          = "disk/board",
     boardData      = "disk/board_lib",
+    -- boardUI        = "disk/board_ui",
     boardRedstone  = "disk/board_redstone",
     utils          = "disk/utils",
     playerDetector = "disk/detect_player"
@@ -92,6 +93,10 @@ f.close()
 f = fs.open(paths.boardData, "r")
 utils.writeFile("/board_lib", f.readAll())
 f.close()
+
+-- f = fs.open(paths.boardUI, "r")
+-- utils.writeFile("/board_ui", f.readAll())
+-- f.close()
 
 f = fs.open(paths.boardStartup, "r")
 utils.writeFile("/startup", f.readAll())
