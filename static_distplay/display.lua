@@ -1,14 +1,6 @@
 
 local utils = require("utils")
 local mon = nil
-local config = {
-    text = "default text",
-    scale = 1,
-    color = 1,
-    stars = "1",
-}
-local configFile = "display.cfg"
-
 for _, name in ipairs(peripheral.getNames()) do
     if peripheral.getType(name) == "monitor" then
         mon = peripheral.wrap(name)
@@ -24,16 +16,13 @@ end
 -- Prevents linter warnings
 assert(mon, "monitor should not be nil")
 
-
--- Load or create config file
-if not fs.exists(configFile) then
-    utils.writeFile(configFile, textutils.serialize(config))
-else
-    local f = fs.open(configFile, "r")
-    config = textutils.unserialize(f.readAll())
-    f.close()
-end
-
+local config = {
+    text = "default text",
+    scale = 1,
+    color = 1,
+    stars = "1",
+}
+config = utils.loadConfig("display.cfg", config)
 
 
 local textScale  = config.scale
