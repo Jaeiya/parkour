@@ -119,5 +119,49 @@ utils.loadConfig = function(path, defaults)
 end
 
 
+---Saves serializes data to the specified config
+---path.
+---@param path string Path to config file
+---@param data any The data to serialize to config file
+utils.saveConfig = function (path, data)
+    utils.writeFile(path, textutils.serialize(data))
+end
+
+
+utils.promptCoords = function(promptText)
+::restart::
+    print()
+    term.setTextColor(colors.lightBlue)
+    print(promptText)
+    term.setTextColor(colors.white)
+    write("> ")
+    local coords = read()
+
+    -- Validate coord entry
+    local coordParts = utils.splitString(coords)
+    if #coordParts ~= 3 then
+        term.setTextColor(colors.red)
+        print("invalid coord length; try again!")
+        goto restart
+    end
+
+    -- Convert coords to numbers
+    for i = 1, #coordParts do
+        local coord = coordParts[i]
+        coordParts[i] = tonumber(coord)
+        if not coordParts[i] then
+            term.setTextColor(colors.red)
+            print("coordinate '" .. coord .. "' is not a number; try again!")
+            goto restart
+        end
+    end
+
+    return {
+        x = coordParts[1],
+        y = coordParts[2],
+        z = coordParts[3],
+    }
+end
+
 return utils
 
