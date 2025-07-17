@@ -1,11 +1,22 @@
 
 local utils = require("utils")
-local mon = peripheral.find("monitor")
+local mon = nil
+
+for _, name in ipairs(peripheral.getNames()) do
+    if peripheral.getType(name) == "monitor" then
+        mon = peripheral.wrap(name)
+        break
+    end
+end
+
 if not mon then
     term.setTextColor(colors.red)
     print("no monitor found; connect a monitor!")
-
 end
+
+-- Prevents linter warnings
+assert(mon, "monitor should not be nil")
+
 
 local textScale  = 1
 local xPos       = 1
