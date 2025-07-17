@@ -3,6 +3,13 @@
 -- Allows writing to the monitor wirelessly, by listening
 -- on a specific protocol.
 --
+local modem = peripheral.find("modem")
+if not modem then error("missing modem") end
+
+local mon = peripheral.find("monitor")
+if not mon then error("missing monitors") end
+
+
 local configFile = "monhost.cfg"
 local config = {
     protocol = "",
@@ -19,15 +26,9 @@ f.close()
 config.protocol = data.protocol
 config.hostname = data.hostname
 
-
-local modem = peripheral.find("modem")
-if not modem then error("missing modem") end
-
 rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)
 
-local mon = peripheral.find("monitor")
-if not mon then error("missing monitors") end
 mon.setTextScale(4.5)
 mon.setTextColor(colors.lime)
 
