@@ -21,41 +21,6 @@ local paths = {
 }
 
 
-local function promptCoords(prompt)
-::restart::
-    print()
-    term.setTextColor(colors.lightBlue)
-    print(prompt)
-    term.setTextColor(colors.white)
-    write("> ")
-    local coords = read()
-
-    -- Validate coord entry
-    local coordParts = utils.splitString(coords)
-    if #coordParts ~= 3 then
-        term.setTextColor(colors.red)
-        print("invalid coord length; try again!")
-        goto restart
-    end
-
-    -- Convert coords to numbers
-    for i = 1, #coordParts do
-        local coord = coordParts[i]
-        coordParts[i] = tonumber(coord)
-        if not coordParts[i] then
-            term.setTextColor(colors.red)
-            print("coordinate '" .. coord .. "' is not a number; try again!")
-            goto restart
-        end
-    end
-
-    return {
-        x = coordParts[1],
-        y = coordParts[2],
-        z = coordParts[3],
-    }
-end
-
 local function promptProtocol()
     print()
     print("Enter Constellation Protocol")
@@ -78,8 +43,8 @@ end
 
 lib.saveBoardConfig(
     promptProtocol(),
-    promptCoords("Enter Start Pos"),
-    promptCoords("Enter End Pos")
+    utils.promptCoords("Enter Start Pos"),
+    utils.promptCoords("Enter End Pos")
 )
 
 local f = fs.open(paths.boardTimer, "r")
