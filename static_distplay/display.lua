@@ -44,7 +44,7 @@ local starRating = config.stars
 local text       = config.text
 
 
-local function render()
+local function renderDisplay()
     mon.clear()
     mon.setCursorPos(xPos, yPos)
     mon.setTextScale(textScale)
@@ -54,6 +54,7 @@ local function render()
     mon.setCursorPos(1, yPos+1)
     mon.write(utils.centerText(text, mon))
 end
+
 
 local function save()
     utils.writeFile(configFile, textutils.serialize(config))
@@ -158,9 +159,9 @@ local choices = {
     setStarRating,
 }
 
-render()
 
 ::menu::
+renderDisplay()
 term.clear()
 term.setCursorPos(1, 1)
 term.setTextColor(colors.white)
@@ -195,5 +196,4 @@ if not choices[tonumber(choice)] then
 end
 
 choices[tonumber(choice)]()
-render()
 goto menu
