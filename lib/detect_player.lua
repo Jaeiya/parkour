@@ -6,22 +6,32 @@ if not pd then
     return
 end
 
-local detectPlayerEvent = "player_detection_timer"
-local detectionSpeed = 1 -- seconds
+local listenEvent = "player_detector"
+local detectionSpeed = 2 -- seconds
 
-print("  Online")
 local players = pd.getOnlinePlayers()
-utils.startTimer(detectionSpeed, detectPlayerEvent)
+utils.setTimeout(detectionSpeed, listenEvent)
 
-while true do
-    local event = os.pullEvent()
+-- Send players immediately to leaderboard
+os.queueEvent("leaderboard", {action = "set_player_list", payload = players})
 
-    if event == detectPlayerEvent then
-        players = pd.getOnlinePlayers()
-        os.queueEvent("player_list", players)
-        utils.startTimer(detectionSpeed, detectPlayerEvent)
+return function()
+    while true do
+        local _, data = os.pullEvent(listenEvent)
 
-    elseif event == "get_players" then
-        os.queueEvent("player_list", players)
+        if type(data) ~= "table" then
+            error("tried to send non-table data to player detector")
+        end
+
+        if data.action == "timer" then
+            local newPlayers = pd.getOnlinePlayers()
+            if #newPlayers ~= players then
+                os.queueEvent("leaderboard", {
+                    action = "set_player_list",
+                    payload = players,
+                })
+            end
+            utils.setTimeout(detectionSpeed, listenEvent)
+        end
     end
 end

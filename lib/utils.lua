@@ -1,6 +1,9 @@
 
 local utils = {}
 
+-- For use with timer ONLY
+utils.milliseconds = 0
+
 -- splitString at every space character
 utils.splitString = function(str)
     local result = {}
@@ -92,9 +95,9 @@ utils.getTimerStr = function(milliseconds)
 end
 
 
-utils.startTimer = function(seconds, eventName)
+utils.setTimeout = function(seconds, eventName)
     sleep(seconds)
-    os.queueEvent(eventName)
+    os.queueEvent(eventName, { action = "timer" })
 end
 
 
