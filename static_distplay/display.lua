@@ -1,6 +1,13 @@
 
 local utils = require("utils")
 local mon = nil
+local config = {
+    text = "default text",
+    scale = 1,
+    color = 1,
+    stars = "1",
+}
+local configFile = "display.cfg"
 
 for _, name in ipairs(peripheral.getNames()) do
     if peripheral.getType(name) == "monitor" then
@@ -18,12 +25,23 @@ end
 assert(mon, "monitor should not be nil")
 
 
-local textScale  = 1
+-- Load or create config file
+if not fs.exists(configFile) then
+    utils.writeFile(configFile, textutils.serialize(config))
+else
+    local f = fs.open(configFile, "r")
+    config = textutils.unserialize(f.readAll())
+    f.close()
+end
+
+
+
+local textScale  = config.scale
 local xPos       = 1
 local yPos       = 1
-local textColor  = colors.white
-local starRating = "1"
-local text       = "default text"
+local textColor  = config.color
+local starRating = config.stars
+local text       = config.text
 
 
 local function render()
@@ -37,6 +55,10 @@ local function render()
     mon.write(utils.centerText(text, mon))
 end
 
+local function save()
+    utils.writeFile(configFile, textutils.serialize(config))
+end
+
 
 local function setText()
     print()
@@ -44,6 +66,8 @@ local function setText()
     print()
     write("> ")
     text = read()
+    config.text = text
+    save()
 end
 
 
@@ -63,6 +87,8 @@ local function setColor()
     end
 
     textColor = colors[color]
+    config.color = textColor
+    save()
 end
 
 
@@ -97,6 +123,8 @@ local function setScale()
     end
 
     textScale = scale
+    config.scale = scale
+    save()
 end
 
 
@@ -117,6 +145,8 @@ local function setStarRating()
     end
 
     starRating = tostring(rating)
+    config.stars = starRating
+    save()
 end
 
 
@@ -128,6 +158,7 @@ local choices = {
     setStarRating,
 }
 
+render()
 
 ::menu::
 term.clear()
