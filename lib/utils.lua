@@ -106,7 +106,7 @@ end
 ---@return T
 utils.loadConfig = function(path, defaults)
     if not fs.exists(path) then
-        utils.writeFile(path, defaults)
+        utils.writeFile(path, textutils.serialize(defaults))
         return defaults
     else
         local f = fs.open(path, "r")
