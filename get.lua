@@ -44,7 +44,8 @@ local scriptNameMap = {
     detectplayer   = "detect_player"
 }
 
-local function downloadScript(code, scriptName)
+
+local function getScript(code, scriptName)
     local diskPath = "/disk/" .. scriptNameMap[scriptName]
 
     -- Overwrite existing file
@@ -65,6 +66,45 @@ local function downloadScript(code, scriptName)
     end
 end
 
+
+local function finalizeDisk(label, name)
+    local d = peripheral.find("drive")
+    if d then
+        d.setDiskLabel(label)
+    end
+    term.setTextColor(colors.lime)
+    print(name .. " disk created!")
+    if fs.exists("/disk/get") then
+        fs.delete("/disk/get")
+    end
+end
+
+
+local function createDisplayDisk()
+    getScript(scriptCodes.display, "display")
+    getScript(scriptCodes.utils,   "utils")
+    shell.run("rename", "/disk/" .. scriptNameMap.display, "/disk/run")
+end
+
+
+local function createLeaderboardDisk()
+    getScript(scriptCodes.board,          "board")
+    getScript(scriptCodes.boardlib,       "boardlib")
+    getScript(scriptCodes.boardinstaller, "boardinstaller")
+    getScript(scriptCodes.boardstartup,   "boardstartup")
+    getScript(scriptCodes.boardtimer,     "boardtimer")
+    getScript(scriptCodes.utils,          "utils")
+    getScript(scriptCodes.detectplayer,   "detectplayer")
+end
+
+
+local function createMonHostDisk()
+    getScript(scriptCodes.monhost,          "monhost")
+    getScript(scriptCodes.monhoststartup,   "monhoststartup")
+    getScript(scriptCodes.monhostinstaller, "monhostinstaller")
+end
+
+
 local args = {...}
 
 if not args[1] then
@@ -74,9 +114,11 @@ if not args[1] then
     return
 end
 
+local scriptName = args[1]
+
 if #args > 1 then
-    local flag       = args[1]
-    local scriptName = args[2]
+    local flag = args[1]
+    scriptName = args[2]
 
     if flag ~= "l" or not scriptName then
        print("Usage: get <flag> <script_name>")
@@ -96,10 +138,8 @@ if #args > 1 then
         return
     end
 
-    local success = downloadScript(code, scriptName)
-    if not success then
-        return
-    end
+    local success = getScript(code, scriptName)
+    if not success then return end
 
     -- Overwrite existing file
     if fs.exists(rootPath) then
@@ -108,76 +148,30 @@ if #args > 1 then
 
     fs.copy("/disk/" .. scriptNameMap[scriptName], rootPath)
     print("Updated '" .. scriptName .. "' on Computer")
-    return
-end
 
-local scriptName = args[1]
+elseif scriptName == "display_disk" then
+    createDisplayDisk()
 
-if scriptName == "display_disk" then
-    downloadScript(scriptCodes.display, "display")
-    downloadScript(scriptCodes.utils,   "utils")
-    term.setTextColor(colors.lime)
-    shell.run("rename", "/disk/" .. scriptNameMap.display, "/disk/run")
-    local d = peripheral.find("drive")
-    if d then
-        d.setDiskLabel("Display Setup")
-    end
-    print("Display disk created!")
-    if fs.exists("/disk/get") then
-        fs.delete("/disk/get")
-    end
-    return
-end
+elseif scriptName == "leaderboard_disk" then
+    createLeaderboardDisk()
+    finalizeDisk("Setup Leaderboard", "Leaderboard")
 
-if scriptName == "leaderboard_disk" then
-    downloadScript(scriptCodes.board,          "board")
-    downloadScript(scriptCodes.boardlib,       "boardlib")
-    downloadScript(scriptCodes.boardinstaller, "boardinstaller")
-    downloadScript(scriptCodes.boardstartup,   "boardstartup")
-    downloadScript(scriptCodes.boardtimer,     "boardtimer")
-    downloadScript(scriptCodes.utils,          "utils")
-    downloadScript(scriptCodes.detectplayer,   "detectplayer")
-    term.setTextColor(colors.lime)
-    local d = peripheral.find("drive")
-    if d then
-        d.setDiskLabel("Setup Leaderboard")
-    end
-    print("Leaderboard disk created!")
-    if fs.exists("/disk/get") then
-        fs.delete("/disk/get")
-    end
-    return
-end
+elseif scriptName == "monhost_disk" then
+    createMonHostDisk()
+    finalizeDisk("Display Setup", "Display")
 
-if scriptName == "monhost_disk" then
-    downloadScript(scriptCodes.monhost,          "monhost")
-    downloadScript(scriptCodes.monhoststartup,   "monhoststartup")
-    downloadScript(scriptCodes.monhostinstaller, "monhostinstaller")
-    term.setTextColor(colors.lime)
-    local d = peripheral.find("drive")
-    if d then
-        d.setDiskLabel("Setup Monitor Host")
-    end
-    print("Leaderboard disk created!")
-    if fs.exists("/disk/get") then
-        fs.delete("/disk/get")
-    end
-    return
-end
-
-if scriptName == "all" then
+elseif scriptName == "all" then
     for key, val in pairs(scriptCodes) do
-        downloadScript(val, key)
+        getScript(val, key)
     end
-    return
-end
 
-local code = scriptCodes[scriptName]
-if not code then
-    print("'"..scriptName.."' could not be found")
-    return
+else
+    local code = scriptCodes[scriptName]
+    if not code then
+        print("'"..scriptName.."' could not be found")
+        return
+    end
+    getScript(code, scriptName)
 end
-
-downloadScript(code, scriptName)
 
 
