@@ -98,5 +98,23 @@ utils.startTimer = function(seconds, eventName)
 end
 
 
+---Tries to load a configuration file, but if it cannot, it
+---will create one instead and return the defaults.
+---@generic T
+---@param path string The path to the config file
+---@param defaults T The default configuration value to use
+---@return T
+utils.loadConfig = function(path, defaults)
+    if not fs.exists(path) then
+        utils.writeFile(path, defaults)
+        return defaults
+    else
+        local f = fs.open(path, "r")
+        local data = textutils.unserialize(f.readAll())
+        return data
+    end
+end
+
+
 return utils
 
