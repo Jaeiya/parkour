@@ -21,9 +21,11 @@ local scriptCodes = {
     monhoststartup   = "xN6qzppK",
     monhost          = "UFStnxDa",
 
-    utils          = "FjGC63m3",
-    display        = "uCHiLgtd",
-    detectplayer   = "GnQkWuaX"
+    display          = "uCHiLgtd",
+    displayinstaller = "cMiyZkQv",
+
+    utils         = "FjGC63m3",
+    detectplayer  = "GnQkWuaX"
 }
 
 local scriptNameMap = {
@@ -39,8 +41,10 @@ local scriptNameMap = {
     monhoststartup   = "monhost_startup",
     monhost          = "monhost",
 
+    display          = "display",
+    displayinstaller = "install_display",
+
     utils          = "utils",
-    display        = "display",
     detectplayer   = "detect_player"
 }
 
@@ -81,9 +85,9 @@ end
 
 
 local function createDisplayDisk()
-    getScript(scriptCodes.display, "display")
-    getScript(scriptCodes.utils,   "utils")
-    shell.run("rename", "/disk/" .. scriptNameMap.display, "/disk/run")
+    getScript(scriptCodes.display,          "display")
+    getScript(scriptCodes.displayinstaller, "displayinstaller")
+    getScript(scriptCodes.utils,            "utils")
 end
 
 
@@ -151,6 +155,7 @@ if #args > 1 then
 
 elseif scriptName == "display_disk" then
     createDisplayDisk()
+    finalizeDisk("Setup Display", "Display")
 
 elseif scriptName == "leaderboard_disk" then
     createLeaderboardDisk()
