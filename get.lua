@@ -164,7 +164,7 @@ elseif scriptName == "leaderboard_disk" then
 
 elseif scriptName == "monhost_disk" then
     createMonHostDisk()
-    finalizeDisk("Display Setup", "Display")
+    finalizeDisk("Monitor Host Setup", "Monitor Host")
 
 elseif scriptName == "all" then
     for key, val in pairs(scriptCodes) do
