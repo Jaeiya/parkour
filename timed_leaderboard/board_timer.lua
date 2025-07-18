@@ -65,6 +65,9 @@ return function()
             -- Payload should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
             rednet.broadcast(utils.getTimerStr(data.payload), config.monitor.protocol)
+
+        elseif data.action == "new_protocol" then
+            config.monitor.protocol = data.payload
         end
     end
 end

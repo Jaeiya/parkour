@@ -14,7 +14,7 @@ local paths = {
     boardStartup   = "disk/board_startup",
     board          = "disk/board",
     boardData      = "disk/board_lib",
-    -- boardUI        = "disk/board_ui",
+    boardUI        = "disk/board_ui",
     boardRedstone  = "disk/board_redstone",
     utils          = "disk/utils",
     playerDetector = "disk/detect_player"
@@ -51,6 +51,10 @@ local f = fs.open(paths.boardTimer, "r")
 utils.writeFile("/board_timer", f.readAll())
 f.close()
 
+f = fs.open("settings", "w")
+utils.writeFile("settings", "motd.enable=false")
+f.close()
+
 f = fs.open(paths.board, "r")
 utils.writeFile("/board", f.readAll())
 f.close()
@@ -59,9 +63,9 @@ f = fs.open(paths.boardData, "r")
 utils.writeFile("/board_lib", f.readAll())
 f.close()
 
--- f = fs.open(paths.boardUI, "r")
--- utils.writeFile("/board_ui", f.readAll())
--- f.close()
+f = fs.open(paths.boardUI, "r")
+utils.writeFile("/board_ui", f.readAll())
+f.close()
 
 f = fs.open(paths.boardStartup, "r")
 utils.writeFile("/startup", f.readAll())

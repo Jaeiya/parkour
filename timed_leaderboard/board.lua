@@ -156,8 +156,11 @@ local function handleLeaderboard(data)
     elseif data.action == "set_player_list" then
         players = data.payload
 
-    elseif data.action == "reload_config" then
-        config = lib.loadBoardConfig()
+    elseif data.action == "set_start_pos" then
+        config.startPos = data.payload
+
+    elseif data.action == "set_end_pos" then
+        config.endPos = data.payload
     end
 end
 

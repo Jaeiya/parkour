@@ -15,6 +15,7 @@ local scriptCodes = {
     board          = "9eU7yHT7",
     boardlib       = "2SuQAVdT",
     boardredstone  = "LZFAu3Kx",
+    boardui        = "VnanGgbh",
     boardstartup   = "Knhfg3fM",
     boardtimer     = "t3ka7Qfc",
 
@@ -38,6 +39,7 @@ local scriptNameMap = {
     boardredstone  = "board_redstone",
     boardstartup   = "board_startup",
     boardtimer     = "board_timer",
+    boardui        = "board_ui",
 
     monhostinstaller = "install_monhost",
     monhoststartup   = "monhost_startup",
@@ -96,6 +98,7 @@ end
 local function createLeaderboardDisk()
     getScript(scriptCodes.board,          "board")
     getScript(scriptCodes.boardlib,       "boardlib")
+    getScript(scriptCodes.boardui,        "boardui")
     getScript(scriptCodes.boardredstone,  "boardredstone")
     getScript(scriptCodes.boardinstaller, "boardinstaller")
     getScript(scriptCodes.boardstartup,   "boardstartup")
