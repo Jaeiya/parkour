@@ -47,11 +47,14 @@
     "boarddata",
     "boardinstaller",
     "boardlib",
+    "boardredstone",
     "boardstartup",
     "boardtimer",
+    "boardui",
     "detectplayer",
     "displayinstaller",
     "fdnkg",
+    "Ggbh",
     "Hxwpy",
     "installboard",
     "installdisplay",
@@ -75,6 +78,7 @@
     "Stnx",
     "textutils",
     "unserialize",
+    "Vnan",
     "xmonhost",
     "xtimer"
   ]
