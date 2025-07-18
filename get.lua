@@ -8,8 +8,9 @@
 -- This also facilitates creating multiple setup floppy
 -- disks very quickly, if needed.
 --
+
 local scriptCodes = {
-    get            = "LYJdFKns",
+    get            = "XZBmRq0B",
 
     boardinstaller = "YHxwpyMa",
     board          = "9eU7yHT7",
@@ -53,66 +54,104 @@ local scriptNameMap = {
 }
 
 
-local function getScript(code, scriptName)
-    local diskPath = "/disk/" .. scriptNameMap[scriptName]
-
-    -- Overwrite existing file
-    if fs.exists(diskPath) then
-        fs.delete(diskPath)
+local function getScript(code)
+    local req = http.get("https://pastebin.com/raw/" .. code)
+    if not req then
+        error("failed to get script")
     end
+    return req.readAll()
+end
 
-    local success = shell.run(
-        "pastebin get " .. code .. " " .. diskPath
-    )
 
-    if success then
-        print("Updated '" .. scriptName .. "' on Disk")
-        return true
-    else
-        print("command failed to download file")
-        return false
+local function writeProgress(text, step, limit)
+    if step > limit then
+        error("step should never be greater than max")
+    end
+    local _, y = term.getCursorPos()
+    local maxBarSize = 20
+    step = (maxBarSize / limit) * step
+    local barSize = math.floor((step / maxBarSize) * maxBarSize)
+    local bar = string.rep("=", barSize)
+    local barMargin = maxBarSize - barSize
+    term.setCursorPos(1, y)
+    term.setTextColor(colors.orange)
+    write(text)
+    term.setTextColor(colors.white)
+    write(" [")
+    term.setTextColor(colors.cyan)
+    write(bar .. string.rep(" ", barMargin))
+    term.setTextColor(colors.white)
+    write("]")
+    -- Creates new line when progress is finished
+    if math.floor(step) >= maxBarSize then
+        print()
     end
 end
 
 
+local function writeFile(filepath, text)
+    local file = fs.open(filepath, "w")
+    file.write(text)
+    file.close()
+end
+
+
 local function finalizeDisk(label, name)
+    print()
     local d = peripheral.find("drive")
     if d then
         d.setDiskLabel(label)
     end
     term.setTextColor(colors.lime)
     print(name .. " disk created!")
-    if fs.exists("/disk/get") then
-        fs.delete("/disk/get")
+end
+
+
+local function leaderboardDiskInfo()
+    local diskInfo = {
+        { code = scriptCodes.board,          fileName = scriptNameMap.board },
+        { code = scriptCodes.boardlib,       fileName = scriptNameMap.boardlib },
+        { code = scriptCodes.boardui,        fileName = scriptNameMap.boardui },
+        { code = scriptCodes.boardredstone,  fileName = scriptNameMap.boardredstone },
+        { code = scriptCodes.boardinstaller, fileName = scriptNameMap.boardinstaller },
+        { code = scriptCodes.boardstartup,   fileName = scriptNameMap.boardstartup },
+        { code = scriptCodes.boardtimer,     fileName = scriptNameMap.boardtimer },
+        { code = scriptCodes.utils,          fileName = scriptNameMap.utils },
+        { code = scriptCodes.detectplayer,   fileName = scriptNameMap.detectplayer },
+    }
+    return diskInfo
+end
+
+
+local function monhostDiskInfo()
+    return {
+        { code = scriptCodes.monhost,          fileName = scriptNameMap.monhost },
+        { code = scriptCodes.monhoststartup,   fileName = scriptNameMap.monhoststartup },
+        { code = scriptCodes.monhostinstaller, fileName = scriptNameMap.monhostinstaller },
+        { code = scriptCodes.utils,            fileName = scriptNameMap.utils },
+    }
+end
+
+
+local function displayDiskInfo()
+    return {
+        { code = scriptCodes.display,          fileName = scriptNameMap.display},
+        { code = scriptCodes.displayinstaller, fileName = scriptNameMap.displayinstaller},
+        { code = scriptCodes.utils,            fileName = scriptNameMap.utils},
+    }
+end
+
+
+local function createDisk(diskInfo)
+    print()
+    for i, item in ipairs(diskInfo) do
+        if fs.exists("/disk/" .. item.fileName) then
+            fs.delete("/disk/" .. item.fileName)
+        end
+        local content = getScript(item.code)
+        writeFile("/disk/" .. item.fileName, content)
+        writeProgress("Creating Disk", i, #diskInfo)
     end
-end
-
-
-local function createDisplayDisk()
-    getScript(scriptCodes.display,          "display")
-    getScript(scriptCodes.displayinstaller, "displayinstaller")
-    getScript(scriptCodes.utils,            "utils")
-end
-
-
-local function createLeaderboardDisk()
-    getScript(scriptCodes.board,          "board")
-    getScript(scriptCodes.boardlib,       "boardlib")
-    getScript(scriptCodes.boardui,        "boardui")
-    getScript(scriptCodes.boardredstone,  "boardredstone")
-    getScript(scriptCodes.boardinstaller, "boardinstaller")
-    getScript(scriptCodes.boardstartup,   "boardstartup")
-    getScript(scriptCodes.boardtimer,     "boardtimer")
-    getScript(scriptCodes.utils,          "utils")
-    getScript(scriptCodes.detectplayer,   "detectplayer")
-end
-
-
-local function createMonHostDisk()
-    getScript(scriptCodes.monhost,          "monhost")
-    getScript(scriptCodes.monhoststartup,   "monhoststartup")
-    getScript(scriptCodes.monhostinstaller, "monhostinstaller")
-    getScript(scriptCodes.utils,            "utils")
 end
 
 
@@ -136,54 +175,72 @@ if #args > 1 then
        return
     end
 
+    local code = scriptCodes[scriptName]
+    if not code then
+        print("'"..scriptName.."' could not be found")
+        return
+    end
+
     if not scriptNameMap[scriptName] then
         print("'" .. scriptName .. "' could not be found")
         return
     end
 
-    local rootPath = "/" .. scriptNameMap[scriptName]
+    print()
+    term.setTextColor(colors.orange)
+    write(" Getting: ")
+    term.setTextColor(colors.cyan)
+    write(scriptName)
+    print()
 
-    local code = scriptCodes[scriptName]
-    if not code then
-        print("'"..scriptName.."' could not be found")
-        return
-    end
+    local content = getScript(code)
+    writeFile("/disk/" .. scriptNameMap[scriptName], content)
+    writeFile(scriptNameMap[scriptName], content)
 
-    local success = getScript(code, scriptName)
-    if not success then return end
-
-    -- Overwrite existing file
-    if fs.exists(rootPath) then
-        fs.delete(rootPath)
-    end
-
-    fs.copy("/disk/" .. scriptNameMap[scriptName], rootPath)
-    print("Updated '" .. scriptName .. "' on Computer")
-
-elseif scriptName == "display_disk" then
-    createDisplayDisk()
-    finalizeDisk("Setup Display", "Display")
+    term.setTextColor(colors.orange)
+    write("Saved To: ")
+    term.setTextColor(colors.lime)
+    write("/disk/" .. scriptNameMap[scriptName])
+    print()
+    term.setTextColor(colors.orange)
+    write("Saved To: ")
+    term.setTextColor(colors.lime)
+    write("/" .. scriptNameMap[scriptName])
+    print()
+    print()
 
 elseif scriptName == "leaderboard_disk" then
-    createLeaderboardDisk()
+    createDisk(leaderboardDiskInfo())
     finalizeDisk("Setup Leaderboard", "Leaderboard")
 
 elseif scriptName == "monhost_disk" then
-    createMonHostDisk()
+    createDisk(monhostDiskInfo())
     finalizeDisk("Monitor Host Setup", "Monitor Host")
 
-elseif scriptName == "all" then
-    for key, val in pairs(scriptCodes) do
-        getScript(val, key)
-    end
+elseif scriptName == "display_disk" then
+    createDisk(displayDiskInfo())
+    finalizeDisk("Setup Display", "Display")
 
 else
+    print()
+    term.setTextColor(colors.orange)
+    write(" Getting: ")
+    term.setTextColor(colors.cyan)
+    write(scriptName)
+    print()
     local code = scriptCodes[scriptName]
     if not code then
         print("'"..scriptName.."' could not be found")
         return
     end
-    getScript(code, scriptName)
+    local content = getScript(code)
+    writeFile("/disk/" .. scriptNameMap[scriptName], content)
+    term.setTextColor(colors.orange)
+    write("Saved To: ")
+    term.setTextColor(colors.lime)
+    write("/disk/" .. scriptNameMap[scriptName])
+    print()
+    print()
 end
 
 
