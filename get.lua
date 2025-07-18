@@ -224,7 +224,9 @@ elseif scriptName == "display_disk" then
 elseif scriptName == "clean" then
     local fileList = fs.list("/disk")
     for _, file in ipairs(fileList) do
-        fs.delete("/disk/" .. file)
+        if file ~= "get" then
+            fs.delete("/disk/" .. file)
+        end
     end
     term.setTextColor(colors.orange)
     print()
