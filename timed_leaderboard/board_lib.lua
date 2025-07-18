@@ -3,20 +3,16 @@ local leaderboard  = {}
 local playerDBPath = "players.db"
 local configPath   = "board.cfg"
 local config = {
-    monitor = { protocol = "" },
+    protocol = "",
     startPos = { x = 0, y = 0, z = 0, },
     endPos = { x = 0, y = 0, z = 0, },
 }
 
 
 local function loadPlayers()
-    if not fs.exists(playerDBPath) then
-        utils.writeFile(playerDBPath, textutils.serialize({}))
-    end
-
-    local f = fs.open(playerDBPath, "r")
-    local playerList = textutils.unserialize(f.readAll())
+    local playerList = utils.loadConfig(playerDBPath, {})
     local playerMap = {}
+
     for i = 1, #playerList do
         local p = playerList[i]
         playerMap[p.name] = {
@@ -32,7 +28,6 @@ local function loadPlayers()
             }
         }
     end
-    f.close()
     return playerList, playerMap
 end
 

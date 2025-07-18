@@ -32,10 +32,8 @@ end
 local config = lib.loadConfig()
 rednet.open(peripheral.getName(modem))
 
-
-
 -- Always startup with monitors zero'd out
-rednet.broadcast("00:00:00.00", config.monitor.protocol)
+rednet.broadcast("00:00:00.00", config.protocol)
 
 return function()
     local timerID = 0
@@ -46,7 +44,7 @@ return function()
             if data == timerID then
                 iterations         = iterations + 1
                 utils.milliseconds = iterations * (speed * 1000)
-                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.monitor.protocol)
+                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
                 timerID = os.startTimer(speed)
             end
 
@@ -58,16 +56,17 @@ return function()
         elseif data.action == "cancel_run" then
             os.cancelTimer(timerID)
             utils.milliseconds = 0
-            rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.monitor.protocol)
+            rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
 
         elseif data.action == "finish_run" then
             os.cancelTimer(timerID)
+            iterations = 1
             -- Payload should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
-            rednet.broadcast(utils.getTimerStr(data.payload), config.monitor.protocol)
+            rednet.broadcast(utils.getTimerStr(data.payload), config.protocol)
 
         elseif data.action == "new_protocol" then
-            config.monitor.protocol = data.payload
+            config.protocol = data.payload
         end
     end
 end
