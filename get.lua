@@ -107,6 +107,18 @@ local function finalizeDisk(label, name)
 end
 
 
+local function masterDiskInfo()
+    local diskInfo = {}
+    for key, val in pairs(scriptCodes) do
+        diskInfo[#diskInfo+1] = {
+            code = val,
+            fileName = scriptNameMap[key]
+        }
+    end
+    return diskInfo
+end
+
+
 local function leaderboardDiskInfo()
     local diskInfo = {
         { code = scriptCodes.board,          fileName = scriptNameMap.board },
@@ -208,6 +220,10 @@ if #args > 1 then
     write("/" .. scriptNameMap[scriptName])
     print()
     print()
+
+elseif scriptName == "master_disk" then
+    createDisk(masterDiskInfo())
+    finalizeDisk("Master Disk", "Master")
 
 elseif scriptName == "leaderboard_disk" then
     createDisk(leaderboardDiskInfo())
