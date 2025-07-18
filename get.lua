@@ -221,6 +221,16 @@ elseif scriptName == "display_disk" then
     createDisk(displayDiskInfo())
     finalizeDisk("Setup Display", "Display")
 
+elseif scriptName == "clean" then
+    local fileList = fs.list("/disk")
+    for _, file in ipairs(fileList) do
+        fs.delete("/disk/" .. file)
+    end
+    term.setTextColor(colors.orange)
+    print()
+    print("Deleted all files on disk")
+    print()
+
 else
     print()
     term.setTextColor(colors.orange)
