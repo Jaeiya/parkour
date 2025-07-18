@@ -173,10 +173,11 @@ end
 
 local function createDisk(diskInfo)
     print()
+    writeProgress("Creating Disk", 0, #diskInfo)
+    -- A disk should have ONLY the files created
+    -- by this function.
+    cleanDisk(true)
     for i, item in ipairs(diskInfo) do
-        if fs.exists("/disk/" .. item.fileName) then
-            fs.delete("/disk/" .. item.fileName)
-        end
         local content = getScript(item.code)
         writeFile("/disk/" .. item.fileName, content)
         writeProgress("Creating Disk", i, #diskInfo)
