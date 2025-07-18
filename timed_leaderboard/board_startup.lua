@@ -8,5 +8,6 @@ parallel.waitForAny(
     function() execTimer() end,
     function() execBoard() end,
     function() execRedstone() end,
-    function() execPlayerDetection() end
+    function() execPlayerDetection({event = "leaderboard", action = "set_player_list" }) end
+    -- function() shell.run("board_ui")      end
 )

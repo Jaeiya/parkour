@@ -1,4 +1,3 @@
-local utils = require("utils")
 local pd = peripheral.find("player_detector")
 if not pd then
     term.setTextColor(colors.red)
@@ -6,32 +5,42 @@ if not pd then
     return
 end
 
-local listenEvent = "player_detector"
-local detectionSpeed = 2 -- seconds
+local intervalDelay = 2 -- seconds
 
 local players = pd.getOnlinePlayers()
-utils.setTimeout(detectionSpeed, listenEvent)
 
--- Send players immediately to leaderboard
-os.queueEvent("leaderboard", {action = "set_player_list", payload = players})
+return function(...)
+    local listeners = {}
+    for _, listener in ipairs({...}) do
+        listeners[#listeners+1] = listener
+        os.queueEvent(listener.event, {action = listener.action, payload = players})
+    end
 
-return function()
-    while true do
-        local _, data = os.pullEvent(listenEvent)
-
-        if type(data) ~= "table" then
-            error("tried to send non-table data to player detector")
+    local function updateListeners()
+        for _, listener in ipairs(listeners) do
+            os.queueEvent(listener.event, {
+                action = listener.action,
+                payload = newPlayers,
+            })
         end
+    end
 
-        if data.action == "timer" then
-            local newPlayers = pd.getOnlinePlayers()
-            if #newPlayers ~= players then
-                os.queueEvent("leaderboard", {
-                    action = "set_player_list",
-                    payload = players,
-                })
+    while true do
+        sleep(intervalDelay)
+
+        local newPlayers = pd.getOnlinePlayers()
+        if #newPlayers ~= #players then
+            players = newPlayers
+            updateListeners()
+
+        else
+            for i, newPlayer in ipairs(newPlayers) do
+                if newPlayer ~= players[i] then
+                    players = newPlayers
+                    updateListeners()
+                    break
+                end
             end
-            utils.setTimeout(detectionSpeed, listenEvent)
         end
     end
 end
