@@ -46,11 +46,6 @@ local function renderDisplay()
 end
 
 
-local function save()
-    utils.writeFile(configFile, textutils.serialize(config))
-end
-
-
 local function setText()
     print()
     print("Enter new text")
@@ -58,7 +53,7 @@ local function setText()
     write("> ")
     text = read()
     config.text = text
-    save()
+    utils.saveConfig(configFile, config)
 end
 
 
@@ -79,7 +74,7 @@ local function setColor()
 
     textColor = colors[color]
     config.color = textColor
-    save()
+    utils.saveConfig(configFile, config)
 end
 
 
@@ -115,7 +110,7 @@ local function setScale()
 
     textScale = scale
     config.scale = scale
-    save()
+    utils.saveConfig(configFile, config)
 end
 
 
@@ -137,7 +132,7 @@ local function setStarRating()
 
     starRating = tostring(rating)
     config.stars = starRating
-    save()
+    utils.saveConfig(configFile, config)
 end
 
 
