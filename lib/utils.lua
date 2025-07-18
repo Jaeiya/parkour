@@ -95,12 +95,6 @@ utils.getTimerStr = function(milliseconds)
 end
 
 
-utils.setTimeout = function(seconds, eventName)
-    sleep(seconds)
-    os.queueEvent(eventName, { action = "timer" })
-end
-
-
 ---Tries to load a configuration file, but if it cannot, it
 ---will create one instead and return the defaults.
 ---@generic T
