@@ -29,7 +29,7 @@ if not modem then
     error("missing modem")
 end
 
-local config = lib.loadBoardConfig()
+local config = lib.loadConfig()
 rednet.open(peripheral.getName(modem))
 
 

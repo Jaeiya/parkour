@@ -2,6 +2,11 @@ local utils = require('utils')
 local leaderboard  = {}
 local playerDBPath = "players.db"
 local configPath   = "board.cfg"
+local config = {
+    monitor = { protocol = "" },
+    startPos = { x = 0, y = 0, z = 0, },
+    endPos = { x = 0, y = 0, z = 0, },
+}
 
 
 local function loadPlayers()
@@ -147,32 +152,13 @@ leaderboard.get = function ()
 end
 
 
-local function loadBoardConfig()
+local function loadConfig()
     if not fs.exists(configPath) then
         error("missing timer config file")
     end
-
-    local f = fs.open(configPath, "r")
-    local data = textutils.unserialize(f.readAll())
-    f.close()
-
-    return {
-        monitor = {
-            protocol = data.protocol
-        },
-        startPos = {
-            x = data.startPos.x,
-            y = data.startPos.y,
-            z = data.startPos.z,
-        },
-        endPos = {
-            x = data.endPos.x,
-            y = data.endPos.y,
-            z = data.endPos.z,
-        },
-    }
+    return utils.loadConfig(configPath, config)
 end
-leaderboard.loadBoardConfig = loadBoardConfig
+leaderboard.loadConfig = loadConfig
 
 
 local function saveBoardConfig(protocol, startPos, endPos)

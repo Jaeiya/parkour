@@ -9,7 +9,7 @@ mon.setBackgroundColor(colors.black)
 
 
 local currentPlayer    = nil
-local config           = lib.loadBoardConfig()
+local config           = lib.loadConfig()
 local maxActuationDist = 3 -- Max distance from configured start and end positions
 local players          = {}
 
