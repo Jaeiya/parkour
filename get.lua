@@ -104,6 +104,7 @@ local function finalizeDisk(label, name)
     end
     term.setTextColor(colors.lime)
     print(name .. " disk created!")
+    print()
 end
 
 
