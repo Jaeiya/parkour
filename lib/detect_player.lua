@@ -20,7 +20,7 @@ return function(...)
         for _, listener in ipairs(listeners) do
             os.queueEvent(listener.event, {
                 action = listener.action,
-                payload = newPlayers,
+                payload = players,
             })
         end
     end
