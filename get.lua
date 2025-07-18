@@ -155,6 +155,22 @@ local function displayDiskInfo()
 end
 
 
+local function cleanDisk(silent)
+    local fileList = fs.list("/disk")
+    for _, file in ipairs(fileList) do
+        if file ~= "get" then
+            fs.delete("/disk/" .. file)
+        end
+    end
+    if not silent then
+        term.setTextColor(colors.orange)
+        print()
+        print("Deleted all files on disk")
+        print()
+    end
+end
+
+
 local function createDisk(diskInfo)
     print()
     for i, item in ipairs(diskInfo) do
@@ -167,6 +183,64 @@ local function createDisk(diskInfo)
     end
 end
 
+local function promptDisk()
+::restart::
+    term.setTextColor(colors.white)
+    term.clear()
+    term.setCursorPos(1, 1)
+    print(" Disk Selection")
+    print()
+    print("   1. Leaderboard")
+    print("   2. Monitor Host")
+    print("   3. Display")
+    print("   4. Master")
+    print()
+    term.setTextColor(colors.red)
+    print("   5. Exit")
+    print()
+    term.setTextColor(colors.yellow)
+    write("> ")
+    local choice = read()
+    choice = tonumber(choice)
+
+    if not choice or choice > 5 or choice < 1 then
+        term.setTextColor(colors.red)
+        print("invalid choice; try again!")
+        print()
+        term.setTextColor(colors.lightGray)
+        print("Enter to continue...")
+        read()
+        goto restart
+    end
+
+    local info = {}
+    local label = ""
+    local name = ""
+
+    if choice == 1 then
+        info = leaderboardDiskInfo()
+        label = "Setup Leaderboard"
+        name = "Leaderboard"
+    elseif choice == 2 then
+        info = monhostDiskInfo()
+        label = "Setup Monitor Host"
+        name = "Monitor Host"
+    elseif choice == 3 then
+        info = displayDiskInfo()
+        label = "Setup Display"
+        name = "Display"
+    elseif choice == 4 then
+        info = masterDiskInfo()
+        label = "Master Disk"
+        name = "Master"
+    else
+        return
+    end
+
+    createDisk(info)
+    finalizeDisk(label, name)
+
+end
 
 local args = {...}
 
@@ -177,11 +251,10 @@ if not args[1] then
     return
 end
 
-local scriptName = args[1]
 
 if #args > 1 then
     local flag = args[1]
-    scriptName = args[2]
+    local scriptName = args[2]
 
     if flag ~= "l" or not scriptName then
        print("Usage: get <flag> <script_name>")
@@ -221,55 +294,37 @@ if #args > 1 then
     write("/" .. scriptNameMap[scriptName])
     print()
     print()
-
-elseif scriptName == "master_disk" then
-    createDisk(masterDiskInfo())
-    finalizeDisk("Master Disk", "Master")
-
-elseif scriptName == "leaderboard_disk" then
-    createDisk(leaderboardDiskInfo())
-    finalizeDisk("Setup Leaderboard", "Leaderboard")
-
-elseif scriptName == "monhost_disk" then
-    createDisk(monhostDiskInfo())
-    finalizeDisk("Monitor Host Setup", "Monitor Host")
-
-elseif scriptName == "display_disk" then
-    createDisk(displayDiskInfo())
-    finalizeDisk("Setup Display", "Display")
-
-elseif scriptName == "clean" then
-    local fileList = fs.list("/disk")
-    for _, file in ipairs(fileList) do
-        if file ~= "get" then
-            fs.delete("/disk/" .. file)
-        end
-    end
-    term.setTextColor(colors.orange)
-    print()
-    print("Deleted all files on disk")
-    print()
-
-else
-    print()
-    term.setTextColor(colors.orange)
-    write(" Getting: ")
-    term.setTextColor(colors.cyan)
-    write(scriptName)
-    print()
-    local code = scriptCodes[scriptName]
-    if not code then
-        print("'"..scriptName.."' could not be found")
-        return
-    end
-    local content = getScript(code)
-    writeFile("/disk/" .. scriptNameMap[scriptName], content)
-    term.setTextColor(colors.orange)
-    write("Saved To: ")
-    term.setTextColor(colors.lime)
-    write("/disk/" .. scriptNameMap[scriptName])
-    print()
-    print()
+    return
 end
+
+if args[1] == "disk" then
+    return promptDisk()
+end
+
+if args[1] == "clean" then
+    return cleanDisk()
+end
+
+local scriptName = args[1]
+local code = scriptCodes[scriptName]
+if not code then
+    print("'"..scriptName.."' could not be found")
+    return
+end
+
+print()
+term.setTextColor(colors.orange)
+write(" Getting: ")
+term.setTextColor(colors.cyan)
+write(scriptName)
+print()
+local content = getScript(code)
+writeFile("/disk/" .. scriptNameMap[scriptName], content)
+term.setTextColor(colors.orange)
+write("Saved To: ")
+term.setTextColor(colors.lime)
+write("/disk/" .. scriptNameMap[scriptName])
+print()
+print()
 
 
