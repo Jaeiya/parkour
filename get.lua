@@ -9,53 +9,68 @@
 -- disks very quickly, if needed.
 --
 
-local scriptCodes = {
-    get            = "XZBmRq0B",
+local scriptMap = {
+    get            = { code = "XZBmRq0B", fileName = "get" },
 
-    boardinstaller = "YHxwpyMa",
-    board          = "9eU7yHT7",
-    boardlib       = "2SuQAVdT",
-    boardredstone  = "LZFAu3Kx",
-    boardui        = "VnanGgbh",
-    boardstartup   = "Knhfg3fM",
-    boardtimer     = "t3ka7Qfc",
+    boardinstaller = { code = "YHxwpyMa", fileName = "install_board" },
+    board          = { code = "9eU7yHT7", fileName = "board"},
+    boardlib       = { code = "2SuQAVdT", fileName = "board_lib" },
+    boardredstone  = { code = "LZFAu3Kx", fileName = "board_redstone" },
+    boardui        = { code = "VnanGgbh", fileName = "board_ui" },
+    boardstartup   = { code = "Knhfg3fM", fileName = "board_startup" },
+    boardtimer     = { code = "t3ka7Qfc", fileName = "board_timer" },
 
-    monhostinstaller = "ywQ78fsZ",
-    monhoststartup   = "xN6qzppK",
-    monhost          = "UFStnxDa",
+    monhostinstaller = { code = "ywQ78fsZ", fileName = "install_monhost" },
+    monhoststartup   = { code = "xN6qzppK", fileName = "monhost_startup" },
+    monhost          = { code = "UFStnxDa", fileName = "monhost" },
 
-    display          = "uCHiLgtd",
-    displayinstaller = "cMiyZkQv",
+    display          = { code = "uCHiLgtd", fileName = "display" },
+    displayinstaller = { code = "cMiyZkQv", fileName = "install_display" },
 
-    utils         = "FjGC63m3",
-    detectplayer  = "GnQkWuaX"
+    utils         = { code = "FjGC63m3", fileName = "utils" },
+    detectplayer  = { code = "GnQkWuaX", fileName = "detect_player" },
 }
 
-local scriptNameMap = {
-    get            = "get",
+local diskMap = {
+    master = {
+        scriptMap.get,
+        scriptMap.boardlib,
+        scriptMap.boardui,
+        scriptMap.boardredstone,
+        scriptMap.boardinstaller,
+        scriptMap.boardstartup,
+        scriptMap.boardtimer,
+        scriptMap.detectplayer,
+        scriptMap.utils,
+    },
+    leaderboard = {
+        scriptMap.board,
+        scriptMap.boardlib,
+        scriptMap.boardui,
+        scriptMap.boardredstone,
+        scriptMap.boardinstaller,
+        scriptMap.boardstartup,
+        scriptMap.boardtimer,
+        scriptMap.utils,
+        scriptMap.detectplayer,
+    },
+    monhost = {
+        scriptMap.monhost,
+        scriptMap.monhoststartup,
+        scriptMap.monhostinstaller,
+        scriptMap.utils,
+    },
+    display = {
+        scriptMap.display,
+        scriptMap.displayinstaller,
+        scriptMap.utils,
+    },
 
-    boardinstaller = "install_board",
-    board          = "board",
-    boardlib       = "board_lib",
-    boardredstone  = "board_redstone",
-    boardstartup   = "board_startup",
-    boardtimer     = "board_timer",
-    boardui        = "board_ui",
-
-    monhostinstaller = "install_monhost",
-    monhoststartup   = "monhost_startup",
-    monhost          = "monhost",
-
-    display          = "display",
-    displayinstaller = "install_display",
-
-    utils          = "utils",
-    detectplayer   = "detect_player"
 }
 
 
-local function getScript(code)
-    local req = http.get("https://pastebin.com/raw/" .. code)
+local function getScriptFile(script)
+    local req = http.get("https://pastebin.com/raw/" .. script.code)
     if not req then
         error("failed to get script")
     end
@@ -108,53 +123,6 @@ local function finalizeDisk(label, name)
 end
 
 
-local function masterDiskInfo()
-    local diskInfo = {}
-    for key, val in pairs(scriptCodes) do
-        diskInfo[#diskInfo+1] = {
-            code = val,
-            fileName = scriptNameMap[key]
-        }
-    end
-    return diskInfo
-end
-
-
-local function leaderboardDiskInfo()
-    local diskInfo = {
-        { code = scriptCodes.board,          fileName = scriptNameMap.board },
-        { code = scriptCodes.boardlib,       fileName = scriptNameMap.boardlib },
-        { code = scriptCodes.boardui,        fileName = scriptNameMap.boardui },
-        { code = scriptCodes.boardredstone,  fileName = scriptNameMap.boardredstone },
-        { code = scriptCodes.boardinstaller, fileName = scriptNameMap.boardinstaller },
-        { code = scriptCodes.boardstartup,   fileName = scriptNameMap.boardstartup },
-        { code = scriptCodes.boardtimer,     fileName = scriptNameMap.boardtimer },
-        { code = scriptCodes.utils,          fileName = scriptNameMap.utils },
-        { code = scriptCodes.detectplayer,   fileName = scriptNameMap.detectplayer },
-    }
-    return diskInfo
-end
-
-
-local function monhostDiskInfo()
-    return {
-        { code = scriptCodes.monhost,          fileName = scriptNameMap.monhost },
-        { code = scriptCodes.monhoststartup,   fileName = scriptNameMap.monhoststartup },
-        { code = scriptCodes.monhostinstaller, fileName = scriptNameMap.monhostinstaller },
-        { code = scriptCodes.utils,            fileName = scriptNameMap.utils },
-    }
-end
-
-
-local function displayDiskInfo()
-    return {
-        { code = scriptCodes.display,          fileName = scriptNameMap.display},
-        { code = scriptCodes.displayinstaller, fileName = scriptNameMap.displayinstaller},
-        { code = scriptCodes.utils,            fileName = scriptNameMap.utils},
-    }
-end
-
-
 local function cleanDisk(silent)
     local fileList = fs.list("/disk")
     for _, file in ipairs(fileList) do
@@ -171,18 +139,19 @@ local function cleanDisk(silent)
 end
 
 
-local function createDisk(diskInfo)
+local function createDisk(diskData)
     print()
-    writeProgress("Creating Disk", 0, #diskInfo)
+    writeProgress("Creating Disk", 0, #diskData)
     -- A disk should have ONLY the files created
     -- by this function.
     cleanDisk(true)
-    for i, item in ipairs(diskInfo) do
-        local content = getScript(item.code)
-        writeFile("/disk/" .. item.fileName, content)
-        writeProgress("Creating Disk", i, #diskInfo)
+    for i, script in ipairs(diskData) do
+        local content = getScriptFile(script)
+        writeFile("/disk/" .. script.fileName, content)
+        writeProgress("Creating Disk", i, #diskData)
     end
 end
+
 
 local function promptDisk()
 ::restart::
@@ -219,19 +188,19 @@ local function promptDisk()
     local name = ""
 
     if choice == 1 then
-        info = leaderboardDiskInfo()
+        info = diskMap.leaderboard
         label = "Setup Leaderboard"
         name = "Leaderboard"
     elseif choice == 2 then
-        info = monhostDiskInfo()
+        info = diskMap.monhost
         label = "Setup Monitor Host"
         name = "Monitor Host"
     elseif choice == 3 then
-        info = displayDiskInfo()
+        info = diskMap.display
         label = "Setup Display"
         name = "Display"
     elseif choice == 4 then
-        info = masterDiskInfo()
+        info = diskMap.master
         label = "Master Disk"
         name = "Master"
     else
@@ -242,6 +211,8 @@ local function promptDisk()
     finalizeDisk(label, name)
 
 end
+
+
 
 local args = {...}
 
@@ -291,14 +262,9 @@ if #args > 1 then
        return
     end
 
-    local code = scriptCodes[scriptName]
-    if not code then
+    local script = scriptMap[scriptName]
+    if not script then
         print("'"..scriptName.."' could not be found")
-        return
-    end
-
-    if not scriptNameMap[scriptName] then
-        print("'" .. scriptName .. "' could not be found")
         return
     end
 
@@ -309,19 +275,19 @@ if #args > 1 then
     write(scriptName)
     print()
 
-    local content = getScript(code)
-    writeFile("/disk/" .. scriptNameMap[scriptName], content)
-    writeFile(scriptNameMap[scriptName], content)
+    local content = getScriptFile(script)
+    writeFile("/disk/" .. script.fileName, content)
+    writeFile(script.fileName, content)
 
     term.setTextColor(colors.orange)
     write("Saved To: ")
     term.setTextColor(colors.lime)
-    write("/disk/" .. scriptNameMap[scriptName])
+    write("/disk/" .. script.fileName)
     print()
     term.setTextColor(colors.orange)
     write("Saved To: ")
     term.setTextColor(colors.lime)
-    write("/" .. scriptNameMap[scriptName])
+    write("/" .. script.fileName)
     print()
     print()
     return
@@ -335,9 +301,9 @@ if args[1] == "clean" then
     return cleanDisk()
 end
 
-local scriptName = args[1]
-local code = scriptCodes[scriptName]
-if not code then
+local scriptName = tostring(args[1])
+local script = scriptMap[scriptName]
+if not script then
     print("'"..scriptName.."' could not be found")
     return
 end
@@ -348,12 +314,12 @@ write(" Getting: ")
 term.setTextColor(colors.cyan)
 write(scriptName)
 print()
-local content = getScript(code)
-writeFile("/disk/" .. scriptNameMap[scriptName], content)
+local content = getScriptFile(script)
+writeFile("/disk/" .. script.fileName, content)
 term.setTextColor(colors.orange)
 write("Saved To: ")
 term.setTextColor(colors.lime)
-write("/disk/" .. scriptNameMap[scriptName])
+write("/disk/" .. script.fileName)
 print()
 print()
 
