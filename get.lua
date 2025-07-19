@@ -102,9 +102,12 @@ local function writeProgress(text, step, limit)
     write(bar .. string.rep(" ", barMargin))
     term.setTextColor(colors.white)
     write("]")
-    -- Creates new line when progress is finished
+    -- Clears progress bar so it can be overwritten
+    -- with flavor text.
     if math.floor(step) >= maxBarSize then
-        print()
+        term.setCursorPos(1, y)
+        write(string.rep(" ", 40))
+        term.setCursorPos(1, y)
     end
 end
 
@@ -117,7 +120,6 @@ end
 
 
 local function finalizeDisk(label, name)
-    print()
     local d = peripheral.find("drive")
     if d then
         d.setDiskLabel(label)
