@@ -17,6 +17,12 @@
 ---
 ---
 
+
+---@class Script
+---@field code string
+---@field fileName string
+
+
 if not fs.exists("/disk/get") then
     print()
     term.setTextColor(colors.red)
@@ -28,6 +34,8 @@ if not fs.exists("/disk/get") then
     return
 end
 
+
+---@type table<string, Script>
 local scriptMap = {
     get            = { code = "XZBmRq0B", fileName = "get" },
 
@@ -371,5 +379,3 @@ term.setTextColor(colors.lime)
 write("/disk/" .. script.fileName)
 print()
 print()
-
-
