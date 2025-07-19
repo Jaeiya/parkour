@@ -19,8 +19,8 @@
 
 
 ---@class Script
----@field code string
----@field fileName string
+---@field code string The pastebin script code
+---@field fileName string The filename the script should have when saved
 
 
 if not fs.exists("/disk/get") then
@@ -58,6 +58,7 @@ local scriptMap = {
     detectplayer  = { code = "GnQkWuaX", fileName = "detect_player" },
 }
 
+---@type table<string, Script[]>
 local diskMap = {
     master = {
         scriptMap.get,
@@ -101,22 +102,32 @@ local diskMap = {
 }
 
 
+---Returns the content of the downloaded script
+---@param script Script
 local function getScriptFile(script)
     local req = http.get("https://pastebin.com/raw/" .. script.code)
     if not req then
         error("failed to get script")
     end
-    return req.readAll()
+    local data = req.readAll()
+    if not data then
+        error("pastebin returned a nil body")
+    end
+    return data
 end
 
 
-local function writeProgress(text, step, limit)
-    if step > limit then
+---Writes a progress bar to the screen.
+---@param text string
+---@param step integer The current progress step (0 to limit)
+---@param maxSteps integer The total number of steps to complete (max progress)
+local function writeProgress(text, step, maxSteps)
+    if step > maxSteps then
         error("step should never be greater than max")
     end
     local _, y = term.getCursorPos()
     local maxBarSize = 20
-    step = (maxBarSize / limit) * step
+    step = (maxBarSize / maxSteps) * step
     local barSize = math.floor((step / maxBarSize) * maxBarSize)
     local bar = string.rep("=", barSize)
     local barMargin = maxBarSize - barSize
@@ -139,6 +150,9 @@ local function writeProgress(text, step, limit)
 end
 
 
+---Creates or overwrites the specified file path
+---@param filepath string The full path of the file to create
+---@param text string The content to write to the file
 local function writeFile(filepath, text)
     local file = fs.open(filepath, "w")
     file.write(text)
@@ -146,6 +160,10 @@ local function writeFile(filepath, text)
 end
 
 
+---Sets the disk label and prints the 'name' of the disk
+---that was created.
+---@param label string
+---@param name string
 local function finalizeDisk(label, name)
     local d = peripheral.find("drive")
     if d then
@@ -157,6 +175,9 @@ local function finalizeDisk(label, name)
 end
 
 
+---Deletes all files except the 'get' script
+---from the disk.
+---@param silent? boolean Will not print confirmation if true
 local function cleanDisk(silent)
     local fileList = fs.list("/disk")
     for _, file in ipairs(fileList) do
@@ -173,6 +194,9 @@ local function cleanDisk(silent)
 end
 
 
+---Cleans and downloads all scripts required to
+---create a specific disk.
+---@param diskData Script[]
 local function createDisk(diskData)
     print()
     writeProgress("Creating Disk", 0, #diskData)
@@ -268,6 +292,7 @@ local function promptDisk()
         goto restart
     end
 
+    ---@type Script[]
     local info = {}
     local label = ""
     local name = ""
@@ -298,7 +323,7 @@ local function promptDisk()
 end
 
 
-
+---@type string[]
 local args = {...}
 
 if not args[1] then
@@ -306,19 +331,21 @@ if not args[1] then
     return
 end
 
+local arg1 = args[1]
+local arg2 = arg[2]
 
-if args[1] == "disk" then
+if arg1 == "disk" then
     return promptDisk()
 end
 
-if args[1] == "clean" then
+if arg1 == "clean" then
     return cleanDisk()
 end
 
 
 if #args > 1 then
-    local flag = args[1]
-    local scriptName = args[2]
+    local flag = arg1
+    local scriptName = arg2
 
     if flag ~= "l" or not scriptName then
         printHelp()
@@ -357,7 +384,7 @@ if #args > 1 then
 end
 
 
-local scriptName = tostring(args[1])
+local scriptName = arg1
 local script = scriptMap[scriptName]
 if not script then
     print("'"..scriptName.."' could not be found")
