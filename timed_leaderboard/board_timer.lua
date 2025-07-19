@@ -4,8 +4,8 @@
 -- that can be measured is 50ms which is the limitation of
 -- minecraft itself.
 --
--- The smallest increments displayed are frames. For every frame,
--- 50ms has passed, and the total number of frames per second
+-- The smallest increments displayed are ticks. For every tick,
+-- 50ms has passed, and the total number of ticks per second
 -- is 20.
 --               hr m  s  t
 -- Example time: 00:00:00.00
