@@ -256,8 +256,7 @@ local function promptDisk()
     print()
     term.setTextColor(colors.yellow)
     write("> ")
-    local choice = read()
-    choice = tonumber(choice)
+    local choice = tonumber(read())
 
     if not choice or choice > 5 or choice < 1 then
         term.setTextColor(colors.red)
