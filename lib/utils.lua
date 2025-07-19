@@ -1,8 +1,9 @@
 
-local utils = {}
-
--- For use with timer ONLY
-utils.milliseconds = 0
+---@class Utils
+local utils = {
+    -- For use with timer ONLY
+    milliseconds = 0
+}
 
 -- splitString at every space character
 utils.splitString = function(str)
@@ -107,7 +108,7 @@ utils.loadConfig = function(path, defaults)
         return defaults
     else
         local f = fs.open(path, "r")
-        local data = textutils.unserialize(f.readAll())
+        local data = textutils.unserialize(tostring(f.readAll()))
         return data
     end
 end
