@@ -1,13 +1,22 @@
---
--- Gets or updates known scripts on a floppy disk
---
--- This removes the need to constantly be calling the
--- pastebin function, with a code, every time I need
--- to update a script.
---
--- This also facilitates creating multiple setup floppy
--- disks very quickly, if needed.
---
+---
+---
+--- The starting point for working with all the automated functions
+--- of the parkour map.
+---
+--- What this script does:
+---   - Format disks for setting up specific parkour functionality
+---   - Update scripts on disks or computers
+---   - Cleaning disks
+---
+--- To import the script into computer craft, execute this command:
+--- pastebin get XZBmRq0B get
+---
+--- Once this script is imported, you can execute the 'get' command
+--- without any arguments, to see the help display. This script
+--- is designed to execute from a disk, not a computer.
+---
+---
+
 
 local scriptMap = {
     get            = { code = "XZBmRq0B", fileName = "get" },
