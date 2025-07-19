@@ -152,6 +152,41 @@ local function createDisk(diskData)
     end
 end
 
+local function printHelp()
+    print()
+    term.setTextColor(colors.purple)
+    print("Usage:")
+    term.setTextColor(colors.lightGray)
+    print("  Select disk formatting (ex: master, display)")
+    term.setTextColor(colors.orange)
+    write("    get ")
+    term.setTextColor(colors.cyan)
+    write("disk")
+    print("\n")
+    term.setTextColor(colors.lightGray)
+    print("  Deletes all files on disk.")
+    term.setTextColor(colors.orange)
+    write("    get ")
+    term.setTextColor(colors.cyan)
+    write("clean")
+    print("\n")
+    term.setTextColor(colors.lightGray)
+    print("  Downloads a script by name to disk")
+    term.setTextColor(colors.orange)
+    write("    get ")
+    term.setTextColor(colors.cyan)
+    write("<script_name>")
+    print("\n")
+    term.setTextColor(colors.lightGray)
+    print("  Downloads script by name to disk and computer")
+    term.setTextColor(colors.orange)
+    write("    get ")
+    term.setTextColor(colors.cyan)
+    write("l <script_name>")
+    print()
+    print()
+end
+
 
 local function promptDisk()
 ::restart::
@@ -217,39 +252,17 @@ end
 local args = {...}
 
 if not args[1] then
-    print()
-    term.setTextColor(colors.purple)
-    print("Usage:")
-    term.setTextColor(colors.lightGray)
-    print("  Select disk formatting (ex: master, display)")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("disk")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Deletes all files on disk.")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("clean")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Downloads a script by name to disk")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("<script_name>")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Downloads script by name to disk and computer")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("l <script_name>")
-    print()
-    print()
+    printHelp()
     return
+end
+
+
+if args[1] == "disk" then
+    return promptDisk()
+end
+
+if args[1] == "clean" then
+    return cleanDisk()
 end
 
 
@@ -258,8 +271,8 @@ if #args > 1 then
     local scriptName = args[2]
 
     if flag ~= "l" or not scriptName then
-       print("Usage: get <flag> <script_name>")
-       return
+        printHelp()
+        return
     end
 
     local script = scriptMap[scriptName]
@@ -293,13 +306,6 @@ if #args > 1 then
     return
 end
 
-if args[1] == "disk" then
-    return promptDisk()
-end
-
-if args[1] == "clean" then
-    return cleanDisk()
-end
 
 local scriptName = tostring(args[1])
 local script = scriptMap[scriptName]
