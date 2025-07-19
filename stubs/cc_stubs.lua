@@ -507,6 +507,20 @@ function textutils.unserializeJSON(json) end
 ---@return string input The entered text
 function read(valid, history, complete, mask) end
 
-return os, peripheral, fs, redstone, rednet, http, term, colors, parallel, shell, textutils, read
+---Pauses the program for the specified number of seconds.
+---@param seconds number Time to sleep in seconds (can be fractional)
+function sleep(seconds) end
+
+---Writes text to the standard output without a newline.
+---@param text string The text to write
+function write(text) end
+
+---Writes text representations of the given arguments to the standard output, separated by tabs, ending with a newline.
+---@param ... any Values to print
+function print(...) end
+
+
+
+return os, peripheral, fs, redstone, rednet, http, term, colors, parallel, shell, textutils, read, sleep, write, print
 
 
