@@ -277,7 +277,7 @@ function http.checkURL() end
 
 ---Performs an HTTP GET request.
 ---@param url string
----@return string|nil responseBody
+---@return HTTPResponse|nil responseBody
 function http.get(url) end
 
 ---Performs an HTTP POST request with optional data.

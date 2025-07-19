@@ -23,3 +23,21 @@ function FileHandle.writeLine(text) end
 
 ---Closes the file.
 function FileHandle.close() end
+
+
+
+---@class HTTPResponse
+local HTTPResponse = {}
+
+---Reads a line of the response body.
+---@return string|nil line The next line, or nil if at the end.
+function HTTPResponse.readLine() end
+
+---Reads the entire response body as a string.
+---@return string|nil body The full response body, or nil if already read.
+function HTTPResponse.readAll() end
+
+---Closes the HTTP connection.
+function HTTPResponse.close() end
+
+return HTTPResponse
