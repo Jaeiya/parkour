@@ -17,6 +17,16 @@
 ---
 ---
 
+if not fs.exists("/disk/get") then
+    print()
+    term.setTextColor(colors.red)
+    print("Invalid Install Location")
+    print()
+    term.setTextColor(colors.orange)
+    print("Please import or copy me to a disk")
+    print()
+    return
+end
 
 local scriptMap = {
     get            = { code = "XZBmRq0B", fileName = "get" },
