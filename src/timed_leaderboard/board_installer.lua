@@ -12,7 +12,7 @@ local lib = require("board_lib")
 
 ---@class BoardPaths
 ---@field boardTimer string
----@field boardStartup string
+---@field startup string
 ---@field board string
 ---@field boardData string
 ---@field boardUI string
@@ -23,7 +23,7 @@ local lib = require("board_lib")
 ---@type BoardPaths
 local paths = {
     boardTimer     = "disk/board_timer",
-    boardStartup   = "disk/board_startup",
+    startup        = "disk/board_startup",
     board          = "disk/board",
     boardData      = "disk/board_lib",
     boardUI        = "disk/board_ui",
@@ -50,14 +50,14 @@ lib.saveBoardConfig(
     utils.promptCoords("Enter End Pos")
 )
 
-for key, path in pairs(paths) do
+for _, path in pairs(paths) do
     local f = fs.open(path, "r")
     if not f then
         error("could not find install file: " .. path)
     end
     local installPath = string.gsub(path, "disk/", "")
 
-    if key == "boardStartup" then
+    if path == paths.startup then
         utils.writeFile("startup", f.readAll())
     else
         utils.writeFile(installPath, f.readAll())

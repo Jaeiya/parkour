@@ -49,14 +49,14 @@ config.protocol = read()
 --
 
 
-for key, path in pairs(paths) do
+for _, path in pairs(paths) do
     local f = fs.open(path, "r")
     if not f then
         error("could not find install file: " .. path)
     end
     local installPath = string.gsub(path, "disk/", "")
 
-    if key == paths.startup then
+    if path == paths.startup then
         utils.writeFile("startup", f.readAll())
     else
         utils.writeFile(installPath, f.readAll())
