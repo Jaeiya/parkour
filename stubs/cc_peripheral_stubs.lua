@@ -125,3 +125,49 @@ function playerDetector.getPlayersInRange(range) end
 ---@param posTwo { x: number, y: number, z: number }
 ---@return string[] players
 function playerDetector.getPlayersInCoords(posOne, posTwo) end
+
+
+
+---@class Drive
+local drive = {}
+
+---Checks whether a disk is present in the drive.
+---@return boolean
+function drive.isDiskPresent() end
+
+---Checks whether the disk is writable.
+---@return boolean
+function drive.isDiskWritable() end
+
+---Gets the disk's ID if it is present.
+---@return integer
+function drive.getDiskID() end
+
+---Gets the mount path of the disk.
+---@return string
+function drive.getMountPath() end
+
+---Gets the disk's label.
+---@return string
+function drive.getDiskLabel() end
+
+---Sets the disk's label.
+---@param label string
+---@return boolean
+function drive.setDiskLabel(label) end
+
+---Ejects the disk from the drive.
+---@return boolean
+function drive.ejectDisk() end
+
+---Plays the audio track stored on the inserted music disc.
+---@return boolean
+function drive.playAudio() end
+
+---Stops playing audio.
+---@return boolean
+function drive.stopAudio() end
+
+---Checks whether the music disc is currently playing.
+---@return boolean
+function drive.isAudioPlaying() end
