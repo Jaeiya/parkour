@@ -35,7 +35,24 @@ if not fs.exists("/disk/get") then
 end
 
 
----@type table<string, Script>
+---@class ScriptMap
+---@field get Script
+---@field boardinstaller Script
+---@field board Script
+---@field boardlib Script
+---@field boardredstone Script
+---@field boardui Script
+---@field boardstartup Script
+---@field boardtimer Script
+---@field monhostinstaller Script
+---@field monhoststartup Script
+---@field monhost Script
+---@field display Script
+---@field displayinstaller Script
+---@field detectplayer Script
+---@field utils Script
+
+---@type ScriptMap
 local scriptMap = {
     get            = { code = "XZBmRq0B", fileName = "get" },
 
@@ -58,7 +75,14 @@ local scriptMap = {
     detectplayer  = { code = "GnQkWuaX", fileName = "detect_player" },
 }
 
----@type table<string, Script[]>
+
+---@class DiskMap
+---@field master Script[]
+---@field leaderboard Script[]
+---@field monhost Script[]
+---@field display Script[]
+
+---@type DiskMap
 local diskMap = {
     master = {
         scriptMap.get,
@@ -98,8 +122,8 @@ local diskMap = {
         scriptMap.displayinstaller,
         scriptMap.utils,
     },
-
 }
+
 
 
 ---Returns the content of the downloaded script
