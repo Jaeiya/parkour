@@ -179,6 +179,9 @@ end
 ---@param text string The content to write to the file
 local function writeFile(filepath, text)
     local file = fs.open(filepath, "w")
+    if not file then
+        error("probably an invalid path: " .. filepath)
+    end
     file.write(text)
     file.close()
 end
