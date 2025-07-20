@@ -16,8 +16,8 @@ mon.clear()
 mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
-local w, h = mon.getSize()
-if w < 36 or h < 10 then
+local monW, monH = mon.getSize()
+if monW < 36 or monH < 10 then
     printError("invalid monitor size; expected at least 7 blocks wide, 3 blocks tall")
     return false
 end
