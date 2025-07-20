@@ -435,10 +435,11 @@ function parallel.waitForAny(...) end
 ---@class shell
 shell = {}
 
----Executes a command in the shell.
----@param command string
----@return boolean success # true if command executed successfully
-function shell.execute(command) end
+---Runs a command as if it were typed into the shell.
+---Returns true if the command ran successfully, false otherwise.
+---@param ... string  # Arguments to pass to the command (the command itself and its arguments).
+---@return boolean    # True if the command succeeded, false otherwise.
+function shell.run(...) end
 
 ---Returns the current working directory.
 ---@return string path
@@ -536,7 +537,6 @@ function write(text) end
 ---Writes text representations of the given arguments to the standard output, separated by tabs, ending with a newline.
 ---@param ... any Values to print
 function print(...) end
-
 
 
 return os, peripheral, fs, redstone, rednet, http, term, colors, parallel, shell, textutils, read, sleep, write, print
