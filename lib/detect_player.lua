@@ -1,15 +1,15 @@
 local utils = require("utils")
 
-local pd        = utils.getPlayerDetector()
-local players   = pd.getOnlinePlayers()
-local listeners = {}
+local pd          = utils.getPlayerDetector()
+local playerNames = pd.getOnlinePlayers()
+local listeners   = {}
 
 
 local function updateListeners()
     for _, listener in ipairs(listeners) do
         os.queueEvent(listener.event, {
             action = listener.action,
-            payload = players,
+            payload = playerNames,
         })
     end
 end
@@ -20,14 +20,14 @@ local function startListening()
         function ()
            while true do
                 os.pullEvent("playerJoin")
-                players = pd.getOnlinePlayers()
+                playerNames = pd.getOnlinePlayers()
                 updateListeners()
            end
         end,
         function ()
            while true do
                 os.pullEvent("playerLeave")
-                players = pd.getOnlinePlayers()
+                playerNames = pd.getOnlinePlayers()
                 updateListeners()
            end
         end
@@ -38,7 +38,7 @@ end
 return function(...)
     for _, listener in ipairs({...}) do
         listeners[#listeners+1] = listener
-        os.queueEvent(listener.event, {action = listener.action, payload = players})
+        os.queueEvent(listener.event, {action = listener.action, payload = playerNames})
     end
     startListening()
 end
