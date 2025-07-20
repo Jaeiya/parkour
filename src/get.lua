@@ -19,7 +19,7 @@
 
 
 ---@class Script
----@field code string The pastebin script code
+---@field slug string The gist slug (ex: name-of-file)
 ---@field fileName string The filename the script should have when saved
 
 
@@ -54,25 +54,25 @@ end
 
 ---@type ScriptMap
 local scriptMap = {
-    get            = { code = "XZBmRq0B", fileName = "get" },
+    get            = { slug = "get.lua", fileName = "get" },
 
-    boardinstaller = { code = "YHxwpyMa", fileName = "install_board" },
-    board          = { code = "9eU7yHT7", fileName = "board"},
-    boardlib       = { code = "2SuQAVdT", fileName = "board_lib" },
-    boardredstone  = { code = "LZFAu3Kx", fileName = "board_redstone" },
-    boardui        = { code = "VnanGgbh", fileName = "board_ui" },
-    boardstartup   = { code = "Knhfg3fM", fileName = "board_startup" },
-    boardtimer     = { code = "t3ka7Qfc", fileName = "board_timer" },
+    boardinstaller = { slug = "boardinstaller.lua", fileName = "install_board" },
+    board          = { slug = "board.lua",          fileName = "board"},
+    boardlib       = { slug = "boardlib.lua",       fileName = "board_lib" },
+    boardredstone  = { slug = "boardredstone.lua",  fileName = "board_redstone" },
+    boardui        = { slug = "boardui.lua",        fileName = "board_ui" },
+    boardstartup   = { slug = "boardstartup.lua",   fileName = "board_startup" },
+    boardtimer     = { slug = "boardtimer.lua",     fileName = "board_timer" },
 
-    monhostinstaller = { code = "ywQ78fsZ", fileName = "install_monhost" },
-    monhoststartup   = { code = "xN6qzppK", fileName = "monhost_startup" },
-    monhost          = { code = "UFStnxDa", fileName = "monhost" },
+    monhostinstaller = { slug = "monhostinstaller.lua", fileName = "install_monhost" },
+    monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhost_startup" },
+    monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
-    display          = { code = "uCHiLgtd", fileName = "display" },
-    displayinstaller = { code = "cMiyZkQv", fileName = "install_display" },
+    display          = { slug = "display.lua",          fileName = "display" },
+    displayinstaller = { slug = "displayinstaller.lua", fileName = "install_display" },
 
-    utils         = { code = "FjGC63m3", fileName = "utils" },
-    detectplayer  = { code = "GnQkWuaX", fileName = "detect_player" },
+    utils         = { slug = "utils.lua",        fileName = "utils" },
+    detectplayer  = { slug = "detectplayer.lua", fileName = "detect_player" },
 }
 
 
@@ -129,13 +129,13 @@ local diskMap = {
 ---Returns the content of the downloaded script
 ---@param script Script
 local function getScriptFile(script)
-    local req = http.get("https://pastebin.com/raw/" .. script.code)
+    local req = http.get("https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/" .. script.slug)
     if not req then
-        error("failed to get script")
+        error("failed to get script: " .. script.slug)
     end
     local data = req.readAll()
     if not data then
-        error("pastebin returned a nil body")
+        error("github returned a nil body")
     end
     return data
 end
