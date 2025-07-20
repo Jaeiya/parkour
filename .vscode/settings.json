@@ -23,6 +23,7 @@
     "boardlib",
     "boardredstone",
     "boardstartup",
+    "boardstate",
     "boardtimer",
     "boardui",
     "detectplayer",
