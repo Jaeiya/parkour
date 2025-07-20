@@ -107,10 +107,8 @@ end
 
 ---Get player data by specified name
 ---@param name string Name of the player to get
-function leaderboard.getPlayer(name)
-    if not leaderboard.playerExists(name) then
-        error("player not found: '" .. name "'")
-    end
+---@return Player|nil
+function leaderboard.findPlayer(name)
     return leaderboard.playerMap[name]
 end
 
@@ -118,7 +116,7 @@ end
 ---Updates the current & total attempts for the specified player.
 ---@param name string Name of the player to update
 function leaderboard.updateAttempt(name)
-    local player = leaderboard.getPlayer(name)
+    local player = leaderboard.playerMap[name]
     player.attempts.current = player.attempts.current + 1
     player.attempts.total = player.attempts.total + 1
     leaderboard.savePlayer(player)
@@ -131,7 +129,7 @@ end
 ---@param name string Name of the player to save
 ---@param time integer The time (in milliseconds) of the players run
 function leaderboard.savePlayerTime(name, time)
-    local player = leaderboard.getPlayer(name)
+    local player = leaderboard.playerMap[name]
     player.time.current = time
 
     if player.time.current < player.time.pb or player.time.pb == 0 then
@@ -168,7 +166,7 @@ function leaderboard.tryAddPlayer(name)
 end
 
 
----Gets the raw player list
+---Gets a list of all saved players
 function leaderboard.get()
     return leaderboard.playerList
 end

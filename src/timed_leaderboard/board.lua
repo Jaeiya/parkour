@@ -37,11 +37,15 @@ end
 
 
 local function renderActiveRunner(playerName)
-    local text = "WARNING: Active Runner"
+    local player = lib.findPlayer(playerName)
+    if not player then
+        error("active runner not found: " .. playerName)
+    end
+
     mon.setTextScale(2.5)
     local w = mon.getSize()
+    local text = "WARNING: Active Runner"
     local textWidthDiff = w - #text
-    local player = lib.getPlayer(playerName)
     mon.setBackgroundColor(colors.black)
     mon.clear()
     mon.setCursorPos(1, 1)
@@ -74,13 +78,23 @@ local function renderBoard()
     -- Add padding between times and title
     yPos = yPos + 1
 
+    -- Display flavor text if level has no players
+    if #lib.get() == 0 then
+        mon.setCursorPos(1, yPos + 3)
+        mon.setTextColor(colors.orange)
+        mon.write(utils.centerText("Be the first to run this level!", mon))
+        return
+    end
+
     -- Calculate name column width
     local columnWidth = 0
     for _, name in ipairs(onlinePlayerNames) do
-        local player = lib.getPlayer(name)
-        local nameWidth = #player.name
-        if nameWidth > columnWidth and player.time.pb > 0 then
-            columnWidth = nameWidth
+        local player = lib.findPlayer(name)
+        if player then
+            local nameWidth = #player.name
+            if nameWidth > columnWidth and player.time.pb > 0 then
+                columnWidth = nameWidth
+            end
         end
     end
 
@@ -90,14 +104,10 @@ local function renderBoard()
     local attemptsLen = #"..x000"
     local lineLen     = columnWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
-    local noPlayersStr = "Be the first to run this level!"
-    local hasPlayers = false
-
 
     for _, name in ipairs(onlinePlayerNames) do
-        local player = lib.getPlayer(name)
-        if player.time.pb > 0 then
-            hasPlayers = true
+        local player = lib.findPlayer(name)
+        if player and player.time.pb > 0 then
             local attemptStr = string.format("%03d", player.attempts.pb)
             local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
@@ -116,12 +126,6 @@ local function renderBoard()
             mon.setTextColor(colors.cyan)
             mon.write(attemptStr)
         end
-    end
-
-    if not hasPlayers then
-        mon.setCursorPos(1, yPos + 3)
-        mon.setTextColor(colors.orange)
-        mon.write(utils.centerText(noPlayersStr, mon))
     end
 end
 
