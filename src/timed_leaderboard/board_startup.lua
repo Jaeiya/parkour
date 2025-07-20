@@ -4,6 +4,8 @@ local execRedstone = require("board_redstone")
 local execPlayerDetection = require("detect_player")
 local execBoardUI = require("board_ui")
 
+term.clear()
+term.setCursorPos(1, 1)
 -- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
     function() execTimer() end,

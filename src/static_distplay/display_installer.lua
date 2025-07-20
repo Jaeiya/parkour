@@ -17,7 +17,7 @@ local paths = {
 --
 
 
-utils.writeFile("startup", 'shell.run("display")')
+utils.writeFile("startup", 'term.clear()\nterm.setCursorPos(1, 1)\nshell.run("display")')
 
 for _, path in pairs(paths) do
     local f = fs.open(path, "r")
