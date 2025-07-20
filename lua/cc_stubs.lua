@@ -538,6 +538,14 @@ function write(text) end
 ---@param ... any Values to print
 function print(...) end
 
+---Prints a message in red to the terminal.
+---@param text string The text to print.
+function printError(text)
+    -- In CC:Tweaked, this prints in red.
+    -- This stub simulates the function for static analysis only.
+end
+
+
 
 return os, peripheral, fs, redstone, rednet, http, term, colors, parallel, shell, textutils, read, sleep, write, print
 
