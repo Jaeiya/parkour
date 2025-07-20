@@ -6,6 +6,7 @@
     "utf8": "enable"
   },
   "Lua.diagnostics.enable": true,
+  "Lua.diagnostics.disable": ["cast-local-type"],
   "Lua.diagnostics.severity": {
     "no-unknown": "Error",
     "undefined-global": "Error",
@@ -13,6 +14,7 @@
     "unused-vararg": "Warning",
     "unused-function": "Warning",
     "unknown-cast-variable": "Error",
+    "param-type-mismatch": "Error",
     "inject-field": "Error"
   },
   "cSpell.words": [
