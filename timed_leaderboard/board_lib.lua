@@ -1,5 +1,4 @@
 local utils = require('utils')
-local leaderboard  = {}
 local playerDBPath = "players.db"
 local configPath   = "board.cfg"
 local config = {
@@ -8,9 +7,34 @@ local config = {
     endPos = { x = 0, y = 0, z = 0, },
 }
 
+---@class Coord
+---@field x integer
+---@field y integer
+---@field z integer
 
+---@class Player
+---@field name     string
+---@field time     TimeTable
+---@field attempts AttemptTable
+
+---@class TimeTable
+---@field pb      integer
+---@field current integer
+
+---@class AttemptTable
+---@field pb      integer
+---@field current integer
+---@field total   integer
+
+
+
+---Loads players from the player database file
+---and returns them as a list and map.
 local function loadPlayers()
+    ---@type Player[]
     local playerList = utils.loadConfig(playerDBPath, {})
+
+    ---@type table<string, Player>
     local playerMap = {}
 
     for i = 1, #playerList do
@@ -27,25 +51,38 @@ local function loadPlayers()
                 total   = p.attempts.total,
             }
         }
+
     end
     return playerList, playerMap
 end
 
 
+
+---@class Leaderboard
+---@field playerList Player[]
+---@field playerMap table<string, Player>
+local leaderboard  = {
+    playerList = {},
+    playerMap = {},
+}
+
 -- Initialize internal database objects
 leaderboard.playerList, leaderboard.playerMap = loadPlayers()
 
 
-local function playerExists(name)
+---Checks if a player exists
+---@param name string The name of the player
+function leaderboard.playerExists(name)
     if leaderboard.playerMap[name] then
         return true
     end
     return false
 end
-leaderboard.playerExists = playerExists
 
 
-local function save()
+---Saves the players to the player database file and
+---sorts them by fastest time.
+function leaderboard.save()
     for i = 1, #leaderboard.playerList do
         local player = leaderboard.playerList[i]
         leaderboard.playerList[i] = leaderboard.playerMap[player.name]
@@ -54,58 +91,47 @@ local function save()
     table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
     utils.writeFile(playerDBPath, textutils.serialize(leaderboard.playerList))
 end
-leaderboard.save = save
 
 
-local function savePlayer(player)
-    if not playerExists(player.name) then
-        error("player not found: '" .. name .. "'")
+---Saves specified player if they exist.
+---@param player Player
+function leaderboard.savePlayer(player)
+    if not leaderboard.playerExists(player.name) then
+        error("player not found: '" .. player.name .. "'")
     end
 
     leaderboard.playerMap[player.name] = player
-    save()
+    leaderboard.save()
 end
-leaderboard.savePlayer = savePlayer
 
 
-local function getPlayer(name)
-    if not playerExists(name) then
+---Get player data by specified name
+---@param name string Name of the player to get
+function leaderboard.getPlayer(name)
+    if not leaderboard.playerExists(name) then
         error("player not found: '" .. name "'")
     end
-
-    local player = leaderboard.playerMap[name]
-    return {
-        name = player.name,
-        attempts = {
-            pb      = player.attempts.pb,
-            current = player.attempts.current,
-            total   = player.attempts.total,
-        },
-        time = {
-            pb      = player.time.pb,
-            current = player.time.current,
-        }
-    }
+    return leaderboard.playerMap[name]
 end
-leaderboard.getPlayer = getPlayer
 
 
--- Updates the current & total attempts for the specified player.
-local function updateAttempt(name)
-    local player = getPlayer(name)
+---Updates the current & total attempts for the specified player.
+---@param name string Name of the player to update
+function leaderboard.updateAttempt(name)
+    local player = leaderboard.getPlayer(name)
     player.attempts.current = player.attempts.current + 1
     player.attempts.total = player.attempts.total + 1
-    savePlayer(player)
+    leaderboard.savePlayer(player)
 end
-leaderboard.updateAttempt = updateAttempt
 
 
--- Tries to save a specified players run time, but if it
--- is not faster than the players current PB, then it does
--- nothing.
-local function savePlayerTime(name, time)
-    local player = getPlayer(name)
-
+---Tries to save a specified players run time, but if it
+---is not faster than the players current PB, then it does
+---nothing.
+---@param name string Name of the player to save
+---@param time integer The time (in milliseconds) of the players run
+function leaderboard.savePlayerTime(name, time)
+    local player = leaderboard.getPlayer(name)
     player.time.current = time
 
     if player.time.current < player.time.pb or player.time.pb == 0 then
@@ -114,15 +140,15 @@ local function savePlayerTime(name, time)
         player.attempts.current = 0
     end
 
-    savePlayer(player)
+    leaderboard.savePlayer(player)
 end
-leaderboard.savePlayerTime = savePlayerTime
 
 
--- Tries to add a player to the database if they don't
--- already exist, otherwise it does nothing.
-leaderboard.tryAddPlayer = function (name)
-    if playerExists(name) then return end
+---Tries to add a player to the database if they don't
+---already exist, otherwise it does nothing.
+---@param name string Name of the player to add
+function leaderboard.tryAddPlayer(name)
+    if leaderboard.playerExists(name) then return end
 
     local index = #leaderboard.playerList+1
     leaderboard.playerList[index] = {
@@ -138,25 +164,30 @@ leaderboard.tryAddPlayer = function (name)
         }
     }
     leaderboard.playerMap[name] = leaderboard.playerList[index]
-    save()
+    leaderboard.save()
 end
 
 
-leaderboard.get = function ()
+---Gets the raw player list
+function leaderboard.get()
     return leaderboard.playerList
 end
 
 
-local function loadConfig()
+---Loads the board config file
+function leaderboard.loadConfig()
     if not fs.exists(configPath) then
         error("missing timer config file")
     end
     return utils.loadConfig(configPath, config)
 end
-leaderboard.loadConfig = loadConfig
 
 
-local function saveBoardConfig(protocol, startPos, endPos)
+---Saves the board to the configuration file
+---@param protocol string The monitor protocol
+---@param startPos Coord The trigger point in the world for starting a run
+---@param endPos Coord The trigger point in the world for ending a run
+function leaderboard.saveBoardConfig(protocol, startPos, endPos)
     local data = textutils.serialize({
         protocol = protocol,
         startPos = startPos,
@@ -164,7 +195,6 @@ local function saveBoardConfig(protocol, startPos, endPos)
     })
     utils.writeFile(configPath, data)
 end
-leaderboard.saveBoardConfig = saveBoardConfig
 
 
 return leaderboard
