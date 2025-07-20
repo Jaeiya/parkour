@@ -22,6 +22,9 @@ end
 ---@param text string The content to save to the file
 function utils.writeFile(filepath, text)
     local file = fs.open(filepath, "w")
+    if not file then
+        error("probably invalid path for file: " .. filepath)
+    end
     file.write(text)
     file.close()
 end
@@ -132,6 +135,9 @@ utils.loadConfig = function(path, defaults)
         return defaults
     else
         local f = fs.open(path, "r")
+        if not f then
+            error("probably invalid file path: " .. path)
+        end
         local data = textutils.unserialize(tostring(f.readAll()))
         return data
     end
