@@ -193,5 +193,35 @@ function utils.promptCoords(promptText)
     }
 end
 
+
+---Tries to find a monitor and return it
+---@return Monitor
+function utils.getMonitor()
+    local p1, p2 = peripheral.find("monitor")
+    if not p1 then
+        error("missing monitor")
+    end
+    if p2 then
+        error("found more than one monitor")
+    end
+    return p1
+end
+
+
+
+---Tries to find a modem and return it
+---@return Modem
+function utils.getModem()
+    local p1, p2 = peripheral.find("modem")
+    if not p1 then
+        error("missing modem")
+    end
+    if p2 then
+        error("found more than one modem")
+    end
+    return p1
+end
+
 return utils
+
 
