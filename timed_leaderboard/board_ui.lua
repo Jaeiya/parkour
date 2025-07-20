@@ -84,8 +84,7 @@ return function()
     print("Set Monitor Protocol")
     print()
     write("> ")
-    local choice = read()
-    choice = tonumber(choice)
+    local choice = tonumber(read())
 
     if not choices[choice] then
         term.setTextColor(colors.red)
