@@ -199,9 +199,9 @@ function peripheral.getNames() end
 ---@return string|nil type
 function peripheral.getType(side) end
 
----Finds a peripheral by type and returns the proxy.
+---Finds a peripheral by type and returns a table with 0 or more wrapped peripherals.
 ---@param typeName string The peripheral type to find.
----@return any|nil proxy The peripheral proxy or nil if none found.
+---@return table ...
 function peripheral.find(typeName) end
 
 
