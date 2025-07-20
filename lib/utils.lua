@@ -146,6 +146,7 @@ end
 
 ---Prompts the user for coordinates and validates them
 ---@param promptText string Should tell the user what type of coords to enter
+---@return Coord
 function utils.promptCoords(promptText)
 ::restart::
     print()
@@ -177,11 +178,13 @@ function utils.promptCoords(promptText)
         coords[i] = coord
     end
 
-    return {
+    ---@type Coord
+    local parsedCoord = {
         x = coords[1],
         y = coords[2],
         z = coords[3],
     }
+    return parsedCoord
 end
 
 
