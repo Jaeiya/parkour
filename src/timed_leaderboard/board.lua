@@ -8,17 +8,17 @@ mon.clear()
 mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
----@type Player[]
-local players = {}
-local currentPlayer    = ""
-local config           = lib.loadConfig()
-local maxActuationDist = 3 -- Max distance from configured start and end positions
+---@type string[]
+local onlinePlayerNames = {}
+local currentPlayer     = ""
+local config            = lib.loadConfig()
+local maxActuationDist  = 3 -- Max distance from configured start and end positions
 
 ---Check if a running player is the one who activated a trigger
 ---at the specified position
 ---@param pos Coord
 local function isPlayerRunning(pos)
-    local nearestPlayer = utils.getNearestPlayer(pos, pd, players)
+    local nearestPlayer = utils.getNearestPlayer(pos, pd, onlinePlayerNames)
     if nearestPlayer.distance <= maxActuationDist then
         if nearestPlayer.name == currentPlayer then
             return true
@@ -68,7 +68,8 @@ local function renderBoard()
 
     -- Calculate name column width
     local columnWidth = 0
-    for _, player in ipairs(players) do
+    for _, name in ipairs(onlinePlayerNames) do
+        local player = lib.getPlayer(name)
         local nameWidth = #player.name
         if nameWidth > columnWidth and player.time.pb > 0 then
             columnWidth = nameWidth
@@ -85,7 +86,8 @@ local function renderBoard()
     local hasPlayers = false
 
 
-    for _, player in ipairs(players) do
+    for _, name in ipairs(onlinePlayerNames) do
+        local player = lib.getPlayer(name)
         if player.time.pb > 0 then
             hasPlayers = true
             local attemptStr = string.format("%03d", player.attempts.pb)
@@ -130,7 +132,7 @@ return function()
         ---@cast data MessageEvent
 
         if data.action == "start_run" then
-            local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, players)
+            local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, onlinePlayerNames)
 
             lib.tryAddPlayer(nearestPlayer.name)
             lib.updateAttempt(nearestPlayer.name)
@@ -156,7 +158,7 @@ return function()
             end
 
         elseif data.action == "set_player_list" then
-            players = data.payload
+            onlinePlayerNames = data.payload
 
         elseif data.action == "set_start_pos" then
             config.startPos = data.payload
