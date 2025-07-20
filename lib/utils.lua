@@ -29,14 +29,6 @@ function utils.writeFile(filepath, text)
     file.close()
 end
 
-utils.getPeripheral = function(name)
-    local p = peripheral.find(name)
-    if not p then
-        error("missing peripheral: " .. name)
-    end
-    return p
-end
-
 
 ---Adds all arguments together
 ---@vararg integer
@@ -208,7 +200,6 @@ function utils.getMonitor()
 end
 
 
-
 ---Tries to find a modem and return it
 ---@return Modem
 function utils.getModem()
@@ -218,6 +209,20 @@ function utils.getModem()
     end
     if p2 then
         error("found more than one modem")
+    end
+    return p1
+end
+
+
+---Tries to find a monitor and return it
+---@return PlayerDetector
+function utils.getPlayerDetector()
+    local p1, p2 = peripheral.find("player_detector")
+    if not p1 then
+        error("missing player detector")
+    end
+    if p2 then
+        error("found more than one player detector")
     end
     return p1
 end
