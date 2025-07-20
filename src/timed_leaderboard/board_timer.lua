@@ -55,7 +55,7 @@ return function()
 
         elseif data.action == "finish_run" then
             os.cancelTimer(timerID)
-            iterations = 1
+            utils.milliseconds = 0
             -- Payload should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
             rednet.broadcast(utils.getTimerStr(data.payload), config.protocol)
