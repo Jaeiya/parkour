@@ -129,15 +129,16 @@ local diskMap = {
 ---Returns the content of the downloaded script
 ---@param script Script
 local function getScriptFile(script)
-    local req = http.get("https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/" .. script.slug)
-    if not req then
+    local apiURL =  "https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/"
+    -- Prevents getting a cached version
+    local cacheBustFragment = "?bust=" .. tostring(os.epoch("utc"))
+    local resp = http.get(apiURL .. script.slug .. cacheBustFragment)
+
+    if not resp then
         error("failed to get script: " .. script.slug)
     end
-    local data = req.readAll()
-    if not data then
-        error("github returned a nil body")
-    end
-    return data
+
+    return resp.readAll()
 end
 
 
