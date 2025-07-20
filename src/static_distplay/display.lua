@@ -14,6 +14,7 @@ end
 if not mon then
     term.setTextColor(colors.red)
     print("no monitor found; connect a monitor!")
+    return
 end
 
 -- We know for a fact that if we reach this point, then
