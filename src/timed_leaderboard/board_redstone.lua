@@ -1,4 +1,5 @@
 local utils = require("utils")
+local state = require("board_state")
 
 return function()
     while true do
@@ -15,7 +16,7 @@ return function()
             -- is the same player who triggered this action.
             os.queueEvent("leaderboard", { action="try_cancel_run" })
 
-        elseif left then
+        elseif left and state.isTimerActive then
             -- This action will be ignored entirely, if the player who
             -- triggered this action, is not the active runner.
             --
