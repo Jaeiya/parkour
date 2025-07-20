@@ -1,19 +1,25 @@
 local utils = require("utils")
 local lib = require("board_lib")
 
+---@type PlayerDetector
 local pd  = utils.getPeripheral("player_detector")
+
+---@type Monitor
 local mon = utils.getPeripheral("monitor")
+
 mon.clear()
 mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
-
-local currentPlayer    = nil
+---@type Player[]
+local players = {}
+local currentPlayer    = ""
 local config           = lib.loadConfig()
 local maxActuationDist = 3 -- Max distance from configured start and end positions
-local players          = {}
 
-
+---Check if a running player is the one who activated a trigger
+---at the specified position
+---@param pos Coord
 local function isPlayerRunning(pos)
     local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd, players)
     if nearestPlayer.distance <= maxActuationDist then
@@ -48,7 +54,7 @@ local function renderActiveRunner(playerName)
     mon.setTextColor(colors.white)
     mon.write(string.rep(" ", textPadding) .. attemptText)
     mon.setTextColor(colors.yellow)
-    mon.write(player.attempts.current)
+    mon.write(tostring(player.attempts.current))
 end
 
 
@@ -65,9 +71,7 @@ local function renderBoard()
 
     -- Calculate name column width
     local columnWidth = 0
-    local players = lib.get()
-    for i = 1, #players do
-        local player = lib.getPlayer(players[i].name)
+    for _, player in ipairs(players) do
         local nameWidth = #player.name
         if nameWidth > columnWidth and player.time.pb > 0 then
             columnWidth = nameWidth
@@ -84,8 +88,7 @@ local function renderBoard()
     local hasPlayers = false
 
 
-    for i = 1, #players do
-        local player = lib.getPlayer(players[i].name)
+    for _, player in ipairs(players) do
         if player.time.pb > 0 then
             hasPlayers = true
             local attemptStr = string.format("%03d", player.attempts.pb)
@@ -116,60 +119,60 @@ local function renderBoard()
 end
 
 
-local function handleLeaderboard(data)
-    if type(data) ~= "table" then
-       error("tried to send non-table data to leaderboard")
-    end
-
-    if data.action == "start_run" then
-        local nearestPlayer = utils.getNearestPlayer(
-            config.startPos.x,
-            config.startPos.y,
-            config.startPos.z,
-            pd,
-            players
-        )
-
-        lib.tryAddPlayer(nearestPlayer.name)
-        lib.updateAttempt(nearestPlayer.name)
-
-        if nearestPlayer.distance <= maxActuationDist then
-            currentPlayer = nearestPlayer.name
-            renderActiveRunner(currentPlayer)
-        end
-
-    elseif data.action == "try_cancel_run" then
-        if isPlayerRunning(config.startPos) then
-            os.queueEvent("timer", { action = "cancel_run" })
-            currentPlayer = nil
-            mon.setBackgroundColor(colors.black)
-            renderBoard()
-        end
-
-    elseif data.action == "save_player_time" then
-        if isPlayerRunning(config.endPos) then
-            os.queueEvent("timer", {action = "finish_run", payload = data.payload})
-            lib.savePlayerTime(currentPlayer, data.payload)
-            renderBoard()
-        end
-
-    elseif data.action == "set_player_list" then
-        players = data.payload
-
-    elseif data.action == "set_start_pos" then
-        config.startPos = data.payload
-
-    elseif data.action == "set_end_pos" then
-        config.endPos = data.payload
-    end
-end
-
 renderBoard()
 
 return function()
     while true do
         local _, data = os.pullEvent("leaderboard")
-        handleLeaderboard(data)
+
+        if type(data) ~= "table" then
+            error("tried to send non-table data to leaderboard")
+        end
+
+        -- All events passed between modules will be in this format
+        ---@cast data MessageEvent
+
+        if data.action == "start_run" then
+            local nearestPlayer = utils.getNearestPlayer(
+                config.startPos.x,
+                config.startPos.y,
+                config.startPos.z,
+                pd,
+                players
+            )
+
+            lib.tryAddPlayer(nearestPlayer.name)
+            lib.updateAttempt(nearestPlayer.name)
+
+            if nearestPlayer.distance <= maxActuationDist then
+                currentPlayer = nearestPlayer.name
+                renderActiveRunner(currentPlayer)
+            end
+
+        elseif data.action == "try_cancel_run" then
+            if isPlayerRunning(config.startPos) then
+                os.queueEvent("timer", { action = "cancel_run" })
+                currentPlayer = nil
+                mon.setBackgroundColor(colors.black)
+                renderBoard()
+            end
+
+        elseif data.action == "save_player_time" then
+            if isPlayerRunning(config.endPos) then
+                os.queueEvent("timer", {action = "finish_run", payload = data.payload})
+                lib.savePlayerTime(currentPlayer, data.payload)
+                renderBoard()
+            end
+
+        elseif data.action == "set_player_list" then
+            players = data.payload
+
+        elseif data.action == "set_start_pos" then
+            config.startPos = data.payload
+
+        elseif data.action == "set_end_pos" then
+            config.endPos = data.payload
+        end
     end
 end
 
