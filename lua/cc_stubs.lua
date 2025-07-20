@@ -30,6 +30,11 @@ function os.pullEventRaw(filter) end
 ---@return integer
 function os.startTimer(seconds) end
 
+---Returns the current time in milliseconds since an epoch, depending on the locale.
+---@param locale? "ingame"|"utc"|"local"  # Optional. Defaults to "ingame".
+---@return integer  # Milliseconds since the selected epoch.
+function os.epoch(locale) end
+
 ---Cancels a previously started timer, preventing its event from firing.
 ---@param timerID integer  # The timer ID returned by os.setTimer().
 ---@return boolean         # True if the timer was cancelled successfully, false if not found.
@@ -304,13 +309,13 @@ function http.get(url) end
 ---@return string|nil responseBody
 function http.post(url, data) end
 
----Performs an HTTP request with a custom method.
----@param url string
----@param postData? string
----@param headers? table<string, string>
----@param method? string # e.g. "GET", "POST", "PUT"
----@return string|nil responseBody
-function http.request(url, postData, headers, method) end
+---Initiates an asynchronous HTTP request.
+---@param url string The URL to request.
+---@param body? string Optional body. If provided, performs a POST request.
+---@param headers? table<string, string> Optional headers as key-value pairs.
+---@param binary? boolean Optional. Whether to open the response handle in binary mode (default false).
+---@return string|nil Request handle ID if the request was successful, otherwise nil.
+function http.request(url, body, headers, binary) end
 
 ---Performs a HEAD request to the given URL.
 ---@param url string
