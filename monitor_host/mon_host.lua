@@ -5,7 +5,6 @@
 --
 local utils = require("utils")
 
-local modem      = utils.getModem()
 local mon        = utils.getMonitor()
 local configFile = "monhost.cfg"
 local config = {
@@ -20,7 +19,7 @@ end
 
 config = utils.loadConfig(configFile, config)
 
-rednet.open(peripheral.getName(modem))
+rednet.open(peripheral.getName(utils.getModem()))
 rednet.host(config.protocol, config.hostname)
 
 mon.setTextScale(4.5)

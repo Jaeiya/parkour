@@ -12,25 +12,20 @@
 -- monitor host. Just setup and restart computer. It
 -- will run automatically.
 --
+local utils = require("utils")
+
+---@class MonhostPaths
+---@field monhost string
+---@field startup string
+---@field utils   string
+
+---@type MonhostPaths
 local paths = {
     monhost = "disk/monhost",
     startup = "disk/monhost_startup",
     utils   = "disk/utils",
 }
 
-local function writeFile(filepath, text)
-    local file = fs.open(filepath, "w")
-    file.write(text)
-    file.close()
-end
-
-if not fs.exists(paths.monhost) then
-    error("missing monhost script")
-end
-
-if not fs.exists(paths.startup) then
-    error("missing monhost startup script")
-end
 
 local config = {
     hostname = "",
@@ -49,24 +44,28 @@ write("> ")
 config.protocol = read()
 
 
--- All file operations below, will overwrite
--- any existing files.
+--
+-- All file operations below will overwrite any existing files.
+--
 
 
+for key, path in pairs(paths) do
+    local f = fs.open(path, "r")
+    if not f then
+        error("could not find install file: " .. path)
+    end
+    local installPath = string.gsub(path, "disk/", "")
 
-writeFile("monhost.cfg", textutils.serialize(config))
+    if key == paths.startup then
+        utils.writeFile("startup", f.readAll())
+    else
+        utils.writeFile(installPath, f.readAll())
+    end
 
-local f = fs.open(paths.monhost, "r")
-writeFile("/monhost", f.readAll())
-f.close()
+    f.close()
+end
 
-f = fs.open(paths.startup, "r")
-writeFile("/startup", f.readAll())
-f.close()
 
-f = fs.open(paths.utils, "r")
-writeFile("/utils", f.readAll())
-f.close()
-
+utils.writeFile("monhost.cfg", textutils.serialize(config))
 
 os.reboot()
