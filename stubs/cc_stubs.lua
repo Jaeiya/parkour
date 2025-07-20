@@ -24,6 +24,17 @@ function os.pullEvent(filter) end
 ---@return any ... Additional event parameters.
 function os.pullEventRaw(filter) end
 
+---Starts a timer that queues a `timer` event after the given delay in seconds.
+---Returns the timer ID as an integer.
+---@param seconds number
+---@return integer
+function os.startTimer(seconds) end
+
+---Cancels a previously started timer, preventing its event from firing.
+---@param timerID integer  # The timer ID returned by os.setTimer().
+---@return boolean         # True if the timer was cancelled successfully, false if not found.
+function os.cancelTimer(timerID) end
+
 ---Pauses execution for a number of seconds.
 ---@param seconds number Number of seconds to sleep.
 function os.sleep(seconds) end
