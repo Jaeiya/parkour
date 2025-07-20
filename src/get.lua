@@ -138,7 +138,11 @@ local function getScriptFile(script)
         error("failed to get script: " .. script.slug)
     end
 
-    return resp.readAll()
+    local content = resp.readAll()
+    if not content then
+        error("github responded with an empty body")
+    end
+    return content
 end
 
 
