@@ -10,7 +10,7 @@ local FileHandle = {}
 function FileHandle.readLine() end
 
 ---Reads all remaining content from the file.
----@return string|nil content
+---@return string content
 function FileHandle.readAll() end
 
 ---Writes text to the file.
