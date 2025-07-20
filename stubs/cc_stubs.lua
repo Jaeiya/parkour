@@ -121,7 +121,7 @@ function fs.delete(path) end
 ---Opens a file in read, write, or append mode.
 ---@param path string
 ---@param mode "r"|"w"|"a"
----@return FileHandle handle
+---@return FileHandle|nil handle
 function fs.open(path, mode) end
 
 ---Returns the drive’s mount path for a given path.
