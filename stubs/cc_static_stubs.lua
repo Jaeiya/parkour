@@ -40,4 +40,8 @@ function HTTPResponse.readAll() end
 ---Closes the HTTP connection.
 function HTTPResponse.close() end
 
-return HTTPResponse
+
+---@class MessageEvent
+---@field action string The action that should be taken by the receiver
+---@field payload? any Any data that is pertinent to the action
+
