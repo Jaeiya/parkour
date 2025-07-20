@@ -1,13 +1,10 @@
-local pd = peripheral.find("player_detector")
-if not pd then
-    term.setTextColor(colors.red)
-    print("failed to run player detection; missing player detector")
-    return
-end
+local utils = require("utils")
 
 local intervalDelay = 2 -- seconds
 
 local players = pd.getOnlinePlayers()
+local pd        = utils.getPlayerDetector()
+local players   = pd.getOnlinePlayers()
 
 return function(...)
     local listeners = {}

@@ -4,13 +4,9 @@
 -- on a specific protocol.
 --
 local utils = require("utils")
-local modem = peripheral.find("modem")
-if not modem then error("missing modem") end
 
-local mon = peripheral.find("monitor")
-if not mon then error("missing monitors") end
-
-
+local modem      = utils.getModem()
+local mon        = utils.getMonitor()
 local configFile = "monhost.cfg"
 local config = {
     protocol = "",

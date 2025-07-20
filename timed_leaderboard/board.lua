@@ -1,11 +1,8 @@
 local utils = require("utils")
 local lib = require("board_lib")
 
----@type PlayerDetector
-local pd  = utils.getPeripheral("player_detector")
-
----@type Monitor
-local mon = utils.getPeripheral("monitor")
+local pd  = utils.getPlayerDetector()
+local mon = utils.getMonitor()
 
 mon.clear()
 mon.setTextScale(2)

@@ -24,13 +24,8 @@ local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local leaderBoardEvent = "leaderboard"
 
-local modem = peripheral.find("modem")
-if not modem then
-    error("missing modem")
-end
-
 local config = lib.loadConfig()
-rednet.open(peripheral.getName(modem))
+rednet.open(peripheral.getName(utils.getModem()))
 
 -- Always startup with monitors zero'd out
 rednet.broadcast("00:00:00.00", config.protocol)
