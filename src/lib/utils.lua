@@ -196,7 +196,7 @@ end
 local function getSinglePeripheral(name)
     local p1, p2 = peripheral.find(name)
     if not p1 then
-        error("missing " .. name)
+        return nil
     end
     if p2 then
         error("found more than one " .. name)
@@ -205,28 +205,28 @@ local function getSinglePeripheral(name)
 end
 
 ---Tries to find a single monitor and return it
----@return Monitor
+---@return Monitor|nil
 function utils.getMonitor()
     return getSinglePeripheral("monitor")
 end
 
 
 ---Tries to find a single modem and return it
----@return Modem
+---@return Modem|nil
 function utils.getModem()
     return getSinglePeripheral("modem")
 end
 
 
 ---Tries to find a player detector and return it
----@return PlayerDetector
+---@return PlayerDetector|nil
 function utils.getPlayerDetector()
     return getSinglePeripheral("player_detector")
 end
 
 
 ---Tries to find a single drive and return it
----@return Drive
+---@return Drive|nil
 function utils.getDrive()
     return getSinglePeripheral("drive")
 end

@@ -20,12 +20,19 @@
 --
 local utils = require("utils")
 local lib = require("board_lib")
+
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local leaderBoardEvent = "leaderboard"
-
 local config = lib.loadConfig()
-rednet.open(peripheral.getName(utils.getModem()))
+
+local modem = utils.getModem()
+if not modem then
+    printError("timer terminated; missing modem")
+    return false
+end
+
+rednet.open(peripheral.getName(modem))
 
 -- Always startup with monitors zero'd out
 rednet.broadcast("00:00:00.00", config.protocol)

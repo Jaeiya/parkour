@@ -2,7 +2,15 @@ local utils = require("utils")
 local lib = require("board_lib")
 
 local pd  = utils.getPlayerDetector()
+if not pd then
+    return printError("board terminated; missing player detector")
+end
+
 local mon = utils.getMonitor()
+if not mon then
+    printError("board terminated; missing monitor")
+    return false
+end
 
 mon.clear()
 mon.setTextScale(2)

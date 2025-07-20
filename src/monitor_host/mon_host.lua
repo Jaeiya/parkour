@@ -5,7 +5,12 @@
 --
 local utils = require("utils")
 
-local mon        = utils.getMonitor()
+local mon = utils.getMonitor()
+if not mon then
+    print()
+    return printError("script terminated; missing monitor")
+end
+
 local configFile = "monhost.cfg"
 local config = {
     protocol = "",

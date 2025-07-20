@@ -1,6 +1,11 @@
 local utils = require("utils")
 
-local pd          = utils.getPlayerDetector()
+local pd = utils.getPlayerDetector()
+if not pd then
+    printError("player detection terminated; missing player detector")
+    return false
+end
+
 local playerNames = pd.getOnlinePlayers()
 local listeners   = {}
 

@@ -1,11 +1,19 @@
-local execBoard = require("board")
+
+term.clear()
+term.setCursorPos(1, 1)
+
 local execTimer = require("board_timer")
+local execBoard = require("board")
 local execRedstone = require("board_redstone")
 local execPlayerDetection = require("detect_player")
 local execBoardUI = require("board_ui")
 
-term.clear()
-term.setCursorPos(1, 1)
+
+-- Check if scripts have failed initialization
+if not execTimer or not execBoard or not execPlayerDetection then
+    return
+end
+
 -- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
     function() execTimer() end,
