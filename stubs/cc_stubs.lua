@@ -248,6 +248,13 @@ function rednet.open(side) end
 ---@param side string
 function rednet.close(side) end
 
+---Registers the current computer as a host for a given protocol.
+---After hosting, other computers can use `rednet.lookup()` to find this computer under that protocol.
+---@param protocol string  # The protocol name to host under.
+---@param hostname string  # The host name to advertise as.
+---@return boolean success # True if hosting succeeded, false if hosting failed (e.g., invalid arguments).
+function rednet.host(protocol, hostname) end
+
 ---Sends a message to a specific computer ID.
 ---@param recipient number # Target computer ID
 ---@param message any # Message to send (any Lua value)
