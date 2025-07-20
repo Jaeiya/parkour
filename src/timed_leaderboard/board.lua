@@ -16,9 +16,14 @@ mon.clear()
 mon.setTextScale(2)
 mon.setBackgroundColor(colors.black)
 
+---Names of all players currently online, updated through
+---player detector event.
 ---@type string[]
 local onlinePlayerNames = {}
-local currentPlayer     = ""
+
+---The player that is currently running the course (if any)
+local runningPlayerName = ""
+
 local config            = lib.loadConfig()
 local maxActuationDist  = 3 -- Max distance from configured start and end positions
 
@@ -28,7 +33,7 @@ local maxActuationDist  = 3 -- Max distance from configured start and end positi
 local function isPlayerRunning(pos)
     local nearestPlayer = utils.getNearestPlayer(pos, pd, onlinePlayerNames)
     if nearestPlayer.distance <= maxActuationDist then
-        if nearestPlayer.name == currentPlayer then
+        if nearestPlayer.name == runningPlayerName then
             return true
         end
     end
@@ -74,12 +79,13 @@ local function renderBoard()
     mon.setCursorPos(1, yPos)
     mon.setTextColor(colors.lime)
     mon.write(utils.centerText("Leader Board", mon))
+    local players = lib.get()
 
     -- Add padding between times and title
     yPos = yPos + 1
 
     -- Display flavor text if level has no players
-    if #lib.get() == 0 then
+    if #players == 0 then
         mon.setCursorPos(1, yPos + 3)
         mon.setTextColor(colors.orange)
         mon.write(utils.centerText("Be the first to run this level!", mon))
@@ -88,8 +94,7 @@ local function renderBoard()
 
     -- Calculate name column width
     local columnWidth = 0
-    for _, name in ipairs(onlinePlayerNames) do
-        local player = lib.findPlayer(name)
+    for _, player in ipairs(players) do
         if player then
             local nameWidth = #player.name
             if nameWidth > columnWidth and player.time.pb > 0 then
@@ -105,9 +110,8 @@ local function renderBoard()
     local lineLen     = columnWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
 
-    for _, name in ipairs(onlinePlayerNames) do
-        local player = lib.findPlayer(name)
-        if player and player.time.pb > 0 then
+    for _, player in ipairs(players) do
+        if player.time.pb > 0 then
             local attemptStr = string.format("%03d", player.attempts.pb)
             local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
@@ -130,9 +134,9 @@ local function renderBoard()
 end
 
 
-renderBoard()
-
 return function()
+    renderBoard()
+
     while true do
         local _, data = os.pullEvent("leaderboard")
 
@@ -150,14 +154,14 @@ return function()
             lib.updateAttempt(nearestPlayer.name)
 
             if nearestPlayer.distance <= maxActuationDist then
-                currentPlayer = nearestPlayer.name
-                renderActiveRunner(currentPlayer)
+                runningPlayerName = nearestPlayer.name
+                renderActiveRunner(runningPlayerName)
             end
 
         elseif data.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
                 os.queueEvent("timer", { action = "cancel_run" })
-                currentPlayer = nil
+                runningPlayerName = nil
                 mon.setBackgroundColor(colors.black)
                 renderBoard()
             end
@@ -165,7 +169,7 @@ return function()
         elseif data.action == "save_player_time" then
             if isPlayerRunning(config.endPos) then
                 os.queueEvent("timer", {action = "finish_run", payload = data.payload})
-                lib.savePlayerTime(currentPlayer, data.payload)
+                lib.savePlayerTime(runningPlayerName, data.payload)
                 renderBoard()
             end
 
