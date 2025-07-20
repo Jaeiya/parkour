@@ -1,7 +1,7 @@
 ---@diagnostic disable
 
 
-
+---Specifically for fs.open()
 ---@class FileHandle
 local FileHandle = {}
 
@@ -26,6 +26,7 @@ function FileHandle.close() end
 
 
 
+---Specifically for http.get()
 ---@class HTTPResponse
 local HTTPResponse = {}
 
@@ -41,6 +42,8 @@ function HTTPResponse.readAll() end
 function HTTPResponse.close() end
 
 
+
+---Used for passing messages between modules
 ---@class MessageEvent
 ---@field action string The action that should be taken by the receiver
 ---@field payload? any Any data that is pertinent to the action
