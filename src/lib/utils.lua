@@ -57,15 +57,15 @@ end
 ---Gets the nearest player to the specified coordinates
 ---@param pos Coord The coordinate position to compare with player positions
 ---@param playerDetector PlayerDetector
----@param players string[]
-function utils.getNearestPlayer(pos, playerDetector, players)
+---@param playerNames string[]
+function utils.getNearestPlayer(pos, playerDetector, playerNames)
     local nearestPlayer = ""
     local nearestPos   = math.huge
 
-    for i = 1, #players do
-        local playerPosObj = playerDetector.getPlayerPos(players[i])
+    for _, name in ipairs(playerNames) do
+        local playerPosObj = playerDetector.getPlayerPos(name)
         if not playerPosObj then
-            error("failed to get player position: " .. players[i])
+            error("failed to get player position: " .. name)
         end
         local playerPosDiff = utils.sum(
             diffCoords(pos.x, playerPosObj.x),
@@ -74,7 +74,7 @@ function utils.getNearestPlayer(pos, playerDetector, players)
         )
         if playerPosDiff < nearestPos then
             nearestPos = playerPosDiff
-            nearestPlayer = players[i]
+            nearestPlayer = name
         end
     end
 

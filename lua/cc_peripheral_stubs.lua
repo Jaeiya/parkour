@@ -107,9 +107,9 @@ function Modem.isWireless() end
 local playerDetector = {}
 
 ---Returns information about the player with the given username.
----@param username string
+---@param playerName string
 ---@return PlayerInfo|nil playerInfo
-function playerDetector.getPlayerPos(username) end
+function playerDetector.getPlayerPos(playerName) end
 
 ---Returns a list of all online players.
 ---@return string[] players
