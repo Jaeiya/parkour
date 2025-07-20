@@ -20,6 +20,7 @@
 --
 local utils = require("utils")
 local lib = require("board_lib")
+local state = require("board_state")
 
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
@@ -59,15 +60,17 @@ return function()
             iterations = 1
             os.queueEvent(leaderBoardEvent, {action="start_run"})
             timerID = os.startTimer(speed)
+            state.isTimerActive = true
 
         elseif data.action == "cancel_run" then
             os.cancelTimer(timerID)
+            state.isTimerActive = false
             utils.milliseconds = 0
             rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
 
         elseif data.action == "finish_run" then
             os.cancelTimer(timerID)
-            utils.milliseconds = 0
+            state.isTimerActive = false
             -- Payload should always be the millisecond time when user
             -- pressed actuation (button/pressure plate).
             rednet.broadcast(utils.getTimerStr(data.payload), config.protocol)

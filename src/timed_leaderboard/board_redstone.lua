@@ -7,7 +7,7 @@ return function()
         local right = redstone.getInput("right")
         local left = redstone.getInput("left")
 
-        if right and utils.milliseconds == 0 then
+        if right and not state.isTimerActive then
             os.queueEvent("timer", { action = "start" })
 
         elseif right then

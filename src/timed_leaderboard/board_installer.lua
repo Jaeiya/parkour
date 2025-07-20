@@ -17,6 +17,7 @@ local lib = require("board_lib")
 ---@field boardData string
 ---@field boardUI string
 ---@field boardRedstone string
+---@field boardState string
 ---@field utils string
 ---@field playerDetector string
 
@@ -28,6 +29,7 @@ local paths = {
     boardData      = "disk/board_lib",
     boardUI        = "disk/board_ui",
     boardRedstone  = "disk/board_redstone",
+    boardState     = "disk/board_state",
     utils          = "disk/utils",
     playerDetector = "disk/detect_player",
 }

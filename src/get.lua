@@ -37,6 +37,7 @@ end
 
 ---@class ScriptMap
 ---@field get Script
+---
 ---@field boardinstaller Script
 ---@field board Script
 ---@field boardlib Script
@@ -44,15 +45,17 @@ end
 ---@field boardui Script
 ---@field boardstartup Script
 ---@field boardtimer Script
+---@field boardstate Script
+---
 ---@field monhostinstaller Script
 ---@field monhoststartup Script
 ---@field monhost Script
+---
 ---@field display Script
 ---@field displayinstaller Script
 ---@field detectplayer Script
+---
 ---@field utils Script
-
----@type ScriptMap
 local scriptMap = {
     get            = { slug = "get.lua", fileName = "get" },
 
@@ -63,6 +66,7 @@ local scriptMap = {
     boardui        = { slug = "boardui.lua",        fileName = "board_ui" },
     boardstartup   = { slug = "boardstartup.lua",   fileName = "board_startup" },
     boardtimer     = { slug = "boardtimer.lua",     fileName = "board_timer" },
+    boardstate     = { slug = "boardstate.lua",     fileName = "board_state" },
 
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "install_monhost" },
     monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhost_startup" },
@@ -81,8 +85,6 @@ local scriptMap = {
 ---@field leaderboard Script[]
 ---@field monhost Script[]
 ---@field display Script[]
-
----@type DiskMap
 local diskMap = {
     master = {
         scriptMap.get,
@@ -108,6 +110,7 @@ local diskMap = {
         scriptMap.boardinstaller,
         scriptMap.boardstartup,
         scriptMap.boardtimer,
+        scriptMap.boardstate,
         scriptMap.utils,
         scriptMap.detectplayer,
     },
