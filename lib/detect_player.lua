@@ -15,7 +15,6 @@ local function updateListeners()
 end
 
 
-
 local function startListening()
     parallel.waitForAny(
         function ()
@@ -34,6 +33,7 @@ local function startListening()
         end
     )
 end
+
 
 return function(...)
     for _, listener in ipairs({...}) do
