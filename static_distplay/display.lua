@@ -1,6 +1,9 @@
 
 local utils = require("utils")
+
 local mon = nil
+
+-- Find the monitor connected through the modem
 for _, name in ipairs(peripheral.getNames()) do
     if peripheral.getType(name) == "monitor" then
         mon = peripheral.wrap(name)
@@ -13,8 +16,9 @@ if not mon then
     print("no monitor found; connect a monitor!")
 end
 
--- Prevents linter warnings
-assert(mon, "monitor should not be nil")
+-- We know for a fact that if we reach this point, then
+-- the variable is not nil.
+---@cast mon Monitor
 
 local configFile = "display.cfg"
 local config = {
