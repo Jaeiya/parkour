@@ -9,6 +9,18 @@ local lib = require("board_lib")
 -- Once the setup is finished, restarting the server
 -- will run the timer script.
 --
+
+---@class BoardPaths
+---@field boardTimer string
+---@field boardStartup string
+---@field board string
+---@field boardData string
+---@field boardUI string
+---@field boardRedstone string
+---@field utils string
+---@field playerDetector string
+
+---@type BoardPaths
 local paths = {
     boardTimer     = "disk/board_timer",
     boardStartup   = "disk/board_startup",
@@ -17,8 +29,9 @@ local paths = {
     boardUI        = "disk/board_ui",
     boardRedstone  = "disk/board_redstone",
     utils          = "disk/utils",
-    playerDetector = "disk/detect_player"
+    playerDetector = "disk/detect_player",
 }
+
 
 
 local function promptProtocol()
@@ -27,16 +40,6 @@ local function promptProtocol()
     write("> ")
     return read()
 end
-
-
-if not fs.exists(paths.boardTimer) then
-    error("missing board timer script")
-end
-
-if not fs.exists(paths.boardStartup) then
-    error("missing board startup script")
-end
-
 
 -- All file operations below, will overwrite
 -- any existing files.
@@ -47,40 +50,25 @@ lib.saveBoardConfig(
     utils.promptCoords("Enter End Pos")
 )
 
-local f = fs.open(paths.boardTimer, "r")
-utils.writeFile("/board_timer", f.readAll())
-f.close()
+for key, path in pairs(paths) do
+    local f = fs.open(path, "r")
+    if not f then
+        error("could not find install file: " .. path)
+    end
+    local installPath = string.gsub(path, "disk/", "")
 
-f = fs.open("settings", "w")
+    if key == "boardStartup" then
+        utils.writeFile("startup", f.readAll())
+    else
+        utils.writeFile(installPath, f.readAll())
+    end
+
+    f.close()
+end
+
+local f = fs.open("settings", "w")
+if not f then error() end -- to appease linter
 utils.writeFile("settings", "motd.enable=false")
-f.close()
-
-f = fs.open(paths.board, "r")
-utils.writeFile("/board", f.readAll())
-f.close()
-
-f = fs.open(paths.boardData, "r")
-utils.writeFile("/board_lib", f.readAll())
-f.close()
-
-f = fs.open(paths.boardUI, "r")
-utils.writeFile("/board_ui", f.readAll())
-f.close()
-
-f = fs.open(paths.boardStartup, "r")
-utils.writeFile("/startup", f.readAll())
-f.close()
-
-f = fs.open(paths.boardRedstone, "r")
-utils.writeFile("/board_redstone", f.readAll())
-f.close()
-
-f = fs.open(paths.utils, "r")
-utils.writeFile("/utils", f.readAll())
-f.close()
-
-f = fs.open(paths.playerDetector, "r")
-utils.writeFile("/detect_player", f.readAll())
 f.close()
 
 os.reboot()
