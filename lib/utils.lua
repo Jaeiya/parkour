@@ -5,6 +5,7 @@ local utils = {
     milliseconds = 0
 }
 
+
 ---Splits at every space character
 ---@param str string The string to split
 ---@return string[]
@@ -121,7 +122,7 @@ end
 ---@param path string The path to the config file
 ---@param defaults T The default configuration value to use
 ---@return T
-utils.loadConfig = function(path, defaults)
+function utils.loadConfig(path, defaults)
     if not fs.exists(path) then
         utils.writeFile(path, textutils.serialize(defaults))
         return defaults
@@ -140,7 +141,7 @@ end
 ---path.
 ---@param path string Path to config file
 ---@param data any The data to serialize to config file
-utils.saveConfig = function (path, data)
+function utils.saveConfig(path, data)
     utils.writeFile(path, textutils.serialize(data))
 end
 
@@ -186,47 +187,48 @@ function utils.promptCoords(promptText)
 end
 
 
----Tries to find a monitor and return it
+---Tries to find the specified peripheral and return it. If more
+---than one is found or cannot be found, an error will occur.
+---
+---This function should never be exported as it's only used
+---internally get specific peripherals.
+local function getSinglePeripheral(name)
+    local p1, p2 = peripheral.find(name)
+    if not p1 then
+        error("missing " .. name)
+    end
+    if p2 then
+        error("found more than one " .. name)
+    end
+    return p1
+end
+
+---Tries to find a single monitor and return it
 ---@return Monitor
 function utils.getMonitor()
-    local p1, p2 = peripheral.find("monitor")
-    if not p1 then
-        error("missing monitor")
-    end
-    if p2 then
-        error("found more than one monitor")
-    end
-    return p1
+    return getSinglePeripheral("monitor")
 end
 
 
----Tries to find a modem and return it
+---Tries to find a single modem and return it
 ---@return Modem
 function utils.getModem()
-    local p1, p2 = peripheral.find("modem")
-    if not p1 then
-        error("missing modem")
-    end
-    if p2 then
-        error("found more than one modem")
-    end
-    return p1
+    return getSinglePeripheral("modem")
 end
 
 
----Tries to find a monitor and return it
+---Tries to find a player detector and return it
 ---@return PlayerDetector
 function utils.getPlayerDetector()
-    local p1, p2 = peripheral.find("player_detector")
-    if not p1 then
-        error("missing player detector")
-    end
-    if p2 then
-        error("found more than one player detector")
-    end
-    return p1
+    return getSinglePeripheral("player_detector")
 end
 
+
+---Tries to find a single drive and return it
+---@return Drive
+function utils.getDrive()
+    return getSinglePeripheral("drive")
+end
 return utils
 
 
