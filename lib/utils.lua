@@ -5,8 +5,10 @@ local utils = {
     milliseconds = 0
 }
 
--- splitString at every space character
-utils.splitString = function(str)
+---Splits at every space character
+---@param str string The string to split
+---@return string[]
+function utils.splitString(str)
     local result = {}
     for word in str:gmatch("%S+") do
         table.insert(result, word)
@@ -15,7 +17,10 @@ utils.splitString = function(str)
 end
 
 
-utils.writeFile = function(filepath, text)
+---Creates or overwrites the specified filepath
+---@param filepath string The full path of the file
+---@param text string The content to save to the file
+function utils.writeFile(filepath, text)
     local file = fs.open(filepath, "w")
     file.write(text)
     file.close()
@@ -29,28 +34,45 @@ utils.getPeripheral = function(name)
     return p
 end
 
--- sum adds all variadic arguments together
-utils.sum = function(...)
+
+---Adds all arguments together
+---@vararg integer
+---@return integer
+function utils.sum(...)
+    ---@type integer[]
+    local nums = {...}
     local total = 0
-    for _, num in ipairs({...}) do
+    for _, num in ipairs(nums) do
         total = total + num
     end
     return total
 end
 
--- diffCoords compares two coordinates and determines
--- their absolute distance.
+
+---Compares two coordinates and determines
+---their absolute distance.
+---@param coord1 integer
+---@param coord2 integer
 local function diffCoords(coord1, coord2)
     return math.abs(coord1 - coord2)
 end
 
 
-utils.getNearestPlayer = function(x, y, z, playerDetector, players)
+---Gets the nearest player to the specified coordinates
+---@param x integer
+---@param y integer
+---@param z integer
+---@param playerDetector PlayerDetector
+---@param players string[]
+function utils.getNearestPlayer(x, y, z, playerDetector, players)
     local nearestPlayer = ""
     local nearestPos   = math.huge
 
     for i = 1, #players do
         local playerPosObj = playerDetector.getPlayerPos(players[i])
+        if not playerPosObj then
+            error("failed to get player position: " .. players[i])
+        end
         local playerPosDiff = utils.sum(
             diffCoords(x, playerPosObj.x),
             diffCoords(y, playerPosObj.y),
@@ -69,21 +91,23 @@ utils.getNearestPlayer = function(x, y, z, playerDetector, players)
 end
 
 
--- centerText on a specified monitor
-utils.centerText = function(text, mon)
+---Centers text on the specified monitor
+---@param text string The text to write to the monitor
+---@param mon Monitor
+function utils.centerText(text, mon)
     local w = mon.getSize()
     return string.rep(" ", (w - #text) / 2) .. text
 end
 
 
--- getTimerStr in the format 00:00:00.00, from the
--- specified milliseconds.
-utils.getTimerStr = function(milliseconds)
+---Converts the specified milliseconds to the
+---string: 00:00:00.00
+---@param milliseconds integer
+function utils.getTimerStr(milliseconds)
     local ticks   = math.floor(milliseconds / 50)
     local seconds = math.floor(milliseconds / 1000)
     local minutes = math.floor(seconds / 60)
     local hours   = math.floor(minutes / 60)
-
 
     local str = string.format(
         "%02d:%02d:%02d.%02d",
@@ -123,7 +147,9 @@ utils.saveConfig = function (path, data)
 end
 
 
-utils.promptCoords = function(promptText)
+---Prompts the user for coordinates and validates them
+---@param promptText string Should tell the user what type of coords to enter
+function utils.promptCoords(promptText)
 ::restart::
     print()
     term.setTextColor(colors.lightBlue)
@@ -140,21 +166,24 @@ utils.promptCoords = function(promptText)
         goto restart
     end
 
+    ---@type integer[]
+    local coords = {}
+
     -- Convert coords to numbers
     for i = 1, #coordParts do
-        local coord = coordParts[i]
-        coordParts[i] = tonumber(coord)
-        if not coordParts[i] then
+        local coord = tonumber(coordParts[i])
+        if not coord then
             term.setTextColor(colors.red)
-            print("coordinate '" .. coord .. "' is not a number; try again!")
+            print("coordinate '" .. coordParts[i] .. "' is not a number; try again!")
             goto restart
         end
+        coords[i] = coord
     end
 
     return {
-        x = coordParts[1],
-        y = coordParts[2],
-        z = coordParts[3],
+        x = coords[1],
+        y = coords[2],
+        z = coords[3],
     }
 end
 
