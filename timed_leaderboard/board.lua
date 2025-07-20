@@ -18,7 +18,7 @@ local maxActuationDist = 3 -- Max distance from configured start and end positio
 ---at the specified position
 ---@param pos Coord
 local function isPlayerRunning(pos)
-    local nearestPlayer = utils.getNearestPlayer(pos.x, pos.y, pos.z, pd, players)
+    local nearestPlayer = utils.getNearestPlayer(pos, pd, players)
     if nearestPlayer.distance <= maxActuationDist then
         if nearestPlayer.name == currentPlayer then
             return true
@@ -130,13 +130,7 @@ return function()
         ---@cast data MessageEvent
 
         if data.action == "start_run" then
-            local nearestPlayer = utils.getNearestPlayer(
-                config.startPos.x,
-                config.startPos.y,
-                config.startPos.z,
-                pd,
-                players
-            )
+            local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, players)
 
             lib.tryAddPlayer(nearestPlayer.name)
             lib.updateAttempt(nearestPlayer.name)
