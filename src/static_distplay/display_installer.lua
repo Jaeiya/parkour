@@ -11,12 +11,8 @@ local paths = {
     utils = "disk/utils",
 }
 
-
---
--- All file operations below will overwrite existing files.
---
-
-
+---We manually write the startup directly to disk
+---because it's too simple to require its own file.
 utils.writeFile("startup", 'term.clear()\nterm.setCursorPos(1, 1)\nshell.run("display")')
 
 for _, path in pairs(paths) do
