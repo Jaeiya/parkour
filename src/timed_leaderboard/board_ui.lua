@@ -22,7 +22,7 @@ local function promptMonitorProtocol()
     print("Enter Monitor Protocol")
     print()
     write("> ")
-    return read()
+    return utils.read()
 end
 
 
@@ -84,7 +84,7 @@ return function()
     print("Set Monitor Protocol")
     print()
     write("> ")
-    local choice = tonumber(read())
+    local choice = tonumber(utils.read())
 
     if not choices[choice] then
         term.setTextColor(colors.red)

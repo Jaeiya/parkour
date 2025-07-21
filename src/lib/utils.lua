@@ -151,7 +151,7 @@ function utils.promptCoords(promptText)
     print(promptText)
     term.setTextColor(colors.white)
     write("> ")
-    local coords = utils.trim(read())
+    local coords = utils.read()
 
     -- Validate coord entry
     local coordParts = utils.splitString(coords)

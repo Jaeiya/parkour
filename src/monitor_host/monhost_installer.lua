@@ -94,7 +94,7 @@ term.setTextColor(colors.orange)
 write("(unique)\n")
 term.setTextColor(colors.white)
 write("> ")
-config.hostname = read()
+config.hostname = utils.read()
 
 print()
 term.setTextColor(colors.lightBlue)
@@ -103,7 +103,7 @@ term.setTextColor(colors.lightGray)
 write("(anything)\n")
 term.setTextColor(colors.white)
 write("> ")
-config.protocol = read()
+config.protocol = utils.read()
 
 
 for _, path in pairs(paths) do

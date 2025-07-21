@@ -56,7 +56,7 @@ local function setText()
     print("Enter new text")
     print()
     write("> ")
-    text = read()
+    text = utils.read()
     config.text = text
     utils.saveConfig(configFile, config)
 end
@@ -69,7 +69,7 @@ local function setColor()
     print("Enter new text color")
     print()
     write("> ")
-    local color = read()
+    local color = utils.read()
 
     if not colors[color] then
         term.setTextColor(colors.red)
@@ -90,7 +90,7 @@ local function setScale()
     print("Enter new text scale")
     print()
     write("> ")
-    local scale = read()
+    local scale = utils.read()
     scale = tonumber(scale)
 
     if not scale then
@@ -126,7 +126,7 @@ local function setStarRating()
     print("Enter new star rating")
     print()
     write("> ")
-    local rating = read()
+    local rating = utils.read()
     rating = tonumber(rating)
 
     if not rating then
@@ -163,7 +163,7 @@ print(" 3. Set Scale")
 print(" 4. Set Star Rating")
 print()
 write("> ")
-local choice = read()
+local choice = utils.read()
 
 if not tonumber(choice) then
     term.setTextColor(colors.red)
