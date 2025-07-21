@@ -262,17 +262,23 @@ end
 ---from the numbered list.
 ---@param title string
 ---@param items string[]
+---@param clearScreen? boolean Whether or not to clear the screen on each render (defaults to true)
 ---@return integer choice The selected index of an item from the menu
 ---@return boolean existed True if the user chose to exit the prompt
-function utils.promptMenu(title, items)
+function utils.promptMenu(title, items, clearScreen)
 ::prompt::
-    term.clear()
-    term.setCursorPos(1, 1)
+    if clearScreen == nil then
+        clearScreen = true
+    end
+
+    if clearScreen then
+        term.clear()
+        term.setCursorPos(1, 1)
+    end
+
     term.setTextColor(colors.yellow)
     print(title)
     print()
-
-    -- Render menu
     for i, item in ipairs(items) do
         term.setTextColor(colors.lightGray)
         write("  " .. i .. ". ")
