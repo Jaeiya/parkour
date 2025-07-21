@@ -166,20 +166,11 @@ end
 ---@param promptText string Should tell the user what type of coords to enter
 ---@return Coord
 function utils.promptCoords(promptText)
-::restart::
-    print()
-    term.setTextColor(colors.lightBlue)
-    print(promptText)
-    term.setTextColor(colors.white)
-    write("> ")
-    local coords = utils.read()
-
-    -- Validate coord entry
-    local coordParts = utils.splitString(coords)
+::prompt::
+    local coordParts = utils.splitString(utils.prompt(promptText))
     if #coordParts ~= 3 then
-        term.setTextColor(colors.red)
-        print("invalid coord length; try again!")
-        goto restart
+        printError("invalid coord length; try again!")
+        goto prompt
     end
 
     ---@type integer[]
@@ -189,9 +180,8 @@ function utils.promptCoords(promptText)
     for i = 1, #coordParts do
         local coord = tonumber(coordParts[i])
         if not coord then
-            term.setTextColor(colors.red)
-            print("coordinate '" .. coordParts[i] .. "' is not a number; try again!")
-            goto restart
+            printError("coordinate '"..coordParts[i].."' is not a number; try again!")
+            goto prompt
         end
         coords[i] = coord
     end
