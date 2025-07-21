@@ -151,7 +151,7 @@ function utils.promptCoords(promptText)
     print(promptText)
     term.setTextColor(colors.white)
     write("> ")
-    local coords = read()
+    local coords = utils.trim(read())
 
     -- Validate coord entry
     local coordParts = utils.splitString(coords)
@@ -229,11 +229,18 @@ function utils.getDrive()
 end
 
 
----Trims all whitespace from the suffix and prefix
----of the provided text.
+---Trims all leading and trailing whitespace from the
+---specified text.
 ---@param text string
 function utils.trim(text)
     return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
+end
+
+
+---Wraps the read() and trims any trailing or leading
+---whitespace from the input automatically.
+function utils.read()
+    return utils.trim(read())
 end
 
 
