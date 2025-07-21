@@ -268,7 +268,7 @@ end
 ---Prompts the user for input
 ---@param prompt string Text telling the user what's required
 function utils.prompt(prompt)
-    utils.printColor("\n;lbu;"..prompt..";ylw;")
+    utils.printColor("\n\n;lbu;"..prompt..";ylw;")
     write("> ")
     term.setTextColor(colors.lime)
     return utils.read()
