@@ -229,6 +229,14 @@ function utils.getDrive()
 end
 
 
+---Trims all whitespace from the suffix and prefix
+---of the provided text.
+---@param text string
+function utils.trim(text)
+    return string.gsub(text, "^%s*(.-)%s*$", "%1")
+end
+
+
 
 return utils
 
