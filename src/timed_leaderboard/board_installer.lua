@@ -1,14 +1,77 @@
 local utils = require("utils")
 local lib = require("board_lib")
---
--- Copies all the files necessary to run a timer on
--- the computer, which is designed to write to a monitor
--- constellation. It will write to all monitors connected
--- to the specified protocol, via the monitor host script.
---
--- Once the setup is finished, restarting the server
--- will run the timer script.
---
+local state = require("board_state")
+
+
+---
+---
+---Installs all the files necessary to run the leaderboard and timer.
+---
+---
+
+print()
+local mon = utils.getMonitor()
+if not mon then
+    printError("Installation Aborted")
+    term.setTextColor(colors.orange)
+    write("Attach a ")
+    term.setTextColor(colors.lime)
+    write("monitor ")
+    term.setTextColor(colors.orange)
+    write("to this computer\n\n")
+    return
+end
+
+---We can't calculate the size without knowing the scale
+mon.setTextScale(state.monitorScale)
+local monW, monH = mon.getSize()
+if monW < 36 or monH < 10 then
+    printError("Installation Aborted")
+    term.setTextColor(colors.orange)
+    write("The ")
+    term.setTextColor(colors.lime)
+    write("monitor ")
+    term.setTextColor(colors.orange)
+    write("needs to be at least 7 blocks wide and 3 blocks tall\n\n")
+    return
+end
+
+if not utils.getPlayerDetector() then
+    printError("Installation Aborted")
+    term.setTextColor(colors.orange)
+    write("Attach a ")
+    term.setTextColor(colors.lime)
+    write("player detector ")
+    term.setTextColor(colors.orange)
+    write("to this computer\n\n")
+    return
+end
+
+local modem = utils.getModem()
+if not modem then
+    printError("Installation Aborted")
+    term.setTextColor(colors.orange)
+    write("Attach a ")
+    term.setTextColor(colors.lime)
+    write("wireless modem ")
+    term.setTextColor(colors.orange)
+    write("to this computer\n\n")
+    return
+end
+
+if not modem.isWireless() then
+    printError("Installation Aborted")
+    term.setTextColor(colors.orange)
+    write("The attached ")
+    term.setTextColor(colors.lime)
+    write("modem ")
+    term.setTextColor(colors.orange)
+    write("needs to be ")
+    term.setTextColor(colors.lime)
+    write("wireless\n\n")
+    return
+end
+
 
 ---@class BoardPaths
 ---@field boardTimer string

@@ -1,5 +1,6 @@
 local utils = require("utils")
 local lib = require("board_lib")
+local state = require("board_state")
 
 local pd  = utils.getPlayerDetector()
 if not pd then
@@ -13,14 +14,9 @@ if not mon then
 end
 
 mon.clear()
-mon.setTextScale(2)
+mon.setTextScale(state.monitorScale)
 mon.setBackgroundColor(colors.black)
 
-local monW, monH = mon.getSize()
-if monW < 36 or monH < 10 then
-    printError("invalid monitor size; expected at least 7 blocks wide, 3 blocks tall")
-    return false
-end
 
 ---Names of all players currently online, updated through
 ---player detector event.

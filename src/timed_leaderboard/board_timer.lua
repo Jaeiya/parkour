@@ -33,10 +33,6 @@ if not modem then
     return false
 end
 
-if not modem.isWireless() then
-    printError("timer terminated; modem must be wireless")
-    return false
-end
 
 rednet.open(peripheral.getName(modem))
 
