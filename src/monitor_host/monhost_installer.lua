@@ -1,18 +1,20 @@
---
--- Sets up the monitor hosting listener, allowing you
--- to set the host name and protocol.
---
--- The hostname must be unique but the protocol is
--- designed to be broadcasted to. This means multiple
--- monitor hosts can receive messages from the same
--- protocol. This means we can create multiple timers
--- on a single parkour level and they'll all be synced.
---
--- It creates all the necessary files for running the
--- monitor host. Just setup and restart computer. It
--- will run automatically.
---
 local utils = require("utils")
+
+
+---
+---
+---Installs the monitor host on the connected computer.
+---
+---The monitor host is designed to be broadcast to from the
+---leaderboard. You can set up multiple monitor hosts with
+---the same protocol, so that you can have multiple timer
+---displays.
+---
+---The only unique piece of information required is the
+---hostname of the device.
+---
+---
+
 
 ---@class MonhostPaths
 ---@field monhost string
