@@ -275,14 +275,18 @@ function utils.prompt(prompt)
 end
 
 
+---@class PromptMenuChoice
+---@field name string
+---@field exec function
+
+
 ---Displays a menu and prompts the user to select
 ---from the numbered list.
 ---@param title string
----@param items string[]
+---@param choices PromptMenuChoice[] A list of choices with a name and function to execute
 ---@param clearScreen? boolean Whether or not to clear the screen on each render (defaults to true)
----@return integer choice The selected index of an item from the menu
 ---@return boolean existed True if the user chose to exit the prompt
-function utils.promptMenu(title, items, clearScreen)
+function utils.promptMenu(title, choices, clearScreen)
 ::prompt::
     if clearScreen == nil then
         clearScreen = true
@@ -295,17 +299,17 @@ function utils.promptMenu(title, items, clearScreen)
 
     utils.printColor(";ylw;" .. title)
     print()
-    for i, item in ipairs(items) do
-        utils.printColor("  ;lgy;" .. i .. ". ;wht;" .. item)
+    for i, choice in ipairs(choices) do
+        utils.printColor("  ;lgy;" .. i .. ". ;wht;" .. choice.name)
     end
-    utils.printColor("\n;red;  " .. #items + 1 .. ". ;wht;Exit")
+    utils.printColor("\n;red;  " .. #choices + 1 .. ". ;wht;Exit")
     print()
     term.setTextColor(colors.yellow)
     write("> ")
     term.setTextColor(colors.lime)
-    local choice = tonumber(utils.read())
+    local selected = tonumber(utils.read())
 
-    if not choice then
+    if not selected then
         utils.printColor(";red;invalid choice; enter a number from the menu")
         print()
         utils.printColor(";gry;Enter to continue...")
@@ -313,11 +317,12 @@ function utils.promptMenu(title, items, clearScreen)
         goto prompt
     end
 
-    if choice == (#items + 1) then
-        return choice, true
+    if selected == (#choices + 1) then
+        return true
     end
 
-    return choice, false
+    choices[selected].exec()
+    return false
 end
 
 

@@ -125,26 +125,14 @@ local choices = {
 
 ::menu::
 renderDisplay()
-local choice, exiting = utils.promptMenu("Display Config", {
-    "Set Text",
-    "Set Color",
-    "Set Scale",
-    "Set Star Rating",
+local exiting = utils.promptMenu("Display Config", {
+    { name = "Set Text",        exec = setText },
+    { name = "Set Color",       exec = setColor },
+    { name = "Set Scale",       exec = setScale },
+    { name = "Set Star Rating", exec = setStarRating },
 })
 
 if exiting then
     return
 end
-
-if not choices[choice] then
-    term.setTextColor(colors.red)
-    print("choice does not exist; try again")
-    print()
-    term.setTextColor(colors.white)
-    write("Enter to continue...")
-    read()
-    goto menu
-end
-
-choices[tonumber(choice)]()
 goto menu
