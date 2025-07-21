@@ -75,21 +75,18 @@ local function setScale()
     local scale = tonumber(utils.prompt("Enter new text scale"))
 
     if not scale then
-        term.setTextColor(colors.red)
-        print("scale should be a number")
+        printError("scale should be a number")
         goto prompt
     end
 
     if scale < 0.5 or scale > 5 then
-        term.setTextColor(colors.red)
-        print("invalid scale; min: 0.5, max: 5")
+        printError("invalid scale; min: 0.5, max: 5")
         goto prompt
     end
 
     if scale % 1 > 0 then
         if (scale % 1) * 10 ~= 5 then
-            term.setTextColor(colors.red)
-            print("the smallest increment allowed is 0.5")
+            printError("the smallest increment allowed is 0.5")
             goto prompt
         end
     end
@@ -104,8 +101,7 @@ local function setStarRating()
     local stars = tonumber(utils.prompt("Enter new stars rating"))
 
     if not stars then
-        term.setTextColor(colors.red)
-        print("star rating should be a number")
+        printError("star rating should be a number")
         goto prompt
     end
 
