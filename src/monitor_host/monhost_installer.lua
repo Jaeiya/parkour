@@ -96,7 +96,6 @@ term.setTextColor(colors.white)
 write("> ")
 config.hostname = read()
 
-
 print()
 term.setTextColor(colors.lightBlue)
 write("Enter Protocol ")
@@ -105,11 +104,6 @@ write("(anything)\n")
 term.setTextColor(colors.white)
 write("> ")
 config.protocol = read()
-
-
---
--- All file operations below will overwrite any existing files.
---
 
 
 for _, path in pairs(paths) do

@@ -108,7 +108,6 @@ local paths = {
 }
 
 
-
 local function promptProtocol()
     print()
     term.setTextColor(colors.lightBlue)
@@ -118,8 +117,6 @@ local function promptProtocol()
     return read()
 end
 
--- All file operations below, will overwrite
--- any existing files.
 
 lib.saveBoardConfig(
     promptProtocol(),
