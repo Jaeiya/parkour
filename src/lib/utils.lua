@@ -276,20 +276,12 @@ function utils.promptMenu(title, items, clearScreen)
         term.setCursorPos(1, 1)
     end
 
-    term.setTextColor(colors.yellow)
-    print(title)
+    utils.printColor(";ylw;" .. title)
     print()
     for i, item in ipairs(items) do
-        term.setTextColor(colors.lightGray)
-        write("  " .. i .. ". ")
-        term.setTextColor(colors.white)
-        write(item)
-        print()
+        utils.printColor("  ;lgy;" .. i .. ". ;wht;" .. item)
     end
-    term.setTextColor(colors.red)
-    write("\n  " .. #items + 1 .. ". ")
-    term.setTextColor(colors.white)
-    write("Exit\n")
+    utils.printColor("\n;red;  " .. #items + 1 .. ". ;wht;Exit")
     print()
     term.setTextColor(colors.yellow)
     write("> ")
@@ -297,11 +289,9 @@ function utils.promptMenu(title, items, clearScreen)
     local choice = tonumber(utils.read())
 
     if not choice then
-        term.setTextColor(colors.red)
-        print("invalid choice; enter a number from the menu")
+        utils.printColor(";red;invalid choice; enter a number from the menu")
         print()
-        term.setTextColor(colors.gray)
-        print("Enter to continue...")
+        utils.printColor(";gry;Enter to continue...")
         read()
         goto prompt
     end
