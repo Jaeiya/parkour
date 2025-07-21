@@ -36,6 +36,14 @@ function utils.splitString(str)
 end
 
 
+---Clears the screen and makes sure anything written to
+---the screen afterwards, starts at the top of the screen.
+function utils.clear()
+    term.clear()
+    term.setCursorPos(1, 1)
+end
+
+
 ---Creates or overwrites the specified filepath
 ---@param filepath string The full path of the file
 ---@param text string The content to save to the file
