@@ -87,10 +87,14 @@ local function renderBoard()
     yPos = yPos + 1
 
     -- Display flavor text if level has no players
-    if #players == 0 then
+    local renderNoPlayers = function()
         mon.setCursorPos(1, yPos + 3)
         mon.setTextColor(colors.orange)
         mon.write(utils.centerText("Be the first to run this level!", mon))
+    end
+
+    if #players == 0 then
+        renderNoPlayers()
         return
     end
 
@@ -111,9 +115,11 @@ local function renderBoard()
     local attemptsLen = #"..x000"
     local lineLen     = columnWidth + timeLen + #separator + attemptsLen
     local linePadding = (monWidth - lineLen) / 2
+    local hasPlayers  = false
 
     for _, player in ipairs(players) do
         if player.time.pb > 0 then
+            hasPlayers = true
             local attemptStr = string.format("%03d", player.attempts.pb)
             local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
@@ -132,6 +138,10 @@ local function renderBoard()
             mon.setTextColor(colors.cyan)
             mon.write(attemptStr)
         end
+    end
+
+    if not hasPlayers then
+       renderNoPlayers()
     end
 end
 
