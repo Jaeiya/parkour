@@ -38,9 +38,16 @@ end
 
 ---Clears the screen and makes sure anything written to
 ---the screen afterwards, starts at the top of the screen.
-function utils.clear()
-    term.clear()
-    term.setCursorPos(1, 1)
+---@param mon Monitor? The monitor to clear instead of the terminal
+function utils.clear(mon)
+    local display = term
+    if mon then
+        -- Only the monitor needs to have its background reset
+        mon.setBackgroundColor(colors.black)
+        display = mon
+    end
+    display.clear()
+    display.setCursorPos(1, 1)
 end
 
 
