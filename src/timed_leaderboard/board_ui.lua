@@ -17,26 +17,6 @@ local config = {
 }
 config = utils.loadConfig(configFile, config)
 
-local function promptMonitorProtocol()
-    print()
-    print("Enter Monitor Protocol")
-    print()
-    write("> ")
-    return utils.read()
-end
-
-
-
-local choices = {
-    function()
-    end,
-    function ()
-    end,
-    function ()
-    end,
-}
-
-
 return function()
 ::menu::
     term.clear()
@@ -68,7 +48,7 @@ return function()
         {
             name = "Set Monitor Protocol",
             exec = function ()
-                config.protocol = promptMonitorProtocol()
+                config.protocol = utils.prompt("Enter Monitor Protocol")
                 utils.saveConfig(configFile, config)
                 os.queueEvent("timer", {action = "new_protocol", payload = config.protocol })
             end
