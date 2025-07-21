@@ -23,12 +23,7 @@ print()
 local mon = utils.getMonitor()
 if not mon then
     printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach an ")
-    term.setTextColor(colors.lime)
-    write("advanced monitor ")
-    term.setTextColor(colors.orange)
-    write("to this computer\n\n")
+    utils.printColor(";org;Attach an ;lim;advanced monitor ;org;to this computer\n\n")
     return
 end
 
@@ -36,49 +31,36 @@ end
 mon.setTextScale(state.monitorScale)
 local monW, monH = mon.getSize()
 if monW < 36 or monH < 10 then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("The ")
-    term.setTextColor(colors.lime)
-    write("monitor ")
-    term.setTextColor(colors.orange)
-    write("needs to be at least 7 blocks wide and 3 blocks tall\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;The ;lim;monitor ;org;needs to be at least ;lim;7 ;org;blocks wide " ..
+        "and ;lim;3 ;org;blocks tall\n\n"
+    )
     return
 end
 
 if not utils.getPlayerDetector() then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach a ")
-    term.setTextColor(colors.lime)
-    write("player detector ")
-    term.setTextColor(colors.orange)
-    write("to this computer\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;Attach a ;lim;player detector ;org;to this computer\n\n"
+    )
     return
 end
 
 local modem = utils.getModem()
 if not modem then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach an ")
-    term.setTextColor(colors.lime)
-    write("ender wireless modem ")
-    term.setTextColor(colors.orange)
-    write("to this computer\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;Attach an ;lim;ender modem ;org;to this computer\n\n"
+    )
     return
 end
 
 if not modem.isWireless() then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("The attached ")
-    term.setTextColor(colors.lime)
-    write("modem ")
-    term.setTextColor(colors.orange)
-    write("needs to be ")
-    term.setTextColor(colors.lime)
-    write("wireless\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        "The attached ;lim;modem ;org;needs to be ;lim;wireless;\n\n"
+    )
     return
 end
 
@@ -108,18 +90,10 @@ local paths = {
 }
 
 
-local function promptProtocol()
-    print()
-    term.setTextColor(colors.lightBlue)
-    print("Enter Monitor Protocol")
-    term.setTextColor(colors.white)
-    write("> ")
-    return utils.read()
-end
-
-
+utils.clear()
+utils.printColor(";org;   ... Configuring Leaderboard ...")
 lib.saveBoardConfig(
-    promptProtocol(),
+    utils.prompt("Enter Monitor Protocol"),
     utils.promptCoords("Enter Start Pos"),
     utils.promptCoords("Enter End Pos")
 )
