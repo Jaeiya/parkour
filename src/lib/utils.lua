@@ -183,6 +183,10 @@ function utils.promptCoords(promptText)
             printError("coordinate '"..coordParts[i].."' is not a number; try again!")
             goto prompt
         end
+        if coord % 1 ~= 0 then
+            printError("coordinates cannot be fractions: '"..coord.."'")
+            goto prompt
+        end
         coords[i] = coord
     end
 
