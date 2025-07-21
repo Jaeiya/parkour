@@ -13,9 +13,8 @@ if not mon then
     return false
 end
 
-mon.clear()
+utils.clear(mon)
 mon.setTextScale(state.monitorScale)
-mon.setBackgroundColor(colors.black)
 
 
 ---Names of all players currently online, updated through
@@ -53,24 +52,21 @@ local function renderActiveRunner(playerName)
     local w = mon.getSize()
     local text = "WARNING: Active Runner"
     local textWidthDiff = w - #text
-    mon.setBackgroundColor(colors.black)
-    mon.clear()
-    mon.setCursorPos(1, 1)
+    utils.clear(mon)
     mon.setBackgroundColor(colors.red)
-    mon.setTextColor(colors.yellow)
-    mon.write(string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2)))
+    local banner = string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2))
+    utils.print(";ylw;"..banner, mon)
+
+    -- Print the player name
     mon.setBackgroundColor(colors.black)
     mon.setCursorPos(1, 3)
-    mon.setTextColor(colors.lime)
-    mon.write(utils.centerText(playerName, mon))
+    utils.print(";lim;"..utils.centerText(playerName, mon), mon)
     mon.setCursorPos(1, 5)
+
     local attemptText = "Attempt: "
     local textWidth = #attemptText + #tostring(player.attempts.current)
     local textPadding = (w - textWidth) / 2
-    mon.setTextColor(colors.white)
-    mon.write(string.rep(" ", textPadding) .. attemptText)
-    mon.setTextColor(colors.yellow)
-    mon.write(tostring(player.attempts.current))
+    utils.print(string.rep(" ", textPadding)..attemptText..";ylw;"..player.attempts.current, mon)
 end
 
 
@@ -79,8 +75,7 @@ local function renderBoard()
     mon.setTextScale(2)
     local yPos = 2
     mon.setCursorPos(1, yPos)
-    mon.setTextColor(colors.lime)
-    mon.write(utils.centerText("Leader Board", mon))
+    utils.print(";lim;"..utils.centerText("Leader Board", mon), mon)
     local players = lib.get()
 
     -- Add padding between times and title
@@ -89,8 +84,7 @@ local function renderBoard()
     -- Display flavor text if level has no players
     local renderNoPlayers = function()
         mon.setCursorPos(1, yPos + 3)
-        mon.setTextColor(colors.orange)
-        mon.write(utils.centerText("Be the first to run this level!", mon))
+        utils.print(";org;"..utils.centerText("Be the first to run this level!", mon), mon)
     end
 
     if #players == 0 then
@@ -124,19 +118,14 @@ local function renderBoard()
             local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
             mon.setCursorPos(1, yPos)
-            mon.write(padding)
-            mon.setTextColor(colors.white)
-            mon.write(player.name)
-            mon.setTextColor(colors.gray)
-            mon.write(separator)
-            mon.setTextColor(colors.lightBlue)
-            mon.write(utils.getTimerStr(player.time.pb))
-            mon.setTextColor(colors.gray)
-            mon.write("..")
-            mon.setTextColor(colors.lightGray)
-            mon.write("x")
-            mon.setTextColor(colors.cyan)
-            mon.write(attemptStr)
+            local playerStr = (
+                padding..
+                ";wht;"..player.name..
+                ";gry;"..separator..
+                ";lbu;"..utils.getTimerStr(player.time.pb)..
+                ";gry;..;lgy;x"..attemptStr
+            )
+            utils.print(playerStr, mon)
         end
     end
 
