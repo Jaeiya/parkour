@@ -8,7 +8,8 @@ local utils = require("utils")
 local mon = utils.getMonitor()
 if not mon then
     print()
-    return printError("script terminated; missing monitor")
+    printError("script terminated; missing monitor")
+    return false
 end
 
 local configFile = "monhost.cfg"
@@ -24,7 +25,14 @@ end
 
 config = utils.loadConfig(configFile, config)
 
-rednet.open(peripheral.getName(utils.getModem()))
+local modem = utils.getModem()
+if not modem then
+    print()
+    printError("monhost terminated; missing modem")
+    return false
+end
+
+rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)
 
 mon.setTextScale(4.5)
