@@ -306,7 +306,7 @@ function utils.promptMenu(title, items, clearScreen)
         goto prompt
     end
 
-    if choice == 5 then
+    if choice == (#items + 1) then
         return choice, true
     end
 
