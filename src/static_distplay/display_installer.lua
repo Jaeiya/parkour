@@ -5,25 +5,16 @@ local utils = require("utils")
 print()
 local modem = utils.getModem()
 if not modem then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach a ")
-    term.setTextColor(colors.lime)
-    write("wired modem ")
-    term.setTextColor(colors.orange)
-    write("to this computer and connect it (with ")
-    term.setTextColor(colors.lime)
-    write("networking cable")
-    term.setTextColor(colors.orange)
-    write(") to another modem, attached to an ")
-    term.setTextColor(colors.lime)
-    write("advanced monitor\n\n")
-    term.setTextColor(colors.orange)
-    write("Make sure you ")
-    term.setTextColor(colors.lime)
-    write("right click ")
-    term.setTextColor(colors.orange)
-    write("the modems to activate them, once you've finished connecting them.\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+
+        ";org;Attach a ;lim;wired modem ;org;to this computer and connect it " ..
+        "(with ;lim;networking cable;org;) to another ;lim;modem;org;, attached to an " ..
+        ";lim;advanced monitor\n\n" ..
+
+        ";org;Make sure you ;lim;right click ;org;the modems to activate them, once you've " ..
+        "finished connecting them\n\n"
+    )
     return
 end
 
@@ -40,18 +31,14 @@ for _, name in ipairs(peripheral.getNames()) do
 end
 
 if not mon then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach an ")
-    term.setTextColor(colors.lime)
-    write("advanced monitor ")
-    term.setTextColor(colors.orange)
-    write("to the modem on the other side of the networking cable.\n\n")
-    write("Make sure you ")
-    term.setTextColor(colors.lime)
-    write("right clicked ")
-    term.setTextColor(colors.orange)
-    write("the modem on the other side.\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+
+        ";org;Attach an ;lim;advanced monitor ;org;to the modem on the other side of " ..
+        "the networking cable.\n\n" ..
+
+        "Make sure both modems are ;lim;right clicked;org; and glowing red.\n\n"
+    )
     return
 end
 
