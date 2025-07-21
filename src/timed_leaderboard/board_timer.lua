@@ -49,9 +49,9 @@ return function()
             local id = data
 
             if id == timerID then
-                iterations         = iterations + 1
-                utils.milliseconds = iterations * (speed * 1000)
-                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
+                iterations = iterations + 1
+                state.timer.milliseconds = iterations * (speed * 1000)
+                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.protocol)
                 timerID = os.startTimer(speed)
             end
 
@@ -63,17 +63,17 @@ return function()
                 iterations = 1
                 os.queueEvent(leaderBoardEvent, {action="start_run"})
                 timerID = os.startTimer(speed)
-                state.isTimerActive = true
+                state.timer.isActive = true
 
             elseif msgEvent.action == "cancel_run" then
                 os.cancelTimer(timerID)
-                state.isTimerActive = false
-                utils.milliseconds = 0
-                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
+                state.timer.isActive = false
+                state.timer.milliseconds = 0
+                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.protocol)
 
             elseif msgEvent.action == "finish_run" then
                 os.cancelTimer(timerID)
-                state.isTimerActive = false
+                state.timer.isActive = false
                 -- Payload should always be the millisecond time when user
                 -- pressed actuation (button/pressure plate).
                 rednet.broadcast(utils.getTimerStr(msgEvent.payload), config.protocol)
@@ -82,7 +82,5 @@ return function()
                 config.protocol = msgEvent.payload
             end
         end
-
-
     end
 end

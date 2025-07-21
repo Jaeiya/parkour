@@ -1,9 +1,6 @@
 
 ---@class Utils
-local utils = {
-    -- For use with timer ONLY
-    milliseconds = 0
-}
+local utils = {}
 
 
 ---Splits at every space character

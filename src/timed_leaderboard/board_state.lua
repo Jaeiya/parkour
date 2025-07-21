@@ -3,8 +3,11 @@
 ---Shared state between all scripts
 ---@class SharedState
 local state = {
-    isTimerActive = false,
-    monitorScale = 2
+    timer = {
+        isActive = false,
+        milliseconds = 0,
+    },
+    monitorScale = 2,
 }
 
 return state

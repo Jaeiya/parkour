@@ -1,4 +1,3 @@
-local utils = require("utils")
 local state = require("board_state")
 
 return function()
@@ -8,7 +7,7 @@ return function()
         local right = redstone.getInput("right")
         local left = redstone.getInput("left")
 
-        if right and not state.isTimerActive then
+        if right and not state.timer.isActive then
             os.queueEvent("timer", { action = "start" })
 
         elseif right then
@@ -16,7 +15,7 @@ return function()
             -- is the same player who triggered this action.
             os.queueEvent("leaderboard", { action="try_cancel_run" })
 
-        elseif left and state.isTimerActive then
+        elseif left and state.timer.isActive then
             -- This action will be ignored entirely, if the player who
             -- triggered this action, is not the active runner.
             --
@@ -25,9 +24,8 @@ return function()
             -- already has a faster time, a slower time will not be saved.
             os.queueEvent("leaderboard", {
                 action  = "save_player_time",
-                payload = utils.milliseconds,
+                payload = state.timer.milliseconds,
             })
         end
-
     end
 end
