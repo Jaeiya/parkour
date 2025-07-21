@@ -101,7 +101,9 @@ local paths = {
 
 local function promptProtocol()
     print()
-    print("Enter Constellation Protocol")
+    term.setTextColor(colors.lightBlue)
+    print("Enter Monitor Protocol")
+    term.setTextColor(colors.white)
     write("> ")
     return read()
 end
