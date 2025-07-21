@@ -22,54 +22,42 @@ end
 ---@cast mon Monitor
 
 local configFile = "display.cfg"
+
+---@class DisplayConfig
 local config = {
     text = "default text",
     scale = 1,
     color = 1,
-    stars = "1",
+    stars = 1,
 }
 config = utils.loadConfig(configFile, config)
 
 
-local textScale  = config.scale
 local xPos       = 1
 local yPos       = 1
-local textColor  = config.color
-local starRating = config.stars
-local text       = config.text
 
 
 local function renderDisplay()
     mon.clear()
     mon.setCursorPos(xPos, yPos)
-    mon.setTextScale(textScale)
+    mon.setTextScale(config.scale)
     mon.setTextColor(colors.lightGray)
-    mon.write(utils.centerText(starRating .. "*", mon))
-    mon.setTextColor(textColor)
+    mon.write(utils.centerText(config.stars .. "*", mon))
+    mon.setTextColor(config.color)
     mon.setCursorPos(1, yPos+1)
-    mon.write(utils.centerText(text, mon))
+    mon.write(utils.centerText(config.text, mon))
 end
 
 
 local function setText()
-    print()
-    print("Enter new text")
-    print()
-    write("> ")
-    text = utils.read()
-    config.text = text
+    config.text = utils.prompt("Enter new text")
     utils.saveConfig(configFile, config)
 end
 
 
 local function setColor()
 ::start::
-    print()
-    term.setTextColor(colors.white)
-    print("Enter new text color")
-    print()
-    write("> ")
-    local color = utils.read()
+    local color = utils.prompt("Enter new color")
 
     if not colors[color] then
         term.setTextColor(colors.red)
@@ -77,66 +65,51 @@ local function setColor()
         goto start
     end
 
-    textColor = colors[color]
-    config.color = textColor
+    config.color = colors[color]
     utils.saveConfig(configFile, config)
 end
 
 
 local function setScale()
-::start::
-    print()
-    term.setTextColor(colors.white)
-    print("Enter new text scale")
-    print()
-    write("> ")
-    local scale = utils.read()
-    scale = tonumber(scale)
+::prompt::
+    local scale = tonumber(utils.prompt("Enter new text scale"))
 
     if not scale then
         term.setTextColor(colors.red)
         print("scale should be a number")
-        goto start
+        goto prompt
     end
 
     if scale < 0.5 or scale > 5 then
         term.setTextColor(colors.red)
         print("invalid scale; min: 0.5, max: 5")
-        goto start
+        goto prompt
     end
 
     if scale % 1 > 0 then
         if (scale % 1) * 10 ~= 5 then
             term.setTextColor(colors.red)
             print("the smallest increment allowed is 0.5")
-            goto start
+            goto prompt
         end
     end
 
-    textScale = scale
     config.scale = scale
     utils.saveConfig(configFile, config)
 end
 
 
 local function setStarRating()
-::start::
-    print()
-    term.setTextColor(colors.white)
-    print("Enter new star rating")
-    print()
-    write("> ")
-    local rating = utils.read()
-    rating = tonumber(rating)
+::prompt::
+    local stars = tonumber(utils.prompt("Enter new stars rating"))
 
-    if not rating then
+    if not stars then
         term.setTextColor(colors.red)
         print("star rating should be a number")
-        goto start
+        goto prompt
     end
 
-    starRating = tostring(rating)
-    config.stars = starRating
+    config.stars = stars
     utils.saveConfig(configFile, config)
 end
 
@@ -152,43 +125,18 @@ local choices = {
 
 ::menu::
 renderDisplay()
-term.clear()
-term.setCursorPos(1, 1)
-term.setTextColor(colors.yellow)
-print("Display Config")
-print()
-term.setTextColor(colors.lightGray)
-write(" 1. ")
-term.setTextColor(colors.white)
-write("Set Text\n")
-term.setTextColor(colors.lightGray)
-write(" 2. ")
-term.setTextColor(colors.white)
-write("Set Color\n")
-term.setTextColor(colors.lightGray)
-write(" 3. ")
-term.setTextColor(colors.white)
-write("Set Scale\n")
-term.setTextColor(colors.lightGray)
-write(" 4. ")
-term.setTextColor(colors.white)
-write("Set Star Rating\n\n")
-term.setTextColor(colors.yellow)
-write("> ")
-term.setTextColor(colors.lime)
-local choice = utils.read()
+local choice, exiting = utils.promptMenu("Display Config", {
+    "Set Text",
+    "Set Color",
+    "Set Scale",
+    "Set Star Rating",
+})
 
-if not tonumber(choice) then
-    term.setTextColor(colors.red)
-    print("invalid choice; try again")
-    print()
-    term.setTextColor(colors.white)
-    write("Enter to continue...")
-    read()
-    goto menu
+if exiting then
+    return
 end
 
-if not choices[tonumber(choice)] then
+if not choices[choice] then
     term.setTextColor(colors.red)
     print("choice does not exist; try again")
     print()
