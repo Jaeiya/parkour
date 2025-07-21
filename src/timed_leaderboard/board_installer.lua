@@ -63,7 +63,7 @@ if not modem then
     term.setTextColor(colors.orange)
     write("Attach a ")
     term.setTextColor(colors.lime)
-    write("wireless modem ")
+    write("ender wireless modem ")
     term.setTextColor(colors.orange)
     write("to this computer\n\n")
     return
