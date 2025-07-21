@@ -1,12 +1,6 @@
 
 local utils = require("utils")
 
-local mon = utils.getMonitor()
-if not mon then
-    printError("board ui terminated; missing monitor")
-    return false
-end
-
 local configFile = "board.cfg"
 local config = {
     protocol = "",
@@ -71,11 +65,6 @@ return function()
     write("   protocol: ")
     term.setTextColor(colors.white)
     print(config.protocol)
-    term.setTextColor(colors.lightGray)
-    write("   mon_size: ")
-    term.setTextColor(colors.white)
-    local w, h = mon.getSize()
-    print(w .. "x" .. h)
     print()
     print()
     term.setTextColor(colors.orange)
