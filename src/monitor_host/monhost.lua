@@ -1,9 +1,11 @@
-
---
--- Allows writing to the monitor wirelessly, by listening
--- on a specific protocol.
---
 local utils = require("utils")
+
+
+---
+---
+---Allows writing to a monitor wirelessly.
+---
+---
 
 local mon = utils.getMonitor()
 if not mon then
