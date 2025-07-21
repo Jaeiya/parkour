@@ -3,6 +3,27 @@
 local utils = {}
 
 
+---Color code map designed strictly for use with utils.printColor()
+local colorCodes = {
+    [";wht;"] = colors.white,
+    [";org;"] = colors.orange,
+    [";mgt;"] = colors.magenta,
+    [";lbu;"] = colors.lightBlue,
+    [";ylw;"] = colors.yellow,
+    [";lim;"] = colors.lime,
+    [";pnk;"] = colors.pink,
+    [";gry;"] = colors.gray,
+    [";lgy;"] = colors.lightGray,
+    [";cyn;"] = colors.cyan,
+    [";ppl;"] = colors.purple,
+    [";blu;"] = colors.blue,
+    [";bwn;"] = colors.brown,
+    [";grn;"] = colors.green,
+    [";red;"] = colors.red,
+    [";blk;"] = colors.black,
+}
+
+
 ---Splits at every space character
 ---@param str string The string to split
 ---@return string[]
@@ -299,25 +320,34 @@ function utils.promptMenu(title, items, clearScreen)
     return choice, false
 end
 
-local colorCodes = {
-    [";wht;"] = colors.white,
-    [";org;"] = colors.orange,
-    [";mgt;"] = colors.magenta,
-    [";lbu;"] = colors.lightBlue,
-    [";ylw;"] = colors.yellow,
-    [";lim;"] = colors.lime,
-    [";pnk;"] = colors.pink,
-    [";gry;"] = colors.gray,
-    [";lgy;"] = colors.lightGray,
-    [";cyan;"] = colors.cyan,
-    [";ppl;"] = colors.purple,
-    [";blu;"] = colors.blue,
-    [";bwn;"] = colors.brown,
-    [";grn;"] = colors.green,
-    [";red;"] = colors.red,
-    [";blk;"] = colors.black,
-}
 
+---Prints to the terminal and colors the text based
+---on the provided color codes.
+---
+---Supported Color Codes:
+---
+---     wht = white
+---     org = orange
+---     mgt = magenta
+---     lbu = light blue
+---     ylw = yellow
+---     lim = lime
+---     pnk = pink
+---     gry = gray
+---     lgy = light gray
+---     cyn = cyan
+---     ppl = purple
+---     blu = blue
+---     bwn = brown
+---     grn = green
+---     red = red
+---     blk = black
+---
+---Usage:
+---
+---     ";org;Hello ;lim;World"
+---
+---@param text string The text to print with supported color codes
 function utils.printColor(text)
     local pos = 1
 
