@@ -49,8 +49,14 @@ end
 
 if not isValidMonitorSize() then error("Must be 5 blocks long") end
 
-print("Hostname: " .. config.hostname)
-print("Protocol: " .. config.protocol)
+term.setTextColor(colors.lightGray)
+write("  host_name: ")
+term.setTextColor(colors.cyan)
+write(config.hostname .. "\n")
+term.setTextColor(colors.lightGray)
+write("   protocol: ")
+term.setTextColor(colors.cyan)
+write(config.protocol .. "\n")
 
 -- Default to zero values
 mon.setCursorPos(1, 1)
