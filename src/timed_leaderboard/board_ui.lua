@@ -66,25 +66,15 @@ return function()
     term.setTextColor(colors.white)
     print(config.protocol)
     print()
-    print()
-    term.setTextColor(colors.orange)
-    print("Manage Configuration")
-    print()
-    term.setTextColor(colors.yellow)
-    write(" 1. ")
-    term.setTextColor(colors.white)
-    print("Set Start Pos")
-    term.setTextColor(colors.yellow)
-    write(" 2. ")
-    term.setTextColor(colors.white)
-    print("Set End Pos")
-    term.setTextColor(colors.yellow)
-    write(" 3. ")
-    term.setTextColor(colors.white)
-    print("Set Monitor Protocol")
-    print()
-    write("> ")
-    local choice = tonumber(utils.read())
+    local choice, exiting = utils.promptMenu("Manage Configuration", {
+        "Set Start Pos",
+        "Set End Pos",
+        "Set Monitor Protocol",
+    }, false)
+
+    if exiting then
+        return
+    end
 
     if not choices[choice] then
         term.setTextColor(colors.red)
