@@ -50,21 +50,12 @@ return function()
 ::menu::
     term.clear()
     term.setCursorPos(1, 1)
-    term.setTextColor(colors.cyan)
-    print("Current Values")
-    print()
-    term.setTextColor(colors.lightGray)
-    write("  start_pos: ")
-    term.setTextColor(colors.white)
-    print(config.startPos.x .. ", " .. config.startPos.y .. ", " .. config.startPos.z)
-    term.setTextColor(colors.lightGray)
-    write("    end_pos: ")
-    term.setTextColor(colors.white)
-    print(config.endPos.x .. ", " .. config.endPos.y .. ", " .. config.endPos.z)
-    term.setTextColor(colors.lightGray)
-    write("   protocol: ")
-    term.setTextColor(colors.white)
-    print(config.protocol)
+    local sp = config.startPos
+    local ep = config.endPos
+    utils.printColor(";cyn;Current Values\n")
+    utils.printColor(";lgy;  start_pos: ;wht;"..sp.x..", "..sp.y..", "..sp.z)
+    utils.printColor(";lgy;    end_pos: ;wht;"..ep.x..", "..ep.y..", "..ep.z)
+    utils.printColor(";lgy;   Protocol: ;wht;"..config.protocol)
     print()
     local choice, exiting = utils.promptMenu("Manage Configuration", {
         "Set Start Pos",
@@ -74,16 +65,6 @@ return function()
 
     if exiting then
         return
-    end
-
-    if not choices[choice] then
-        term.setTextColor(colors.red)
-        print("invalid choice")
-        print()
-        term.setTextColor(colors.lightGray)
-        print("Enter to continue...")
-        read()
-        goto menu
     end
 
     choices[choice]()
