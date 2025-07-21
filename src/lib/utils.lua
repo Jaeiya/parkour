@@ -360,8 +360,11 @@ end
 ---@param mon? Monitor The monitor to print to, otherwise defaults to the terminal
 function utils.print(text, mon)
     local display = term
+    ---Preserve raw writing so we can handle new line chars
+    local writeFunc = write
     if mon then
         display = mon
+        writeFunc = display.write
     end
 
     ---Track where we are in the string
@@ -373,14 +376,14 @@ function utils.print(text, mon)
         local code = string.sub(text, i, i + 4)
         local color = colorCodes[code]
         if color then
-            display.write(string.sub(text, pos, i-1))
+            writeFunc(string.sub(text, pos, i-1))
             text = string.gsub(text, code, "", 1)
             display.setTextColor(color)
             pos = i
         end
     end
 
-    display.write(string.sub(text, pos, #text) .. "\n")
+    writeFunc(string.sub(text, pos, #text) .. "\n")
 end
 
 
