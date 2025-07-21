@@ -147,9 +147,10 @@ return function()
         end
 
         -- All events passed between modules will be in this format
-        ---@cast data MessageEvent
+        ---@type MessageEvent
+        local msgEvent = data
 
-        if data.action == "start_run" then
+        if msgEvent.action == "start_run" then
             local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, onlinePlayerNames)
 
             lib.tryAddPlayer(nearestPlayer.name)
@@ -160,7 +161,7 @@ return function()
                 renderActiveRunner(runningPlayerName)
             end
 
-        elseif data.action == "try_cancel_run" then
+        elseif msgEvent.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
                 os.queueEvent("timer", { action = "cancel_run" })
                 runningPlayerName = nil
@@ -168,21 +169,21 @@ return function()
                 renderBoard()
             end
 
-        elseif data.action == "save_player_time" then
+        elseif msgEvent.action =="save_player_time" then
             if isPlayerRunning(config.endPos) then
-                os.queueEvent("timer", {action = "finish_run", payload = data.payload})
-                lib.savePlayerTime(runningPlayerName, data.payload)
+                os.queueEvent("timer", {action = "finish_run", payload = msgEvent.payload})
+                lib.savePlayerTime(runningPlayerName, msgEvent.payload)
                 renderBoard()
             end
 
-        elseif data.action == "set_player_list" then
-            onlinePlayerNames = data.payload
+        elseif msgEvent.action == "set_player_list" then
+            onlinePlayerNames = msgEvent.payload
 
-        elseif data.action == "set_start_pos" then
-            config.startPos = data.payload
+        elseif msgEvent.action == "set_start_pos" then
+            config.startPos = msgEvent.payload
 
-        elseif data.action == "set_end_pos" then
-            config.endPos = data.payload
+        elseif msgEvent.action == "set_end_pos" then
+            config.endPos = msgEvent.payload
         end
     end
 end

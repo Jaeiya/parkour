@@ -45,34 +45,44 @@ return function()
         local _, data = os.pullEvent("timer")
 
         if type(data) == "number" then
-            if data == timerID then
+            ---@type number
+            local id = data
+
+            if id == timerID then
                 iterations         = iterations + 1
                 utils.milliseconds = iterations * (speed * 1000)
                 rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
                 timerID = os.startTimer(speed)
             end
 
-        elseif data.action == "start" then
-            iterations = 1
-            os.queueEvent(leaderBoardEvent, {action="start_run"})
-            timerID = os.startTimer(speed)
-            state.isTimerActive = true
+        else
+            ---@type MessageEvent
+            local msgEvent = data
 
-        elseif data.action == "cancel_run" then
-            os.cancelTimer(timerID)
-            state.isTimerActive = false
-            utils.milliseconds = 0
-            rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
+            if msgEvent.action == "start" then
+                iterations = 1
+                os.queueEvent(leaderBoardEvent, {action="start_run"})
+                timerID = os.startTimer(speed)
+                state.isTimerActive = true
 
-        elseif data.action == "finish_run" then
-            os.cancelTimer(timerID)
-            state.isTimerActive = false
-            -- Payload should always be the millisecond time when user
-            -- pressed actuation (button/pressure plate).
-            rednet.broadcast(utils.getTimerStr(data.payload), config.protocol)
+            elseif msgEvent.action == "cancel_run" then
+                os.cancelTimer(timerID)
+                state.isTimerActive = false
+                utils.milliseconds = 0
+                rednet.broadcast(utils.getTimerStr(utils.milliseconds), config.protocol)
 
-        elseif data.action == "new_protocol" then
-            config.protocol = data.payload
+            elseif msgEvent.action == "finish_run" then
+                os.cancelTimer(timerID)
+                state.isTimerActive = false
+                -- Payload should always be the millisecond time when user
+                -- pressed actuation (button/pressure plate).
+                rednet.broadcast(utils.getTimerStr(msgEvent.payload), config.protocol)
+
+            elseif msgEvent.action == "new_protocol" then
+                config.protocol = msgEvent.payload
+            end
         end
+
+
     end
 end
