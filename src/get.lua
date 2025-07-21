@@ -18,10 +18,15 @@
 ---
 
 
----@class Script
----@field slug string The gist slug (ex: name-of-file)
----@field fileName string The filename the script should have when saved
-
+if not term.isColor() then
+    print()
+    term.setTextColor(colors.red)
+    print("Invalid Environment\n")
+    term.setTextColor(colors.orange)
+    print("You can only run me on an advanced computer")
+    print()
+    return
+end
 
 if not fs.exists("/disk/get") then
     print()
@@ -30,10 +35,25 @@ if not fs.exists("/disk/get") then
     print()
     term.setTextColor(colors.orange)
     print("Please import or copy me to a disk")
+    local d = peripheral.find("drive")
+    if not d then
+        print()
+        write("You'll need to attach a ")
+        term.setTextColor(colors.lime)
+        write("drive ")
+        term.setTextColor(colors.orange)
+        write("to this computer and insert a ")
+        term.setTextColor(colors.lime)
+        write("disk\n")
+    end
     print()
     return
 end
 
+
+---@class Script
+---@field slug string The gist slug (ex: name-of-file)
+---@field fileName string The filename the script should have when saved
 
 ---@class ScriptMap
 ---@field get Script
