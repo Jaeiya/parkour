@@ -244,6 +244,69 @@ function utils.read()
 end
 
 
+---Prompts the user for input
+---@param prompt string Text telling the user what's required
+function utils.prompt(prompt)
+    print()
+    term.setTextColor(colors.lightBlue)
+    print(prompt)
+    print()
+    term.setTextColor(colors.yellow)
+    write("> ")
+    term.setTextColor(colors.lime)
+    return utils.read()
+end
+
+
+---Displays a menu and prompts the user to select
+---from the numbered list.
+---@param title string
+---@param items string[]
+---@return integer choice The selected index of an item from the menu
+---@return boolean existed True if the user chose to exit the prompt
+function utils.promptMenu(title, items)
+::prompt::
+    term.clear()
+    term.setCursorPos(1, 1)
+    term.setTextColor(colors.yellow)
+    print(title)
+    print()
+
+    -- Render menu
+    for i, item in ipairs(items) do
+        term.setTextColor(colors.lightGray)
+        write("  " .. i .. ". ")
+        term.setTextColor(colors.white)
+        write(item)
+        print()
+    end
+    term.setTextColor(colors.red)
+    write("\n  " .. #items + 1 .. ". ")
+    term.setTextColor(colors.white)
+    write("Exit\n")
+    print()
+    term.setTextColor(colors.yellow)
+    write("> ")
+    term.setTextColor(colors.lime)
+    local choice = tonumber(utils.read())
+
+    if not choice then
+        term.setTextColor(colors.red)
+        print("invalid choice; enter a number from the menu")
+        print()
+        term.setTextColor(colors.gray)
+        print("Enter to continue...")
+        read()
+        goto prompt
+    end
+
+    if choice == 5 then
+        return choice, true
+    end
+
+    return choice, false
+end
+
 
 return utils
 
