@@ -233,7 +233,7 @@ end
 ---of the provided text.
 ---@param text string
 function utils.trim(text)
-    return string.gsub(text, "^%s*(.-)%s*$", "%1")
+    return (string.gsub(text, "^%s*(.-)%s*$", "%1"))
 end
 
 
