@@ -19,13 +19,10 @@ local utils = require("utils")
 print()
 local mon = utils.getMonitor()
 if not mon then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach a ")
-    term.setTextColor(colors.lime)
-    write("monitor ")
-    term.setTextColor(colors.orange)
-    write("to this computer\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;Attach an ;lim;advanced monitor ;org;to this computer\n\n"
+    )
     return
 end
 
@@ -33,38 +30,27 @@ end
 mon.setTextScale(4.5)
 local monW = mon.getSize()
 if monW < 11 then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("The ")
-    term.setTextColor(colors.lime)
-    write("monitor ")
-    term.setTextColor(colors.orange)
-    write("needs to be at least 5 blocks wide\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;The ;lim;monitor ;org;needs to be at least ;lim;5 ;org;blocks wide\n\n"
+    )
     return
 end
 
 local modem = utils.getModem()
 if not modem then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("Attach an ")
-    term.setTextColor(colors.lime)
-    write("ender wireless modem ")
-    term.setTextColor(colors.orange)
-    write("to this computer\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;Attach an ;lim;ender modem ;org;to this computer\n\n"
+    )
     return
 end
 
 if not modem.isWireless() then
-    printError("Installation Aborted")
-    term.setTextColor(colors.orange)
-    write("The attached ")
-    term.setTextColor(colors.lime)
-    write("modem ")
-    term.setTextColor(colors.orange)
-    write("needs to be ")
-    term.setTextColor(colors.lime)
-    write("wireless\n\n")
+    utils.printColor(
+        ";red;Installation Aborted\n" ..
+        ";org;The attached ;lim;modem ;org;needs to be ;lim;wireless\n\n"
+    )
     return
 end
 
@@ -87,24 +73,10 @@ local config = {
     protocol = ""
 }
 
-print()
-term.setTextColor(colors.lightBlue)
-write("Enter Host Name ")
-term.setTextColor(colors.orange)
-write("(unique)\n")
-term.setTextColor(colors.white)
-write("> ")
-config.hostname = utils.read()
-
-print()
-term.setTextColor(colors.lightBlue)
-write("Enter Protocol ")
-term.setTextColor(colors.lightGray)
-write("(anything)\n")
-term.setTextColor(colors.white)
-write("> ")
-config.protocol = utils.read()
-
+utils.clear()
+utils.printColor(";ylw;   ... Configuring Monitor Host ...")
+config.hostname = utils.prompt("Enter Host Name ;org;(unique)")
+config.protocol = utils.prompt("Enter Protocol ;lgy;(anything)")
 
 for _, path in pairs(paths) do
     local f = fs.open(path, "r")
