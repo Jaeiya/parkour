@@ -270,7 +270,7 @@ end
 ---Prompts the user for input
 ---@param prompt string Text telling the user what's required
 function utils.prompt(prompt)
-    utils.printColor("\n\n;lbu;"..prompt..";ylw;")
+    utils.print("\n\n;lbu;"..prompt..";ylw;")
     write("> ")
     term.setTextColor(colors.lime)
     return utils.read()
@@ -299,12 +299,12 @@ function utils.promptMenu(title, choices, clearScreen)
         term.setCursorPos(1, 1)
     end
 
-    utils.printColor(";ylw;" .. title)
+    utils.print(";ylw;" .. title)
     print()
     for i, choice in ipairs(choices) do
-        utils.printColor("  ;lgy;" .. i .. ". ;wht;" .. choice.name)
+        utils.print("  ;lgy;" .. i .. ". ;wht;" .. choice.name)
     end
-    utils.printColor("\n;red;  " .. #choices + 1 .. ". ;wht;Exit")
+    utils.print("\n;red;  " .. #choices + 1 .. ". ;wht;Exit")
     print()
     term.setTextColor(colors.yellow)
     write("> ")
@@ -312,9 +312,9 @@ function utils.promptMenu(title, choices, clearScreen)
     local selected = tonumber(utils.read())
 
     if not selected then
-        utils.printColor(";red;invalid choice; enter a number from the menu")
+        utils.print(";red;invalid choice; enter a number from the menu")
         print()
-        utils.printColor(";gry;Enter to continue...")
+        utils.print(";gry;Enter to continue...")
         read()
         goto prompt
     end
@@ -328,8 +328,10 @@ function utils.promptMenu(title, choices, clearScreen)
 end
 
 
----Prints to the terminal and colors the text based
----on the provided color codes.
+---
+---A more advanced version of print, that allows embedded color codes
+---to change the terminals color on-the-fly, as well as the option to
+---print to a monitor.
 ---
 ---Supported Color Codes:
 ---
@@ -355,7 +357,14 @@ end
 ---     ";org;Hello ;lim;World"
 ---
 ---@param text string The text to print with supported color codes
-function utils.printColor(text)
+---@param mon? Monitor The monitor to print to, otherwise defaults to the terminal
+function utils.print(text, mon)
+    local display = term
+    if mon then
+        display = mon
+    end
+
+    ---Track where we are in the string
     local pos = 1
 
     for i = 1, #text do
@@ -364,15 +373,18 @@ function utils.printColor(text)
         local code = string.sub(text, i, i + 4)
         local color = colorCodes[code]
         if color then
-            write(string.sub(text, pos, i-1))
+            display.write(string.sub(text, pos, i-1))
             text = string.gsub(text, code, "", 1)
-            term.setTextColor(color)
+            display.setTextColor(color)
             pos = i
         end
     end
 
-    write(string.sub(text, pos, #text) .. "\n")
+    display.write(string.sub(text, pos, #text) .. "\n")
 end
+
+
+
 
 
 return utils

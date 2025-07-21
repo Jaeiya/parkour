@@ -23,10 +23,10 @@ return function()
     term.setCursorPos(1, 1)
     local sp = config.startPos
     local ep = config.endPos
-    utils.printColor(";cyn;Current Values\n")
-    utils.printColor(";lgy;  start_pos: ;wht;"..sp.x..", "..sp.y..", "..sp.z)
-    utils.printColor(";lgy;    end_pos: ;wht;"..ep.x..", "..ep.y..", "..ep.z)
-    utils.printColor(";lgy;   Protocol: ;wht;"..config.protocol)
+    utils.print(";cyn;Current Values\n")
+    utils.print(";lgy;  start_pos: ;wht;"..sp.x..", "..sp.y..", "..sp.z)
+    utils.print(";lgy;    end_pos: ;wht;"..ep.x..", "..ep.y..", "..ep.z)
+    utils.print(";lgy;   Protocol: ;wht;"..config.protocol)
     print()
     local exiting = utils.promptMenu("Manage Configuration", {
         {

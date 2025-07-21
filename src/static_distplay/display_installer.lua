@@ -5,7 +5,7 @@ local utils = require("utils")
 print()
 local modem = utils.getModem()
 if not modem then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
 
         ";org;Attach a ;lim;wired modem ;org;to this computer and connect it " ..
@@ -31,7 +31,7 @@ for _, name in ipairs(peripheral.getNames()) do
 end
 
 if not mon then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
 
         ";org;Attach an ;lim;advanced monitor ;org;to the modem on the other side of " ..

@@ -23,7 +23,7 @@ print()
 local mon = utils.getMonitor()
 if not mon then
     printError("Installation Aborted")
-    utils.printColor(";org;Attach an ;lim;advanced monitor ;org;to this computer\n\n")
+    utils.print(";org;Attach an ;lim;advanced monitor ;org;to this computer\n\n")
     return
 end
 
@@ -31,7 +31,7 @@ end
 mon.setTextScale(state.monitorScale)
 local monW, monH = mon.getSize()
 if monW < 36 or monH < 10 then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;The ;lim;monitor ;org;needs to be at least ;lim;7 ;org;blocks wide " ..
         "and ;lim;3 ;org;blocks tall\n\n"
@@ -40,7 +40,7 @@ if monW < 36 or monH < 10 then
 end
 
 if not utils.getPlayerDetector() then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach a ;lim;player detector ;org;to this computer\n\n"
     )
@@ -49,7 +49,7 @@ end
 
 local modem = utils.getModem()
 if not modem then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach an ;lim;ender modem ;org;to this computer\n\n"
     )
@@ -57,7 +57,7 @@ if not modem then
 end
 
 if not modem.isWireless() then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         "The attached ;lim;modem ;org;needs to be ;lim;wireless;\n\n"
     )
@@ -91,7 +91,7 @@ local paths = {
 
 
 utils.clear()
-utils.printColor(";org;   ... Configuring Leaderboard ...")
+utils.print(";org;   ... Configuring Leaderboard ...")
 lib.saveBoardConfig(
     utils.prompt("Enter Monitor Protocol"),
     utils.promptCoords("Enter Start Pos"),

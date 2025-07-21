@@ -19,7 +19,7 @@ local utils = require("utils")
 print()
 local mon = utils.getMonitor()
 if not mon then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach an ;lim;advanced monitor ;org;to this computer\n\n"
     )
@@ -30,7 +30,7 @@ end
 mon.setTextScale(4.5)
 local monW = mon.getSize()
 if monW < 11 then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;The ;lim;monitor ;org;needs to be at least ;lim;5 ;org;blocks wide\n\n"
     )
@@ -39,7 +39,7 @@ end
 
 local modem = utils.getModem()
 if not modem then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach an ;lim;ender modem ;org;to this computer\n\n"
     )
@@ -47,7 +47,7 @@ if not modem then
 end
 
 if not modem.isWireless() then
-    utils.printColor(
+    utils.print(
         ";red;Installation Aborted\n" ..
         ";org;The attached ;lim;modem ;org;needs to be ;lim;wireless\n\n"
     )
@@ -74,7 +74,7 @@ local config = {
 }
 
 utils.clear()
-utils.printColor(";ylw;   ... Configuring Monitor Host ...")
+utils.print(";ylw;   ... Configuring Monitor Host ...")
 config.hostname = utils.prompt("Enter Host Name ;org;(unique)")
 config.protocol = utils.prompt("Enter Protocol ;lgy;(anything)")
 
