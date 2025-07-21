@@ -260,6 +260,9 @@ local function createDisk(diskData)
     cleanDisk(true)
     for i, script in ipairs(diskData) do
         local content = getScriptFile(script)
+        if string.find(script.fileName, "install") then
+           script.fileName = "install"
+        end
         writeFile("/disk/" .. script.fileName, content)
         writeProgress("Creating Disk", i, #diskData)
     end
