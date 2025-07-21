@@ -60,8 +60,7 @@ local function setColor()
     local color = utils.prompt("Enter new color")
 
     if not colors[color] then
-        term.setTextColor(colors.red)
-        print("'" .. color .. "' is not a valid color")
+        printError("'" .. color .. "' is not a valid color")
         goto start
     end
 
