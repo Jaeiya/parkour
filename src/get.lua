@@ -306,7 +306,8 @@ end
 
 local function promptDisk()
 ::restart::
-    print()
+    term.clear()
+    term.setCursorPos(1, 1)
     print()
     term.setTextColor(colors.yellow)
     print("Format Disk")
