@@ -5,9 +5,19 @@ local state = require("board_state")
 
 ---
 ---
----Installs all the files necessary to run the leaderboard and timer.
+---Installs the leaderboard to the connected computer.
+---
+---Legend:
+---    Actuator - a pressure plate, button, or lever
+---      Prompt - waits for user input
+---
+---It will prompt for the following pieces of information:
+---    Protocol - The monitor host protocol to broadcast the timer to
+---    StartPos - Coordinates of the actuator to trigger the start/cancel of a run
+---      EndPos - Coordinates of the actuator to trigger the end of a run
 ---
 ---
+
 
 print()
 local mon = utils.getMonitor()
