@@ -113,16 +113,6 @@ local function setStarRating()
     utils.saveConfig(configFile, config)
 end
 
-
-
-local choices = {
-    setText,
-    setColor,
-    setScale,
-    setStarRating,
-}
-
-
 ::menu::
 renderDisplay()
 local exiting = utils.promptMenu("Display Config", {
