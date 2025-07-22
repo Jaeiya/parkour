@@ -14,17 +14,14 @@ if not mon then
     return false
 end
 
+
 local configFile = "monhost.cfg"
+
+---@class MonhostConfig
 local config = {
     protocol = "",
     hostname = ""
 }
-
--- Config file should be created by installer
-if not fs.exists(configFile) then
-    error("missing config file")
-end
-
 config = utils.loadConfig(configFile, config)
 
 local modem = utils.getModem()
