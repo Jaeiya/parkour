@@ -374,19 +374,19 @@ local function promptDisk()
     local name = ""
 
     if choice == 1 then
-        info = diskMap.leaderboard
+        info = diskMap.leaderboard.scripts
         label = "Setup Leaderboard v1.0"
         name = "Leaderboard"
     elseif choice == 2 then
-        info = diskMap.monhost
+        info = diskMap.monhost.scripts
         label = "Setup Monitor Host v1.0"
         name = "Monitor Host"
     elseif choice == 3 then
-        info = diskMap.display
+        info = diskMap.display.scripts
         label = "Setup Display v1.0"
         name = "Display"
     elseif choice == 4 then
-        info = diskMap.master
+        info = diskMap.master.scripts
         label = "Master Disk v1.0"
         name = "Master"
     else
