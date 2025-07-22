@@ -137,7 +137,7 @@ end
 
 
 ---Converts the specified milliseconds to the
----string: 00:00:00.00
+---string format: hh:mm:ss.tt
 ---@param milliseconds integer
 function utils.getTimerStr(milliseconds)
     local ticks   = math.floor(milliseconds / 50)
