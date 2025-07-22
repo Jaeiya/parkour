@@ -24,6 +24,7 @@ if not pd then
 end
 
 local playerNames = pd.getOnlinePlayers()
+---@type PDListener[]
 local listeners   = {}
 
 
