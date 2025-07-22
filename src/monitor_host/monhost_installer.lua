@@ -67,7 +67,7 @@ local paths = {
     utils   = "disk/utils",
 }
 
-
+---@type MonhostConfig
 local config = {
     hostname = "",
     protocol = ""
