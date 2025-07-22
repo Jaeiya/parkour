@@ -13,8 +13,7 @@ for _, name in ipairs(peripheral.getNames()) do
 end
 
 if not mon then
-    term.setTextColor(colors.red)
-    print("no monitor found; connect a monitor!")
+    printError("display terminated; missing monitor")
     return
 end
 
