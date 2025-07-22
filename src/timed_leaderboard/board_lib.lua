@@ -162,12 +162,11 @@ end
 ---@param startPos Coord The trigger point in the world for starting a run
 ---@param endPos Coord The trigger point in the world for ending a run
 function leaderboard.saveBoardConfig(protocol, startPos, endPos)
-    local data = textutils.serialize({
+    utils.saveConfig(configPath, {
         protocol = protocol,
         startPos = startPos,
         endPos   = endPos
     })
-    utils.writeFile(configPath, data)
 end
 
 
