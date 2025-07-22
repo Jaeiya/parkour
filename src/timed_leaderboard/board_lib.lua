@@ -39,19 +39,7 @@ local function loadPlayers()
 
     for i = 1, #playerList do
         local p = playerList[i]
-        playerMap[p.name] = {
-            name = p.name,
-            time = {
-                pb      = p.time.pb,
-                current = p.time.current,
-            },
-            attempts = {
-                pb      = p.attempts.pb,
-                current = p.attempts.current,
-                total   = p.attempts.total,
-            }
-        }
-
+        playerMap[p.name] = p
     end
     return playerList, playerMap
 end
@@ -83,25 +71,9 @@ end
 ---Saves the players to the player database file and
 ---sorts them by fastest time.
 function leaderboard.save()
-    for i = 1, #leaderboard.playerList do
-        local player = leaderboard.playerList[i]
-        leaderboard.playerList[i] = leaderboard.playerMap[player.name]
-    end
 
     table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
     utils.writeFile(playerDBPath, textutils.serialize(leaderboard.playerList))
-end
-
-
----Saves specified player if they exist.
----@param player Player
-function leaderboard.savePlayer(player)
-    if not leaderboard.playerExists(player.name) then
-        error("player not found: '" .. player.name .. "'")
-    end
-
-    leaderboard.playerMap[player.name] = player
-    leaderboard.save()
 end
 
 
@@ -119,7 +91,7 @@ function leaderboard.updateAttempt(name)
     local player = leaderboard.playerMap[name]
     player.attempts.current = player.attempts.current + 1
     player.attempts.total = player.attempts.total + 1
-    leaderboard.savePlayer(player)
+    leaderboard.save()
 end
 
 
@@ -138,7 +110,7 @@ function leaderboard.savePlayerTime(name, time)
         player.attempts.current = 0
     end
 
-    leaderboard.savePlayer(player)
+    leaderboard.save()
 end
 
 
@@ -147,7 +119,6 @@ end
 ---@param name string Name of the player to add
 function leaderboard.tryAddPlayer(name)
     if leaderboard.playerExists(name) then return end
-
     local index = #leaderboard.playerList+1
     leaderboard.playerList[index] = {
         name = name,
