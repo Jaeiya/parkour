@@ -260,9 +260,23 @@ local function cleanDisk(silent)
     if not silent then
         term.setTextColor(colors.orange)
         print()
-        print("Deleted all files on disk")
+        print("Disk has been cleaned")
         print()
     end
+end
+
+
+local function cleanComputer()
+    local fileList = fs.list(".")
+    for _, file in ipairs(fileList) do
+        if file ~= "rom" and file ~= "disk" then
+            fs.delete(file)
+        end
+    end
+    term.setTextColor(colors.orange)
+    print()
+    print("Computer has been cleaned")
+    print()
 end
 
 
@@ -305,6 +319,13 @@ local function printHelp()
     write("    get ")
     term.setTextColor(colors.cyan)
     write("clean")
+    print("\n")
+    term.setTextColor(colors.lightGray)
+    print("  Deletes all files on the computer")
+    term.setTextColor(colors.orange)
+    write("    get ")
+    term.setTextColor(colors.cyan)
+    write("l clean")
     print("\n")
     term.setTextColor(colors.lightGray)
     print("  Downloads script to disk")
@@ -368,6 +389,7 @@ local function promptDisk()
         goto restart
     end
 
+
     ---@type Script[]
     local info = {}
     local label = ""
@@ -393,6 +415,7 @@ local function promptDisk()
         return
     end
 
+
     createDisk(info)
     finalizeDisk(label, name)
 
@@ -416,6 +439,10 @@ end
 
 if arg1 == "clean" then
     return cleanDisk()
+end
+
+if arg1 == "l" and arg2 == "clean" then
+    return cleanComputer()
 end
 
 
