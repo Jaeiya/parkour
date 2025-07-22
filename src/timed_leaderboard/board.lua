@@ -55,7 +55,11 @@ local function renderActiveRunner(playerName)
     local textWidthDiff = w - #text
     utils.clear(mon)
     mon.setBackgroundColor(colors.red)
-    local banner = string.rep(" ", math.ceil(textWidthDiff / 2))..text..string.rep(" ", w - (textWidthDiff / 2))
+    local banner = (
+        string.rep(" ", math.ceil(textWidthDiff / 2)) ..
+        text ..
+        string.rep(" ", w - (textWidthDiff / 2))
+    )
     utils.print(";ylw;"..banner, mon)
 
     -- Print the player name
@@ -66,8 +70,12 @@ local function renderActiveRunner(playerName)
 
     local attemptText = "Attempt: "
     local textWidth = #attemptText + #tostring(player.attempts.current)
-    local textPadding = (w - textWidth) / 2
-    utils.print(string.rep(" ", textPadding)..attemptText..";ylw;"..player.attempts.current, mon)
+    local attemptsStr = (
+        string.rep(" ", (w - textWidth) / 2) ..
+        attemptText ..
+        ";ylw;"..player.attempts.current
+    )
+    utils.print(attemptsStr, mon)
 end
 
 
@@ -115,16 +123,14 @@ local function renderBoard()
     for _, player in ipairs(players) do
         if player.time.pb > 0 then
             hasPlayers = true
-            local attemptStr = string.format("%03d", player.attempts.pb)
-            local padding = string.rep(" ", linePadding + (columnWidth - #player.name))
             yPos = yPos + 1
             mon.setCursorPos(1, yPos)
             local playerStr = (
-                padding..
+                string.rep(" ", linePadding + (columnWidth - #player.name)) ..
                 ";wht;"..player.name..
                 ";gry;"..separator..
                 ";lbu;"..utils.getTimerStr(player.time.pb)..
-                ";gry;..;lgy;x;cyn;"..attemptStr
+                ";gry;..;lgy;x;cyn;"..string.format("%03d", player.attempts.pb)
             )
             utils.print(playerStr, mon)
         end
