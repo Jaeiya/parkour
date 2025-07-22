@@ -100,56 +100,73 @@ local scriptMap = {
 }
 
 
+---@class FormattedDisk
+---@field version string
+---@field scripts Script[]
+
+
 ---@class DiskMap
----@field master Script[]
----@field leaderboard Script[]
----@field monhost Script[]
----@field display Script[]
+---@field master FormattedDisk
+---@field leaderboard FormattedDisk
+---@field monhost FormattedDisk
+---@field display FormattedDisk
 local diskMap = {
     master = {
-        scriptMap.get,
-        scriptMap.boardlib,
-        scriptMap.boardui,
-        scriptMap.boardredstone,
-        scriptMap.boardinstaller,
-        scriptMap.boardstartup,
-        scriptMap.boardtimer,
-        scriptMap.monhost,
-        scriptMap.monhoststartup,
-        scriptMap.monhostinstaller,
-        scriptMap.display,
-        scriptMap.displayinstaller,
-        scriptMap.detectplayer,
-        scriptMap.utils,
+        version = "2.0",
+        scripts ={
+            scriptMap.get,
+            scriptMap.boardlib,
+            scriptMap.boardui,
+            scriptMap.boardredstone,
+            scriptMap.boardinstaller,
+            scriptMap.boardstartup,
+            scriptMap.boardtimer,
+            scriptMap.monhost,
+            scriptMap.monhoststartup,
+            scriptMap.monhostinstaller,
+            scriptMap.display,
+            scriptMap.displayinstaller,
+            scriptMap.detectplayer,
+            scriptMap.utils,
+        }
     },
     leaderboard = {
-        scriptMap.board,
-        scriptMap.boardlib,
-        scriptMap.boardui,
-        scriptMap.boardredstone,
-        scriptMap.boardinstaller,
-        scriptMap.boardstartup,
-        scriptMap.boardtimer,
-        scriptMap.boardstate,
-        scriptMap.utils,
-        scriptMap.detectplayer,
+        version = "2.0",
+        scripts = {
+            scriptMap.board,
+            scriptMap.boardlib,
+            scriptMap.boardui,
+            scriptMap.boardredstone,
+            scriptMap.boardinstaller,
+            scriptMap.boardstartup,
+            scriptMap.boardtimer,
+            scriptMap.boardstate,
+            scriptMap.utils,
+            scriptMap.detectplayer,
+        }
     },
     monhost = {
-        scriptMap.monhost,
-        scriptMap.monhoststartup,
-        scriptMap.monhostinstaller,
-        scriptMap.utils,
+        version = "2.0",
+        scripts = {
+            scriptMap.monhost,
+            scriptMap.monhoststartup,
+            scriptMap.monhostinstaller,
+            scriptMap.utils,
+        }
     },
     display = {
-        scriptMap.display,
-        scriptMap.displayinstaller,
-        scriptMap.utils,
+        version = "2.0",
+        scripts = {
+            scriptMap.display,
+            scriptMap.displayinstaller,
+            scriptMap.utils,
+        }
     },
 }
 
 
 
----Returns the content of the downloaded script
+---Downloads the specified script and returns its content
 ---@param script Script
 local function getScriptFile(script)
     local apiURL =  "https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/"
