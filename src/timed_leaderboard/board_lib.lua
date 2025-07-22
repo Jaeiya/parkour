@@ -69,10 +69,15 @@ end
 
 
 ---Saves the players to the player database file and
----sorts them by fastest time.
+---sorts them by fastest time with fewest attempts.
 function leaderboard.save()
-
-    table.sort(leaderboard.playerList, function(a, b) return a.time.pb < b.time.pb end)
+    table.sort(leaderboard.playerList, function(a, b)
+        if a.time.pb == b.time.pb then
+            return a.attempts.pb < b.attempts.pb
+        else
+            return a.time.pb < b.time.pb end
+        end
+    )
     utils.writeFile(playerDBPath, textutils.serialize(leaderboard.playerList))
 end
 
