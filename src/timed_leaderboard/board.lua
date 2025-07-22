@@ -123,7 +123,7 @@ local function renderBoard()
                 ";wht;"..player.name..
                 ";gry;"..separator..
                 ";lbu;"..utils.getTimerStr(player.time.pb)..
-                ";gry;..;lgy;x"..attemptStr
+                ";gry;..;lgy;x;cyn;"..attemptStr
             )
             utils.print(playerStr, mon)
         end
