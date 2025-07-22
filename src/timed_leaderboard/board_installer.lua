@@ -66,17 +66,6 @@ end
 
 
 ---@class BoardPaths
----@field boardTimer string
----@field startup string
----@field board string
----@field boardData string
----@field boardUI string
----@field boardRedstone string
----@field boardState string
----@field utils string
----@field playerDetector string
-
----@type BoardPaths
 local paths = {
     boardTimer     = "disk/board_timer",
     startup        = "disk/board_startup",
