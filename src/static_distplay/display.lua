@@ -31,18 +31,14 @@ local config = {
 config = utils.loadConfig(configFile, config)
 
 
-local xPos       = 1
-local yPos       = 1
-
-
 local function renderDisplay()
     mon.clear()
-    mon.setCursorPos(xPos, yPos)
+    mon.setCursorPos(1, 1)
     mon.setTextScale(config.scale)
     mon.setTextColor(colors.lightGray)
     mon.write(utils.centerText(config.stars .. "*", mon))
     mon.setTextColor(config.color)
-    mon.setCursorPos(1, yPos+1)
+    mon.setCursorPos(1, 2)
     mon.write(utils.centerText(config.text, mon))
 end
 
