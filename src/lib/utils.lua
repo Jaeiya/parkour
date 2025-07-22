@@ -78,15 +78,6 @@ function utils.sum(...)
 end
 
 
----Compares two coordinates and determines
----their absolute distance.
----@param coord1 integer
----@param coord2 integer
-local function diffCoords(coord1, coord2)
-    return math.abs(coord1 - coord2)
-end
-
-
 ---Gets the nearest player to the specified coordinates
 ---@param pos Coord The coordinate position to compare with player positions
 ---@param playerDetector PlayerDetector
@@ -100,11 +91,16 @@ function utils.getNearestPlayer(pos, playerDetector, playerNames)
         if not playerPosObj then
             error("failed to get player position: " .. name)
         end
-        local playerPosDiff = utils.sum(
-            diffCoords(pos.x, playerPosObj.x),
-            diffCoords(pos.y, playerPosObj.y),
-            diffCoords(pos.z, playerPosObj.z)
-        )
+
+        ---@type Coord
+        local playerPos = {
+            x = playerPosObj.x,
+            y = playerPosObj.y,
+            z = playerPosObj.z,
+        }
+
+        local playerPosDiff = utils.getDistance(pos, playerPos)
+
         if playerPosDiff < nearestPos then
             nearestPos = playerPosDiff
             nearestPlayer = name
@@ -115,6 +111,19 @@ function utils.getNearestPlayer(pos, playerDetector, playerNames)
         name = nearestPlayer,
         distance = nearestPos
     }
+end
+
+
+---Compare two coordinate positions and return the
+---absolute distance between them.
+---@param pos1 Coord
+---@param pos2 Coord
+function utils.getDistance(pos1, pos2)
+    return utils.sum(
+        math.abs(pos1.x - pos2.x),
+        math.abs(pos1.y - pos2.y),
+        math.abs(pos1.z - pos2.z)
+    )
 end
 
 
@@ -392,9 +401,6 @@ function utils.print(text, mon)
 
     writeFunc(string.sub(text, pos, #text) .. "\n")
 end
-
-
-
 
 
 return utils
