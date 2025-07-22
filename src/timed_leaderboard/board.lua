@@ -4,7 +4,8 @@ local state = require("board_state")
 
 local pd  = utils.getPlayerDetector()
 if not pd then
-    return printError("board terminated; missing player detector")
+    printError("board terminated; missing player detector")
+    return false
 end
 
 local mon = utils.getMonitor()
