@@ -7,22 +7,13 @@ local utils = require("utils")
 ---
 ---
 
+
 local mon = utils.getMonitor()
 if not mon then
     print()
     printError("script terminated; missing monitor")
     return false
 end
-
-
-local configFile = "monhost.cfg"
-
----@class MonhostConfig
-local config = {
-    protocol = "",
-    hostname = ""
-}
-config = utils.loadConfig(configFile, config)
 
 local modem = utils.getModem()
 if not modem then
@@ -31,22 +22,26 @@ if not modem then
     return false
 end
 
+local width = mon.getSize()
+if width < 11 or width > 11 then
+    printError("monhost terminated; expected 5 block wide monitor")
+    return false
+end
+
+
+local configFile = "monhost.cfg"
+---@class MonhostConfig
+local config = {
+    protocol = "",
+    hostname = ""
+}
+config = utils.loadConfig(configFile, config)
+
 rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)
 
 mon.setTextScale(4.5)
 mon.setTextColor(colors.lime)
-
-local function isValidMonitorSize()
-    local width = mon.getSize()
-    if width < 11 or width > 11 then
-        return false
-    end
-
-    return true
-end
-
-if not isValidMonitorSize() then error("Must be 5 blocks long") end
 
 utils.print(
     ";lgy;  host_name: ;cyn;"..config.hostname.."\n"..
