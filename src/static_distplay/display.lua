@@ -1,6 +1,7 @@
 
 local utils = require("utils")
 
+---@type Monitor|nil
 local mon = nil
 
 -- Find the monitor connected through the modem
@@ -17,9 +18,6 @@ if not mon then
     return
 end
 
--- We know for a fact that if we reach this point, then
--- the variable is not nil.
----@cast mon Monitor
 
 local configFile = "display.cfg"
 
