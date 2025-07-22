@@ -50,12 +50,12 @@ end
 
 
 local function setColor()
-::start::
+::prompt::
     local color = utils.prompt("Enter new color")
 
     if not colors[color] then
         printError("'" .. color .. "' is not a valid color")
-        goto start
+        goto prompt
     end
 
     config.color = colors[color]
