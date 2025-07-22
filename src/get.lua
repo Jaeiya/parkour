@@ -131,7 +131,7 @@ local diskMap = {
         }
     },
     leaderboard = {
-        version = "2.0",
+        version = "2.1",
         scripts = {
             scriptMap.board,
             scriptMap.boardlib,
