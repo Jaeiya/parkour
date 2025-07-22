@@ -98,9 +98,9 @@ function Modem.isWireless() end
 ---@field respawnDimension number
 ---@field respawnAngle number
 ---@field yaw number
----@field x number
----@field y number
----@field z number
+---@field x integer
+---@field y integer
+---@field z integer
 
 
 ---@class PlayerDetector
