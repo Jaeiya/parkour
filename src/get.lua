@@ -118,6 +118,58 @@ local diskMap = {
     },
 }
 
+---Color code map designed strictly for use with utils.printColor()
+local colorCodes = {
+    [";wht;"] = colors.white,
+    [";org;"] = colors.orange,
+    [";mgt;"] = colors.magenta,
+    [";lbu;"] = colors.lightBlue,
+    [";ylw;"] = colors.yellow,
+    [";lim;"] = colors.lime,
+    [";pnk;"] = colors.pink,
+    [";gry;"] = colors.gray,
+    [";lgy;"] = colors.lightGray,
+    [";cyn;"] = colors.cyan,
+    [";ppl;"] = colors.purple,
+    [";blu;"] = colors.blue,
+    [";bwn;"] = colors.brown,
+    [";grn;"] = colors.green,
+    [";red;"] = colors.red,
+    [";blk;"] = colors.black,
+}
+
+
+---
+---A more advanced version of print, that allows embedded color codes
+---to change the terminals color on-the-fly.
+---@param text string The text to print with supported color codes
+---@param newLine? boolean Whether or not to add a new line at end of text (default: true)
+local function printAdv(text, newLine)
+    ---Track where we are in the string
+    local pos = 1
+
+    if newLine == nil then
+        newLine = true
+    end
+
+    for i = 1, #text do
+        if i + 4 > #text then break end
+
+        local code = string.sub(text, i, i + 4)
+        local color = colorCodes[code]
+        if color then
+            write(string.sub(text, pos, i-1))
+            text = string.gsub(text, code, "", 1)
+            term.setTextColor(color)
+            pos = i
+        end
+    end
+
+    write(string.sub(text, pos, #text))
+    if newLine then
+        write("\n")
+    end
+end
 
 
 ---Downloads the specified script and returns its content
@@ -155,17 +207,12 @@ local function writeProgress(text, step, maxSteps)
     local bar = string.rep("=", barSize)
     local barMargin = maxBarSize - barSize
     term.setCursorPos(1, y)
-    term.setTextColor(colors.orange)
-    write(text)
-    term.setTextColor(colors.white)
-    write(" [")
-    term.setTextColor(colors.cyan)
-    write(bar .. string.rep(" ", barMargin))
-    term.setTextColor(colors.white)
-    write("]")
+    printAdv(";org;"..text..";wht; [;cyn;"..bar..string.rep(" ", barMargin)..";wht;]", false)
     -- Clears progress bar so it can be overwritten
     -- with flavor text.
     if math.floor(step) >= maxBarSize then
+        -- Give time for user to see completed bar before clear
+        sleep(0.2)
         term.setCursorPos(1, y)
         term.clearLine()
     end
@@ -194,9 +241,7 @@ local function finalizeDisk(label, name)
     if d then
         d.setDiskLabel(label)
     end
-    term.setTextColor(colors.lime)
-    print(name .. " disk created!")
-    print()
+    printAdv(";lim;" .. name .. " disk created!\n")
 end
 
 
@@ -211,10 +256,7 @@ local function cleanDisk(silent)
         end
     end
     if not silent then
-        term.setTextColor(colors.orange)
-        print()
-        print("Disk has been cleaned")
-        print()
+        printAdv("\n;org;Disk has been cleaned\n")
     end
 end
 
@@ -226,10 +268,7 @@ local function cleanComputer()
             fs.delete(file)
         end
     end
-    term.setTextColor(colors.orange)
-    print()
-    print("Computer has been cleaned")
-    print()
+    printAdv("\n;org;Computer has been cleaned\n")
 end
 
 
@@ -253,48 +292,26 @@ local function createDisk(diskData)
 end
 
 local function printHelp()
-    print()
-    term.setTextColor(colors.purple)
-    print("Usage:")
-    term.setTextColor(colors.yellow)
-    print("  (WARNING: All file ops overwrite existing files)")
-    print()
-    term.setTextColor(colors.lightGray)
-    print("  Formats a disk to a specific type (ex: master)")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("disk")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Deletes all files on disk, EXCEPT 'get'")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("clean")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Deletes all files on the computer")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("l clean")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Downloads script to disk")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("<script_name>")
-    print("\n")
-    term.setTextColor(colors.lightGray)
-    print("  Downloads script to disk and computer")
-    term.setTextColor(colors.orange)
-    write("    get ")
-    term.setTextColor(colors.cyan)
-    write("l <script_name>")
-    print()
-    print()
+    term.clear()
+    term.setCursorPos(1, 1)
+    printAdv(
+        ";ppl;Get ;ylw;(v2.3) ;ppl;Usage:\n" ..
+
+        ";lgy;  Formats a disk to a specific type (ex: master)\n" ..
+        ";org;    get ;cyn;disk\n\n" ..
+
+        ";lgy;  Deletes all files on a disk ;pnk;except ;lgy;'get'\n" ..
+        ";org;    get ;cyn;clean\n\n" ..
+
+        ";lgy;  Deletes all files on the computer\n" ..
+        ";org;    get ;cyn;l clean\n\n" ..
+
+        ";lgy;  Downloads script to disk\n" ..
+        ";org;    get ;cyn;<script_name>\n\n" ..
+
+        ";lgy;  Downloads a script to disk and computer\n" ..
+        ";org;    get ;cyn;l <script_name>\n"
+    )
 end
 
 
@@ -302,38 +319,22 @@ local function promptDisk()
 ::restart::
     term.clear()
     term.setCursorPos(1, 1)
-    print()
-    term.setTextColor(colors.yellow)
-    print("Format Disk")
-    print()
-    term.setTextColor(colors.lightGray)
-    write("  1. ")
-    term.setTextColor(colors.white)
-    write("Leaderboard\n")
-    term.setTextColor(colors.lightGray)
-    write("  2. ")
-    term.setTextColor(colors.white)
-    write("Monitor Host\n")
-    term.setTextColor(colors.lightGray)
-    write("  3. ")
-    term.setTextColor(colors.white)
-    write("Display\n")
-    print()
-    term.setTextColor(colors.red)
-    write("  4. ")
-    term.setTextColor(colors.white)
-    write("Exit\n")
-    print()
+    printAdv(
+        ";ylw;Format Disk\n\n" ..
+        ";lgy;  1. ;wht;Leaderboard\n" ..
+        ";lgy;  2. ;wht;Monitor Host\n" ..
+        ";lgy;  3. ;wht;Display\n\n" ..
+
+        ";red;  4. ;wht;Exit\n"
+    )
     term.setTextColor(colors.yellow)
     write("> ")
+    term.setTextColor(colors.lime)
     local choice = tonumber(read())
 
     if not choice or choice > 4 or choice < 1 then
-        term.setTextColor(colors.red)
-        print("invalid choice; try again!")
-        print()
-        term.setTextColor(colors.lightGray)
-        print("Enter to continue...")
+        printError("invalid choice; try again!\n")
+        printAdv(";lgy;Enter to continue...")
         read()
         goto restart
     end
@@ -401,32 +402,20 @@ if #args > 1 then
 
     local script = scriptMap[scriptName]
     if not script then
-        print("'"..scriptName.."' could not be found")
+        printAdv(";cyn;'"..scriptName.."' ;org;could not be found\n")
         return
     end
 
-    print()
-    term.setTextColor(colors.orange)
-    write(" Getting: ")
-    term.setTextColor(colors.cyan)
-    write(scriptName)
-    print()
+    printAdv("\n ;org;Getting: ;cyn;"..scriptName)
 
     local content = getScriptFile(script)
     writeFile("/disk/" .. script.fileName, content)
     writeFile(script.fileName, content)
 
-    term.setTextColor(colors.orange)
-    write("Saved To: ")
-    term.setTextColor(colors.lime)
-    write("/disk/" .. script.fileName)
-    print()
-    term.setTextColor(colors.orange)
-    write("Saved To: ")
-    term.setTextColor(colors.lime)
-    write("/" .. script.fileName)
-    print()
-    print()
+    printAdv(
+        ";org;Saved To: ;lim;/disk/"..script.fileName ..
+        "\n;org;Saved To: ;lim;/"..script.fileName.."\n"
+    )
     return
 end
 
@@ -434,21 +423,14 @@ end
 local scriptName = arg1
 local script = scriptMap[scriptName]
 if not script then
-    print("'"..scriptName.."' could not be found")
+    printAdv(";cyn;'"..scriptName.."' ;org;could not be found\n")
     return
 end
 
-print()
-term.setTextColor(colors.orange)
-write(" Getting: ")
-term.setTextColor(colors.cyan)
-write(scriptName)
-print()
+
+printAdv( "\n ;org;Getting: ;cyn;"..scriptName)
+
 local content = getScriptFile(script)
 writeFile("/disk/" .. script.fileName, content)
-term.setTextColor(colors.orange)
-write("Saved To: ")
-term.setTextColor(colors.lime)
-write("/disk/" .. script.fileName)
-print()
-print()
+
+printAdv(";org;Saved To: ;lim;/disk/"..script.fileName.."\n")
