@@ -86,7 +86,7 @@ end
 
 if not fs.exists("/disk/get") then
     printAdv(
-        "\nInvalid Install Location\n" ..
+        "\n;red;Invalid Install Location\n" ..
         ";org;Please import or copy me to a disk\n"
     )
     local d = peripheral.find("drive")
