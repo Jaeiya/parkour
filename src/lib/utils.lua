@@ -46,6 +46,7 @@ function utils.clear(mon)
         mon.setBackgroundColor(colors.black)
         display = mon
     end
+    display.setTextColor(colors.white)
     display.clear()
     display.setCursorPos(1, 1)
 end
