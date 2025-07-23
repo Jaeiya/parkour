@@ -70,6 +70,7 @@ local scriptMap = {
 
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "install_monhost" },
     monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhost_startup" },
+    monhostui        = { slug = "monhostui.lua",        fileName = "monhost_ui"},
     monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
     display          = { slug = "display.lua",          fileName = "display" },
@@ -98,11 +99,12 @@ local diskMap = {
         }
     },
     monhost = {
-        version = "2.0",
+        version = "2.1",
         scripts = {
             scriptMap.monhost,
             scriptMap.monhoststartup,
             scriptMap.monhostinstaller,
+            scriptMap.monhostui,
             scriptMap.utils,
         }
     },

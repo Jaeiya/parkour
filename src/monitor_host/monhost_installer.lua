@@ -63,6 +63,7 @@ end
 ---@type MonhostPaths
 local paths = {
     monhost = "disk/monhost",
+    ui      = "disk/monhost_ui",
     startup = "disk/monhost_startup",
     utils   = "disk/utils",
 }
