@@ -344,6 +344,16 @@ function utils.promptMenu(title, choices, clearScreen)
     return false
 end
 
+---Prints an error message to the script and prompts
+---the user to continue.
+---@param msg string
+function utils.promptError(msg)
+    printError(msg)
+    print()
+    utils.print(";lgy;Enter to continue...")
+    read()
+end
+
 
 ---
 ---A more advanced version of print, that allows embedded color codes
