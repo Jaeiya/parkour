@@ -199,6 +199,11 @@ function peripheral.wrap(side) end
 ---@return string[] sides List of sides with peripherals.
 function peripheral.getNames() end
 
+---Gets the name of the side or network name that was used to wrap the given peripheral object.
+---@param peripheral any @The wrapped peripheral object.
+---@return string @The name of the peripheral.
+function peripheral.getName(peripheral) end
+
 ---Returns the type of the peripheral on the given side, same as getType (alias).
 ---@param side string The side to check.
 ---@return string|nil type
