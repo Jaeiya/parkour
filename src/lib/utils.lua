@@ -304,7 +304,7 @@ end
 ---@param title string
 ---@param choices PromptMenuChoice[] A list of choices with a name and function to execute
 ---@param clearScreen? boolean Whether or not to clear the screen on each render (defaults to true)
----@return boolean existed True if the user chose to exit the prompt
+---@return boolean exiting True if the user chose to exit the prompt
 function utils.promptMenu(title, choices, clearScreen)
 ::prompt::
     if clearScreen == nil then
