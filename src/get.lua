@@ -56,26 +56,6 @@ end
 ---@field fileName string The filename the script should have when saved
 
 ---@class ScriptMap
----@field get Script
----
----@field boardinstaller Script
----@field board Script
----@field boardlib Script
----@field boardredstone Script
----@field boardui Script
----@field boardstartup Script
----@field boardtimer Script
----@field boardstate Script
----
----@field monhostinstaller Script
----@field monhoststartup Script
----@field monhost Script
----
----@field display Script
----@field displayinstaller Script
----@field detectplayer Script
----
----@field utils Script
 local scriptMap = {
     get            = { slug = "get.lua", fileName = "get" },
 
@@ -100,16 +80,7 @@ local scriptMap = {
 }
 
 
----@class FormattedDisk
----@field version string
----@field scripts Script[]
-
-
 ---@class DiskMap
----@field master FormattedDisk
----@field leaderboard FormattedDisk
----@field monhost FormattedDisk
----@field display FormattedDisk
 local diskMap = {
     leaderboard = {
         version = "2.1",
