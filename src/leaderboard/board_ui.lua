@@ -19,15 +19,14 @@ config = utils.loadConfig(configFile, config)
 
 return function()
 ::menu::
-    term.clear()
-    term.setCursorPos(1, 1)
+    utils.clear()
     local sp = config.startPos
     local ep = config.endPos
     utils.print(
         "... Running Leaderboard ...\n" ..
-        "\n;lgy;  start_pos: ;wht;"..sp.x..", "..sp.y..", "..sp.z ..
-        "\n;lgy;    end_pos: ;wht;"..ep.x..", "..ep.y..", "..ep.z ..
-        "\n;lgy;   Protocol: ;wht;"..config.protocol
+        "\n;lgy;  start_pos: ;cyn;"..sp.x..", "..sp.y..", "..sp.z ..
+        "\n;lgy;    end_pos: ;cyn;"..ep.x..", "..ep.y..", "..ep.z ..
+        "\n;lgy;   Protocol: ;cyn;"..config.protocol
     )
     print()
     local exiting = utils.promptMenu("Manage Configuration", {
