@@ -289,7 +289,7 @@ local function printHelp()
     term.clear()
     term.setCursorPos(1, 1)
     printAdv(
-        ";ppl;Get ;ylw;v("..version..");ppl;Usage:\n" ..
+        ";ppl;Get ;ylw;(v"..version..") ;ppl;Usage:\n" ..
 
         ";lgy;  Formats a disk to a specific type (ex: master)\n" ..
         ";org;    get ;cyn;disk\n\n" ..
