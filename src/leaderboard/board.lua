@@ -81,7 +81,7 @@ end
 
 local function renderBoard()
     mon.clear()
-    mon.setTextScale(2)
+    mon.setTextScale(state.monitorScale)
     local yPos = 2
     mon.setCursorPos(1, yPos)
     utils.print(";lim;"..utils.centerText("Leader Board", mon), mon)
