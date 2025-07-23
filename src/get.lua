@@ -318,13 +318,9 @@ local function promptDisk()
     write("  3. ")
     term.setTextColor(colors.white)
     write("Display\n")
-    term.setTextColor(colors.lightGray)
-    write("  4. ")
-    term.setTextColor(colors.white)
-    write("Master\n")
     print()
     term.setTextColor(colors.red)
-    write("  5. ")
+    write("  4. ")
     term.setTextColor(colors.white)
     write("Exit\n")
     print()
@@ -332,7 +328,7 @@ local function promptDisk()
     write("> ")
     local choice = tonumber(read())
 
-    if not choice or choice > 5 or choice < 1 then
+    if not choice or choice > 4 or choice < 1 then
         term.setTextColor(colors.red)
         print("invalid choice; try again!")
         print()
@@ -341,7 +337,6 @@ local function promptDisk()
         read()
         goto restart
     end
-
 
     ---@type Script[]
     local info = {}
@@ -360,13 +355,14 @@ local function promptDisk()
         info = diskMap.display.scripts
         label = "Setup Display v" .. diskMap.display.version
         name = "Display"
+    end
+
+    if choice == 4 then
         return
     end
 
-
     createDisk(info)
     finalizeDisk(label, name)
-
 end
 
 
