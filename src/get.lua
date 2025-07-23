@@ -167,8 +167,7 @@ local function writeProgress(text, step, maxSteps)
     -- with flavor text.
     if math.floor(step) >= maxBarSize then
         term.setCursorPos(1, y)
-        write(string.rep(" ", 40))
-        term.setCursorPos(1, y)
+        term.clearLine()
     end
 end
 
