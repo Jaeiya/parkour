@@ -22,33 +22,45 @@ local configFile = "display.cfg"
 
 ---@class DisplayConfig
 local config = {
-    text = "default text",
+    textLine1 = "",
+    textLine2 = "",
+    colorLine1 = 1,
+    colorLine2 = 2,
     scale = 1,
-    color = 1,
-    stars = 1,
 }
 config = utils.loadConfig(configFile, config)
-
 
 local function renderDisplay()
     mon.clear()
     mon.setCursorPos(1, 1)
     mon.setTextScale(config.scale)
-    mon.setTextColor(colors.lightGray)
-    mon.write(utils.centerText(config.stars .. "*", mon))
-    mon.setTextColor(config.color)
+
+    if config.textLine1 ~= "" then
+        mon.setTextColor(config.colorLine1)
+        mon.write(utils.centerText(config.textLine1, mon))
+    end
+
     mon.setCursorPos(1, 2)
-    mon.write(utils.centerText(config.text, mon))
+    if config.textLine2 then
+        mon.setTextColor(config.colorLine2)
+        mon.write(utils.centerText(config.textLine2, mon))
+    end
 end
 
 
-local function setText()
-    config.text = utils.prompt("Enter new text")
+local function setTextLine1()
+    config.textLine1 = utils.prompt("Enter new text")
     utils.saveConfig(configFile, config)
 end
 
 
-local function setColor()
+local function setTextLine2()
+    config.textLine2 = utils.prompt("Enter new text")
+    utils.saveConfig(configFile, config)
+end
+
+
+local function setColorLine1()
 ::prompt::
     local color = utils.prompt("Enter new color")
 
@@ -57,7 +69,21 @@ local function setColor()
         goto prompt
     end
 
-    config.color = colors[color]
+    config.colorLine1 = colors[color]
+    utils.saveConfig(configFile, config)
+end
+
+
+local function setColorLine2()
+::prompt::
+    local color = utils.prompt("Enter new color")
+
+    if not colors[color] then
+        printError("'" .. color .. "' is not a valid color")
+        goto prompt
+    end
+
+    config.colorLine2 = colors[color]
     utils.saveConfig(configFile, config)
 end
 
@@ -88,26 +114,15 @@ local function setScale()
 end
 
 
-local function setStarRating()
-::prompt::
-    local stars = tonumber(utils.prompt("Enter new stars rating"))
-
-    if not stars then
-        printError("star rating should be a number")
-        goto prompt
-    end
-
-    config.stars = stars
-    utils.saveConfig(configFile, config)
-end
 
 ::menu::
 renderDisplay()
 local exiting = utils.promptMenu("Display Config", {
-    { name = "Set Text",        exec = setText },
-    { name = "Set Color",       exec = setColor },
-    { name = "Set Scale",       exec = setScale },
-    { name = "Set Star Rating", exec = setStarRating },
+    { name = "Set Text Line 1",  exec = setTextLine1 },
+    { name = "Set Text Line 2",  exec = setTextLine2 },
+    { name = "Set Color Line 1", exec = setColorLine1 },
+    { name = "Set Color Line 2", exec = setColorLine2 },
+    { name = "Set Scale",        exec = setScale },
 })
 
 if exiting then
