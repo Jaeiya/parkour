@@ -18,35 +18,77 @@
 ---
 
 
+---Color code map designed strictly for use with utils.printColor()
+local colorCodes = {
+    [";wht;"] = colors.white,
+    [";org;"] = colors.orange,
+    [";mgt;"] = colors.magenta,
+    [";lbu;"] = colors.lightBlue,
+    [";ylw;"] = colors.yellow,
+    [";lim;"] = colors.lime,
+    [";pnk;"] = colors.pink,
+    [";gry;"] = colors.gray,
+    [";lgy;"] = colors.lightGray,
+    [";cyn;"] = colors.cyan,
+    [";ppl;"] = colors.purple,
+    [";blu;"] = colors.blue,
+    [";bwn;"] = colors.brown,
+    [";grn;"] = colors.green,
+    [";red;"] = colors.red,
+    [";blk;"] = colors.black,
+}
+
+---
+---A more advanced version of print, that allows embedded color codes
+---to change the terminals color on-the-fly.
+---@param text string The text to print with supported color codes
+---@param newLine? boolean Whether or not to add a new line at end of text (default: true)
+local function printAdv(text, newLine)
+    ---Track where we are in the string
+    local pos = 1
+
+    if newLine == nil then
+        newLine = true
+    end
+
+    for i = 1, #text do
+        if i + 4 > #text then break end
+
+        local code = string.sub(text, i, i + 4)
+        local color = colorCodes[code]
+        if color then
+            write(string.sub(text, pos, i-1))
+            text = string.gsub(text, code, "", 1)
+            term.setTextColor(color)
+            pos = i
+        end
+    end
+
+    write(string.sub(text, pos, #text))
+    if newLine then
+        write("\n")
+    end
+end
+
+
+
 if not term.isColor() then
-    print()
-    term.setTextColor(colors.red)
-    print("Invalid Environment\n")
-    term.setTextColor(colors.orange)
-    print("You can only run me on an advanced computer")
-    print()
+    printAdv(
+        "\n;red;Invalid Environment\n" ..
+        ";org;You can only run me on an advanced computer\n"
+    )
     return
 end
 
 if not fs.exists("/disk/get") then
-    print()
-    term.setTextColor(colors.red)
-    print("Invalid Install Location")
-    print()
-    term.setTextColor(colors.orange)
-    print("Please import or copy me to a disk")
+    printAdv(
+        "\nInvalid Install Location\n" ..
+        ";org;Please import or copy me to a disk\n"
+    )
     local d = peripheral.find("drive")
     if not d then
-        print()
-        write("You'll need to attach a ")
-        term.setTextColor(colors.lime)
-        write("drive ")
-        term.setTextColor(colors.orange)
-        write("to this computer and insert a ")
-        term.setTextColor(colors.lime)
-        write("disk\n")
+        printAdv("You'll need to attach a ;lim;drive ;org;to this computer and insert a ;lim;disk\n")
     end
-    print()
     return
 end
 
@@ -118,58 +160,6 @@ local diskMap = {
     },
 }
 
----Color code map designed strictly for use with utils.printColor()
-local colorCodes = {
-    [";wht;"] = colors.white,
-    [";org;"] = colors.orange,
-    [";mgt;"] = colors.magenta,
-    [";lbu;"] = colors.lightBlue,
-    [";ylw;"] = colors.yellow,
-    [";lim;"] = colors.lime,
-    [";pnk;"] = colors.pink,
-    [";gry;"] = colors.gray,
-    [";lgy;"] = colors.lightGray,
-    [";cyn;"] = colors.cyan,
-    [";ppl;"] = colors.purple,
-    [";blu;"] = colors.blue,
-    [";bwn;"] = colors.brown,
-    [";grn;"] = colors.green,
-    [";red;"] = colors.red,
-    [";blk;"] = colors.black,
-}
-
-
----
----A more advanced version of print, that allows embedded color codes
----to change the terminals color on-the-fly.
----@param text string The text to print with supported color codes
----@param newLine? boolean Whether or not to add a new line at end of text (default: true)
-local function printAdv(text, newLine)
-    ---Track where we are in the string
-    local pos = 1
-
-    if newLine == nil then
-        newLine = true
-    end
-
-    for i = 1, #text do
-        if i + 4 > #text then break end
-
-        local code = string.sub(text, i, i + 4)
-        local color = colorCodes[code]
-        if color then
-            write(string.sub(text, pos, i-1))
-            text = string.gsub(text, code, "", 1)
-            term.setTextColor(color)
-            pos = i
-        end
-    end
-
-    write(string.sub(text, pos, #text))
-    if newLine then
-        write("\n")
-    end
-end
 
 
 ---Downloads the specified script and returns its content
