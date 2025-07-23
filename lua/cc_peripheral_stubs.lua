@@ -54,6 +54,12 @@ function Monitor.setCursorBlink(blink) end
 ---@return boolean
 function Monitor.getCursorBlink() end
 
+---Sets the palette color for one of the 16 terminal colors.
+---Only works on advanced monitors or terminals.
+---@param color number `colors.*` constant (e.g., colors.red)
+---@param replacement number A hexadecimal number (e.g., 0xFF0000 for red)
+function Monitor.setPaletteColor(color, replacement) end
+
 
 -- Modem peripheral proxy methods
 ---@class Modem
