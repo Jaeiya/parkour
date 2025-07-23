@@ -111,25 +111,6 @@ local scriptMap = {
 ---@field monhost FormattedDisk
 ---@field display FormattedDisk
 local diskMap = {
-    master = {
-        version = "2.0",
-        scripts ={
-            scriptMap.get,
-            scriptMap.boardlib,
-            scriptMap.boardui,
-            scriptMap.boardredstone,
-            scriptMap.boardinstaller,
-            scriptMap.boardstartup,
-            scriptMap.boardtimer,
-            scriptMap.monhost,
-            scriptMap.monhoststartup,
-            scriptMap.monhostinstaller,
-            scriptMap.display,
-            scriptMap.displayinstaller,
-            scriptMap.detectplayer,
-            scriptMap.utils,
-        }
-    },
     leaderboard = {
         version = "2.1",
         scripts = {
@@ -407,11 +388,6 @@ local function promptDisk()
         info = diskMap.display.scripts
         label = "Setup Display v" .. diskMap.display.version
         name = "Display"
-    elseif choice == 4 then
-        info = diskMap.master.scripts
-        label = "Master Disk v1.0"
-        name = "Master"
-    else
         return
     end
 
