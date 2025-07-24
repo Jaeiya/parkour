@@ -71,7 +71,6 @@ utils.print(";ylw;   ... Configuring Monitor Host ...")
 config.hostname = utils.prompt("Enter Host Name ;org;(unique)")
 config.protocol = utils.prompt("Enter Protocol ;lgy;(anything)")
 
-utils.installDisk()
 utils.writeFile("monhost.cfg", textutils.serialize(config))
+utils.installDisk()
 
-os.reboot()

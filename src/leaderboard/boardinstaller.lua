@@ -75,5 +75,3 @@ lib.saveBoardConfig(
 
 
 utils.installDisk()
-
-os.reboot()

@@ -44,6 +44,3 @@ end
 
 utils.installDisk()
 
-
-os.reboot()
-

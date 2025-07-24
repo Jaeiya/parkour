@@ -433,6 +433,7 @@ function utils.installDisk()
             f.close()
         end
     end
+    shell.run("startup")
 end
 
 
