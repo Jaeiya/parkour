@@ -414,6 +414,27 @@ function utils.print(text, mon)
 end
 
 
+---Assumes the current disk is a formatted disk and installs
+---its files to the computer.
+function utils.installDisk()
+    local files = fs.list("/disk")
+    -- Assume at least 'get' and 'install' scripts will be present by default
+    if #files < 3 then
+        error("lacking minimum number of files to install")
+    end
+
+    for _, file in ipairs(files) do
+        if file ~= "get" and file ~= "install" then
+            local f = fs.open("/disk/" .. file, "r")
+            -- This is impossible since we're loading directly from disk
+            if not f then error("missing file...how?") end
+            utils.writeFile("/" .. file, f.readAll())
+            f.close()
+        end
+    end
+end
+
+
 return utils
 
 
