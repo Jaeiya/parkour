@@ -23,8 +23,8 @@ local configFile = "display.cfg"
 
 ---@class DisplayConfig
 local config = {
-    textLine1 = "",
-    textLine2 = "",
+    textLine1 = "Line 1",
+    textLine2 = "Line 2",
     colorLine1 = 1,
     colorLine2 = 2,
     scale = 1,
