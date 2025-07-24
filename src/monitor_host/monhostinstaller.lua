@@ -60,14 +60,6 @@ end
 ---@field startup string
 ---@field utils   string
 
----@type MonhostPaths
-local paths = {
-    monhost = "disk/monhost",
-    ui      = "disk/monhost_ui",
-    startup = "disk/monhost_startup",
-    utils   = "disk/utils",
-}
-
 ---@type MonhostConfig
 local config = {
     hostname = "",
@@ -79,23 +71,7 @@ utils.print(";ylw;   ... Configuring Monitor Host ...")
 config.hostname = utils.prompt("Enter Host Name ;org;(unique)")
 config.protocol = utils.prompt("Enter Protocol ;lgy;(anything)")
 
-for _, path in pairs(paths) do
-    local f = fs.open(path, "r")
-    if not f then
-        error("could not find install file: " .. path)
-    end
-    local installPath = string.gsub(path, "disk/", "")
-
-    if path == paths.startup then
-        utils.writeFile("startup", f.readAll())
-    else
-        utils.writeFile(installPath, f.readAll())
-    end
-
-    f.close()
-end
-
-
+utils.installDisk()
 utils.writeFile("monhost.cfg", textutils.serialize(config))
 
 os.reboot()

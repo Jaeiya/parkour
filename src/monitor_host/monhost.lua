@@ -1,5 +1,5 @@
 local utils = require("utils")
-local ui = require("monhost_ui")
+local ui = require("monhostui")
 
 
 ---

@@ -108,15 +108,15 @@ local scriptMap = {
     boardinstaller = { slug = "boardinstaller.lua", fileName = "installboard" },
     board          = { slug = "board.lua",          fileName = "board"},
 
-    monhostinstaller = { slug = "monhostinstaller.lua", fileName = "install_monhost" },
-    monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhost_startup" },
-    monhostui        = { slug = "monhostui.lua",        fileName = "monhost_ui"},
     boardlib       = { slug = "boardlib.lua",       fileName = "boardlib" },
     boardredstone  = { slug = "boardredstone.lua",  fileName = "boardredstone" },
     boardui        = { slug = "boardui.lua",        fileName = "boardui" },
     boardstartup   = { slug = "boardstartup.lua",   fileName = "boardstartup" },
     boardtimer     = { slug = "boardtimer.lua",     fileName = "boardtimer" },
     boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
+    monhostinstaller = { slug = "monhostinstaller.lua", fileName = "installmonhost" },
+    monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhoststartup" },
+    monhostui        = { slug = "monhostui.lua",        fileName = "monhostui"},
     monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
     display          = { slug = "display.lua",          fileName = "display" },
