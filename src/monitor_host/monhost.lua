@@ -16,6 +16,9 @@ if not mon then
     return false
 end
 
+mon.setTextScale(4.5)
+mon.setTextColor(colors.lime)
+
 local modem = utils.getModem()
 if not modem then
     print()
@@ -43,8 +46,6 @@ config = utils.loadConfig(configFilePath, config)
 rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)
 
-mon.setTextScale(4.5)
-mon.setTextColor(colors.lime)
 
 -- Default to zero values
 mon.setCursorPos(1, 1)
