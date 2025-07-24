@@ -428,6 +428,8 @@ function utils.installDisk()
             local f = fs.open("/disk/" .. file, "r")
             -- This is impossible since we're loading directly from disk
             if not f then error("missing file...how?") end
+            -- All startup files are suffixed with "_" so they don't start from disk
+            if string.find(file, "startup") then file = "startup" end
             utils.writeFile("/" .. file, f.readAll())
             f.close()
         end

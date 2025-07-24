@@ -278,9 +278,10 @@ local function createDisk(diskData)
     for i, script in ipairs(diskData) do
         local content = getScriptFile(script)
         if string.find(script.fileName, "install") then
-           script.fileName = "install"
+            script.fileName = "install"
         elseif string.find(script.fileName, "startup") then
-           script.fileName = "startup"
+            -- We do not want the disk to startup with the computer
+            script.fileName = "startup_"
         end
         writeFile("/disk/" .. script.fileName, content)
         writeProgress("Creating Disk", i, #diskData)
