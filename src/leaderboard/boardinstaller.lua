@@ -66,12 +66,15 @@ end
 
 
 utils.clear()
-utils.print(";org;   ... Configuring Leaderboard ...")
-lib.saveBoardConfig(
-    utils.prompt("Enter Monitor Protocol"),
-    utils.promptCoords("Enter Start Pos"),
-    utils.promptCoords("Enter End Pos")
-)
+-- Assume that the existing configuration is accurate
+if not fs.exists(lib.configPath) then
+    utils.print(";ylw;   ... Configuring Leaderboard ...")
+    lib.saveBoardConfig(
+        utils.prompt("Enter Monitor Protocol"),
+        utils.promptCoords("Enter Start Pos"),
+        utils.promptCoords("Enter End Pos")
+    )
+end
 
 
 utils.installDisk()

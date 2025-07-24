@@ -52,6 +52,7 @@ end
 local leaderboard  = {
     playerList = {},
     playerMap = {},
+    configPath = configPath
 }
 
 -- Initialize internal database objects
