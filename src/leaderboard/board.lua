@@ -15,6 +15,7 @@ if not mon then
 end
 
 utils.clear(mon)
+mon.setPaletteColor(colors.black, 0x000000)
 mon.setTextScale(state.monitorScale)
 
 
@@ -84,7 +85,7 @@ local function renderBoard()
     mon.setTextScale(state.monitorScale)
     local yPos = 2
     mon.setCursorPos(1, yPos)
-    utils.print(";lim;"..utils.centerText("Leader Board", mon), mon)
+    utils.print(";org;"..utils.centerText("Leader Board", mon), mon)
     local players = lib.get()
 
     -- Add padding between times and title
