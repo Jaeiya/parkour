@@ -414,6 +414,17 @@ function utils.print(text, mon)
 end
 
 
+---Deletes only script files from the computer
+function utils.cleanScripts()
+    local fileList = fs.list(".")
+    for _, file in ipairs(fileList) do
+        if file ~= "rom" and file ~= "disk" and not string.find(file, "%.") then
+            fs.delete(file)
+        end
+    end
+end
+
+
 ---Assumes the current disk is a formatted disk and installs
 ---its files to the computer.
 function utils.installDisk()
@@ -422,6 +433,9 @@ function utils.installDisk()
     if #files < 3 then
         error("lacking minimum number of files to install")
     end
+
+    -- Prevent potential side-effects from old scripts
+    utils.cleanScripts()
 
     for _, file in ipairs(files) do
         if file ~= "get" and file ~= "startup" then
