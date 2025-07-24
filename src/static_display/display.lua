@@ -1,5 +1,6 @@
 
 local utils = require("utils")
+utils.clear()
 
 ---@type Monitor|nil
 local mon = nil

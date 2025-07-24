@@ -42,16 +42,6 @@ if not mon then
     return
 end
 
-
----We manually write the startup directly to disk
----because it's too simple to require its own file.
-utils.writeFile(
-    "startup", [[
-term.clear()
-term.setCursorPos(1, 1)
-shell.run("display")
-
-]])
 utils.installDisk()
 
 

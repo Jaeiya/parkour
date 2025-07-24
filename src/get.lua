@@ -119,7 +119,7 @@ local scriptMap = {
     monhostui        = { slug = "monhostui.lua",        fileName = "monhostui"},
     monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
-    display          = { slug = "display.lua",          fileName = "display" },
+    display          = { slug = "display.lua",          fileName = "displaystartup" },
     displayinstaller = { slug = "displayinstaller.lua", fileName = "installdisplay" },
 
     utils         = { slug = "utils.lua",        fileName = "utils" },
