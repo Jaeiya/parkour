@@ -129,7 +129,7 @@ local scriptMap = {
 ---@class DiskMap
 local diskMap = {
     leaderboard = {
-        version = "2.2",
+        version = "2.3",
         scripts = {
             scriptMap.board,
             scriptMap.boardlib,
@@ -144,7 +144,7 @@ local diskMap = {
         }
     },
     monhost = {
-        version = "2.2",
+        version = "2.3",
         scripts = {
             scriptMap.monhost,
             scriptMap.monhostinstaller,
@@ -153,7 +153,7 @@ local diskMap = {
         }
     },
     display = {
-        version = "2.1",
+        version = "2.2",
         scripts = {
             scriptMap.display,
             scriptMap.displayinstaller,
