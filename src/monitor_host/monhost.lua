@@ -16,6 +16,9 @@ if not mon then
     return false
 end
 
+mon.setPaletteColor(colors.black, 0x000000)
+mon.setPaletteColor(colors.lime, 0x00FF00)
+
 mon.setTextScale(4.5)
 mon.setTextColor(colors.lime)
 
