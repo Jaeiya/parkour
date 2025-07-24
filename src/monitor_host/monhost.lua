@@ -29,6 +29,8 @@ if width < 11 or width > 11 then
     return false
 end
 
+utils.clear()
+print("... Starting Monitor Host ...")
 
 local configFilePath = "monhost.cfg"
 ---@class MonhostConfig

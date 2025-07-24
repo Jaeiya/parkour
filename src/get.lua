@@ -115,9 +115,8 @@ local scriptMap = {
     boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
 
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "installmonhost" },
-    monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhoststartup" },
+    monhost          = { slug = "monhost.lua",          fileName = "monhoststartup" },
     monhostui        = { slug = "monhostui.lua",        fileName = "monhostui"},
-    monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
     display          = { slug = "display.lua",          fileName = "displaystartup" },
     displayinstaller = { slug = "displayinstaller.lua", fileName = "installdisplay" },
@@ -148,7 +147,6 @@ local diskMap = {
         version = "2.2",
         scripts = {
             scriptMap.monhost,
-            scriptMap.monhoststartup,
             scriptMap.monhostinstaller,
             scriptMap.monhostui,
             scriptMap.utils,
