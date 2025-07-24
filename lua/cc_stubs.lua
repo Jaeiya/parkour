@@ -191,7 +191,7 @@ function peripheral.isPresent(side) end
 function peripheral.getType(side) end
 
 ---Wraps the peripheral on the given side, returning a proxy table to call its methods.
----@param side string The side to wrap.
+---@param side 'left'|'right'|'top'|'bottom'|'front'|'back' The side to wrap.
 ---@return table|nil proxy The peripheral proxy or nil if none present.
 function peripheral.wrap(side) end
 
