@@ -75,9 +75,5 @@ lib.saveBoardConfig(
 
 
 utils.installDisk()
-local f = fs.open("settings", "w")
-if not f then error() end -- to appease linter
-utils.writeFile("settings", "motd.enable=false")
-f.close()
 
 os.reboot()
