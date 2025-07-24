@@ -70,7 +70,7 @@ local configFilePath = "monhost.cfg"
 
 utils.clear()
 -- Assume that the existing configuration is accurate
-if fs.exists(configFilePath) then
+if not fs.exists(configFilePath) then
     utils.print(";ylw;   ... Configuring Monitor Host ...")
     config.hostname = utils.prompt("Enter Host Name ;org;(unique)")
     config.protocol = utils.prompt("Enter Protocol ;lgy;(anything)")
