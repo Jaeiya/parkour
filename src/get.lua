@@ -239,7 +239,7 @@ end
 
 ---Deletes all files except the 'get' script
 ---from the disk.
----@param silent? boolean Will not print confirmation if true
+---@param silent? boolean Whether or not to print confirmation `(default: false)`
 local function cleanDisk(silent)
     local fileList = fs.list("/disk")
     for _, file in ipairs(fileList) do
