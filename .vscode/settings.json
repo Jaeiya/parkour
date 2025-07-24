@@ -27,6 +27,7 @@
     "boardstate",
     "boardtimer",
     "boardui",
+    "copydisk",
     "detectplayer",
     "displayinstaller",
     "displaystartup",
