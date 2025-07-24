@@ -1,3 +1,8 @@
+local utils = require("utils")
+local lib = require("boardlib")
+local state = require("boardstate")
+
+
 --
 -- Allows you to stop and start a timer that displays to a
 -- monitor constellation. The smallest increment of time
@@ -18,9 +23,7 @@
 -- Max Time: 59:59:59.19 (resets to 0 if exceeded)
 -- Min Time: 00:00:00.01
 --
-local utils = require("utils")
-local lib = require("board_lib")
-local state = require("board_state")
+
 
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0

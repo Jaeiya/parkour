@@ -1,6 +1,6 @@
 local utils = require("utils")
-local lib = require("board_lib")
-local state = require("board_state")
+local lib = require("boardlib")
+local state = require("boardstate")
 
 
 ---
@@ -65,20 +65,6 @@ if not modem.isWireless() then
 end
 
 
----@class BoardPaths
-local paths = {
-    boardTimer     = "disk/board_timer",
-    startup        = "disk/board_startup",
-    board          = "disk/board",
-    boardData      = "disk/board_lib",
-    boardUI        = "disk/board_ui",
-    boardRedstone  = "disk/board_redstone",
-    boardState     = "disk/board_state",
-    utils          = "disk/utils",
-    playerDetector = "disk/detect_player",
-}
-
-
 utils.clear()
 utils.print(";org;   ... Configuring Leaderboard ...")
 lib.saveBoardConfig(
@@ -87,22 +73,8 @@ lib.saveBoardConfig(
     utils.promptCoords("Enter End Pos")
 )
 
-for _, path in pairs(paths) do
-    local f = fs.open(path, "r")
-    if not f then
-        error("could not find install file: " .. path)
-    end
-    local installPath = string.gsub(path, "disk/", "")
 
-    if path == paths.startup then
-        utils.writeFile("startup", f.readAll())
-    else
-        utils.writeFile(installPath, f.readAll())
-    end
-
-    f.close()
-end
-
+utils.installDisk()
 local f = fs.open("settings", "w")
 if not f then error() end -- to appease linter
 utils.writeFile("settings", "motd.enable=false")

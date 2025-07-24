@@ -105,18 +105,18 @@ end
 local scriptMap = {
     get            = { slug = "get.lua", fileName = "get" },
 
-    boardinstaller = { slug = "boardinstaller.lua", fileName = "install_board" },
+    boardinstaller = { slug = "boardinstaller.lua", fileName = "installboard" },
     board          = { slug = "board.lua",          fileName = "board"},
-    boardlib       = { slug = "boardlib.lua",       fileName = "board_lib" },
-    boardredstone  = { slug = "boardredstone.lua",  fileName = "board_redstone" },
-    boardui        = { slug = "boardui.lua",        fileName = "board_ui" },
-    boardstartup   = { slug = "boardstartup.lua",   fileName = "board_startup" },
-    boardtimer     = { slug = "boardtimer.lua",     fileName = "board_timer" },
-    boardstate     = { slug = "boardstate.lua",     fileName = "board_state" },
 
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "install_monhost" },
     monhoststartup   = { slug = "monhoststartup.lua",   fileName = "monhost_startup" },
     monhostui        = { slug = "monhostui.lua",        fileName = "monhost_ui"},
+    boardlib       = { slug = "boardlib.lua",       fileName = "boardlib" },
+    boardredstone  = { slug = "boardredstone.lua",  fileName = "boardredstone" },
+    boardui        = { slug = "boardui.lua",        fileName = "boardui" },
+    boardstartup   = { slug = "boardstartup.lua",   fileName = "boardstartup" },
+    boardtimer     = { slug = "boardtimer.lua",     fileName = "boardtimer" },
+    boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
     monhost          = { slug = "monhost.lua",          fileName = "monhost" },
 
     display          = { slug = "display.lua",          fileName = "display" },
@@ -279,6 +279,8 @@ local function createDisk(diskData)
         local content = getScriptFile(script)
         if string.find(script.fileName, "install") then
            script.fileName = "install"
+        elseif string.find(script.fileName, "startup") then
+           script.fileName = "startup"
         end
         writeFile("/disk/" .. script.fileName, content)
         writeProgress("Creating Disk", i, #diskData)

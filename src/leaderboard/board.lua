@@ -1,6 +1,6 @@
 local utils = require("utils")
-local lib = require("board_lib")
-local state = require("board_state")
+local lib = require("boardlib")
+local state = require("boardstate")
 
 local pd  = utils.getPlayerDetector()
 if not pd then

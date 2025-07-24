@@ -1,4 +1,4 @@
-local state = require("board_state")
+local state = require("boardstate")
 
 return function()
     while true do
