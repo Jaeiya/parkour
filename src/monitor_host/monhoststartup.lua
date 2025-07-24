@@ -1,4 +1,4 @@
-
+local utils = require("utils")
 
 ---
 ---
@@ -16,9 +16,7 @@
 ---
 
 
-term.clear()
-term.setCursorPos(1, 1)
-
+utils.clear()
 -- Executes the monitor host and any other scripts in parallel if needed
 parallel.waitForAny(
     function ()
