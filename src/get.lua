@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = 2.3
+local version = 2.4
 
 
 ---Color code map designed strictly for use with utils.printColor()
@@ -278,7 +278,12 @@ local function createDisk(diskData)
     for i, script in ipairs(diskData) do
         local content = getScriptFile(script)
         if string.find(script.fileName, "install") then
-            script.fileName = "install"
+            -- Do not allow disks startup to interfere with computers
+            content = [[
+-- Auto-injected by disk creator
+if fs.exists("startup") then return shell.run("startup") end
+]] .. content
+            script.fileName = "startup"
         elseif string.find(script.fileName, "startup") then
             -- We do not want the disk to startup with the computer
             script.fileName = "startup_"
