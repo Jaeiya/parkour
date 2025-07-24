@@ -121,6 +121,9 @@ local scriptMap = {
     display          = { slug = "display.lua",          fileName = "displaystartup" },
     displayinstaller = { slug = "displayinstaller.lua", fileName = "installdisplay" },
 
+    medals          = { slug = "medals.lua",          fileName = "medalsstartup" },
+    medalsinstaller = { slug = "medalsinstaller.lua", fileName = "installmedals" },
+
     utils         = { slug = "utils.lua",        fileName = "utils" },
     detectplayer  = { slug = "detectplayer.lua", fileName = "detectplayer" },
 }
@@ -160,6 +163,14 @@ local diskMap = {
             scriptMap.utils,
         }
     },
+    medals = {
+        version = "1.0",
+        scripts = {
+            scriptMap.medals,
+            scriptMap.medalsinstaller,
+            scriptMap.utils,
+        }
+    }
 }
 
 
@@ -263,15 +274,13 @@ local function cleanComputer()
     printAdv("\n;org;Computer has been cleaned\n")
 end
 
-
 ---Cleans and downloads all scripts required to
 ---create a specific disk.
 ---@param diskData Script[]
 local function createDisk(diskData)
     print()
     writeProgress("Creating Disk", 0, #diskData)
-    -- A disk should have ONLY the files created
-    -- by this function.
+    -- A disk should have ONLY the files created by this function.
     cleanDisk(true)
     for i, script in ipairs(diskData) do
         local content = getScriptFile(script)
@@ -323,16 +332,17 @@ local function promptDisk()
         ";ylw;Format Disk\n\n" ..
         ";lgy;  1. ;wht;Leaderboard\n" ..
         ";lgy;  2. ;wht;Monitor Host\n" ..
-        ";lgy;  3. ;wht;Display\n\n" ..
+        ";lgy;  3. ;wht;Display\n" ..
+        ";lgy;  4. ;wht;Medals\n\n" ..
 
-        ";red;  4. ;wht;Exit\n"
+        ";red;  5. ;wht;Exit\n"
     )
     term.setTextColor(colors.yellow)
     write("> ")
     term.setTextColor(colors.lime)
     local choice = tonumber(read())
 
-    if not choice or choice > 4 or choice < 1 then
+    if not choice or choice > 5 or choice < 1 then
         printError("invalid choice; try again!\n")
         printAdv(";lgy;Enter to continue...")
         read()
@@ -356,9 +366,13 @@ local function promptDisk()
         info = diskMap.display.scripts
         label = "Setup Display v" .. diskMap.display.version
         name = "Display"
+    elseif choice == 4 then
+        info = diskMap.medals.scripts
+        label = "Setup Medals v" .. diskMap.medals.version
+        name = "Medals"
     end
 
-    if choice == 4 then
+    if choice == 5 then
         return
     end
 
