@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = "2.4.1"
+local version = "2.4.2"
 
 
 ---Color code map designed strictly for use with utils.printColor()
@@ -126,6 +126,8 @@ local scriptMap = {
 
     utils         = { slug = "utils.lua",        fileName = "utils" },
     detectplayer  = { slug = "detectplayer.lua", fileName = "detectplayer" },
+
+    copydisk      = { slug = "copydisk.lua", fileName = "copydisk" },
 }
 
 
@@ -409,7 +411,7 @@ if #args > 1 then
     local flag = arg1
     local scriptName = arg2
 
-    if flag ~= "l" or not scriptName then
+    if flag ~= "l" and flag ~= "sl" and flag ~= "s" and flag ~= "ls" or not scriptName then
         printHelp()
         return
     end
@@ -422,14 +424,25 @@ if #args > 1 then
 
     printAdv("\n ;org;Getting: ;cyn;"..scriptName)
 
+    if flag == "s" or flag == 'sl' or flag == 'ls' then
+        script.fileName = "startup"
+    end
+
     local content = getScriptFile(script)
     writeFile("/disk/" .. script.fileName, content)
-    writeFile(script.fileName, content)
 
-    printAdv(
-        ";org;Saved To: ;lim;/disk/"..script.fileName ..
-        "\n;org;Saved To: ;lim;/"..script.fileName.."\n"
-    )
+    if flag == "l" or flag == "sl" or flag == "ls" then
+        writeFile(script.fileName, content)
+    end
+
+    if flag == "l" or flag == "sl" or flag == "ls" then
+        printAdv(
+            ";org;Saved To: ;lim;/disk/"..script.fileName ..
+            "\n;org;Saved To: ;lim;/"..script.fileName.."\n"
+        )
+    else
+        printAdv(";org;Saved To: ;lim;/"..script.fileName.."\n")
+    end
     return
 end
 
