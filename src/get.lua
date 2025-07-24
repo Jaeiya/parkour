@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = 2.3
+local version = 2.4
 
 
 ---Color code map designed strictly for use with utils.printColor()
@@ -130,7 +130,7 @@ local scriptMap = {
 ---@class DiskMap
 local diskMap = {
     leaderboard = {
-        version = "2.1",
+        version = "2.2",
         scripts = {
             scriptMap.board,
             scriptMap.boardlib,
@@ -145,7 +145,7 @@ local diskMap = {
         }
     },
     monhost = {
-        version = "2.1",
+        version = "2.2",
         scripts = {
             scriptMap.monhost,
             scriptMap.monhoststartup,
@@ -155,7 +155,7 @@ local diskMap = {
         }
     },
     display = {
-        version = "2.0",
+        version = "2.1",
         scripts = {
             scriptMap.display,
             scriptMap.displayinstaller,
