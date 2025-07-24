@@ -1,10 +1,11 @@
+local utils = require("utils")
+utils.clear()
 
 local execTimer = require("boardtimer")
 local execBoard = require("board")
 local execRedstone = require("boardredstone")
 local execPlayerDetection = require("detectplayer")
 local execBoardUI = require("boardui")
-
 
 ---
 ---
@@ -20,10 +21,6 @@ local execBoardUI = require("boardui")
 ---is loaded again.
 ---
 ---
-
-
-term.clear()
-term.setCursorPos(1, 1)
 
 
 
