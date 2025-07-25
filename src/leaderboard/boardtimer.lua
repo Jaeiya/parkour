@@ -43,7 +43,8 @@ rednet.open(peripheral.getName(modem))
 rednet.broadcast("00:00:00.00", config.protocol)
 
 return function()
-    local timerID = 0
+    -- Prevent any default timer events
+    local timerID = 133742069
     while true do
         local _, data = os.pullEvent("timer")
 
