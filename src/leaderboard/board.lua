@@ -50,12 +50,12 @@ local function renderActiveRunner(playerName)
         error("active runner not found: " .. playerName)
     end
 
+    utils.clear(mon)
     mon.setTextScale(2.5)
+    mon.setBackgroundColor(colors.red)
     local w = mon.getSize()
     local text = "WARNING: Active Runner"
     local textWidthDiff = w - #text
-    utils.clear(mon)
-    mon.setBackgroundColor(colors.red)
     local banner = (
         string.rep(" ", math.ceil(textWidthDiff / 2)) ..
         text ..
@@ -81,7 +81,7 @@ end
 
 
 local function renderBoard()
-    mon.clear()
+    utils.clear(mon)
     mon.setTextScale(state.monitorScale)
     local yPos = 2
     mon.setCursorPos(1, yPos)
@@ -166,19 +166,20 @@ return function()
                 runningPlayerName = nearestPlayer.name
                 renderActiveRunner(runningPlayerName)
             else
+                -- The timer starts no matter what, so we immediately cancel
+                -- if no player is found.
                 os.queueEvent("timer", { action = "cancel_run" })
             end
-
 
         elseif msgEvent.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
                 os.queueEvent("timer", { action = "cancel_run" })
+                lib.updateTime(runningPlayerName, msgEvent.payload)
                 runningPlayerName = nil
-                mon.setBackgroundColor(colors.black)
                 renderBoard()
             end
 
-        elseif msgEvent.action =="save_player_time" then
+        elseif msgEvent.action == "save_player_time" then
             if isPlayerRunning(config.endPos) then
                 os.queueEvent("timer", {action = "finish_run", payload = msgEvent.payload})
                 lib.savePlayerTime(runningPlayerName, msgEvent.payload)

@@ -13,7 +13,10 @@ return function()
         elseif right then
             -- The run will only be canceled if the active runner
             -- is the same player who triggered this action.
-            os.queueEvent("leaderboard", { action="try_cancel_run" })
+            os.queueEvent("leaderboard", {
+                action="try_cancel_run",
+                payload = state.timer.milliseconds }
+            )
 
         elseif left and state.timer.isActive then
             -- This action will be ignored entirely, if the player who

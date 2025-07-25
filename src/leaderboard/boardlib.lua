@@ -20,6 +20,7 @@ local config = {
 ---@class TimeTable
 ---@field pb      integer
 ---@field current integer
+---@field total   integer
 
 ---@class AttemptTable
 ---@field pb      integer
@@ -101,6 +102,14 @@ function leaderboard.updateAttempt(name)
 end
 
 
+---Adds time to a players total run time.
+function leaderboard.updateTime(name, time)
+    local player = leaderboard.playerMap[name]
+    player.time.total = player.time.total + time
+    leaderboard.save()
+end
+
+
 ---Tries to save a specified players run time, but if it
 ---is not faster than the players current PB, then it does
 ---nothing.
@@ -109,6 +118,7 @@ end
 function leaderboard.savePlayerTime(name, time)
     local player = leaderboard.playerMap[name]
     player.time.current = time
+    player.time.total = player.time.total + player.time.current
 
     if player.time.current < player.time.pb or player.time.pb == 0 then
         player.time.pb = player.time.current
@@ -136,6 +146,7 @@ function leaderboard.tryAddPlayer(name)
         time = {
             pb = 0,
             current = 0,
+            total = 0,
         }
     }
     leaderboard.playerMap[name] = leaderboard.playerList[index]
