@@ -135,7 +135,7 @@ local scriptMap = {
 ---@class DiskMap
 local diskMap = {
     leaderboard = {
-        version = "2.5",
+        version = "2.6",
         scripts = {
             scriptMap.board,
             scriptMap.boardlib,
