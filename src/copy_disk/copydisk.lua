@@ -65,7 +65,7 @@ local function waitForDisk()
         mon.clearLine()
 
         mon.setCursorPos(1, 2)
-        local title = string.gsub(sourceDrive.getDiskLabel(), "Setup", "Create", 1)
+        local title = "Create " .. sourceDrive.getDiskLabel()
         utils.print(";lbu;"..utils.centerText(title, mon), mon)
         mon.setCursorPos(1, 4)
         mon.clearLine()

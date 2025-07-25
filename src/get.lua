@@ -132,6 +132,11 @@ local scriptMap = {
 }
 
 
+---@class FormattedDisk
+---@field version string
+---@field scripts Script[]
+
+
 ---@class DiskMap
 local diskMap = {
     leaderboard = {
@@ -185,8 +190,6 @@ local diskMap = {
 }
 
 
-
----Downloads the specified script and returns its content
 ---@param script Script
 local function getScriptFile(script)
     local apiURL =  "https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/"
@@ -287,13 +290,13 @@ end
 
 ---Cleans and downloads all scripts required to
 ---create a specific disk.
----@param diskData Script[]
+---@param diskData FormattedDisk
 local function createDisk(diskData)
     print()
-    writeProgress("Creating Disk", 0, #diskData)
+    writeProgress("Creating Disk", 0, #diskData.scripts)
     -- A disk should have ONLY the files created by this function.
     cleanDisk(true)
-    for i, script in ipairs(diskData) do
+    for i, script in ipairs(diskData.scripts) do
         local content = getScriptFile(script)
         if string.find(script.fileName, "install") then
             -- Do not allow disks startup to interfere with computers
@@ -307,7 +310,7 @@ if fs.exists("startup") then return shell.run("startup") end
             script.fileName = "startup_"
         end
         writeFile("/disk/" .. script.fileName, content)
-        writeProgress("Creating Disk", i, #diskData)
+        writeProgress("Creating Disk", i, #diskData.scripts)
     end
 end
 
@@ -361,30 +364,24 @@ local function promptDisk()
         goto restart
     end
 
-    ---@type Script[]
-    local info = {}
-    local label = ""
     local name = ""
+    ---@type FormattedDisk
+    local selectedDisk
 
     if choice == 1 then
-        info = diskMap.leaderboard.scripts
-        label = "Setup Leaderboard v" .. diskMap.leaderboard.version
+        selectedDisk = diskMap.leaderboard
         name = "Leaderboard"
     elseif choice == 2 then
-        info = diskMap.monhost.scripts
-        label = "Setup Monitor Host v" .. diskMap.monhost.version
+        selectedDisk = diskMap.monhost
         name = "Monitor Host"
     elseif choice == 3 then
-        info = diskMap.display.scripts
-        label = "Setup Display v" .. diskMap.display.version
+        selectedDisk = diskMap.display
         name = "Display"
     elseif choice == 4 then
-        info = diskMap.medals.scripts
-        label = "Setup Medals v" .. diskMap.medals.version
+        selectedDisk = diskMap.medals
         name = "Medals"
     elseif choice == 5 then
-        info = diskMap.copydisk.scripts
-        label = "Setup CopyDisk v" .. diskMap.copydisk.version
+        selectedDisk = diskMap.copydisk
         name = "CopyDisk"
     end
 
@@ -392,8 +389,9 @@ local function promptDisk()
         return
     end
 
-    createDisk(info)
-    finalizeDisk(label, name)
+    local diskLabel = name .. " v"..selectedDisk.version
+    createDisk(selectedDisk)
+    finalizeDisk(diskLabel, name)
 end
 
 
