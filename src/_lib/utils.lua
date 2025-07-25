@@ -165,7 +165,7 @@ end
 ---@return T
 function utils.loadConfig(path, defaults)
     if not fs.exists(path) then
-        utils.writeFile(path, textutils.serialize(defaults))
+        utils.saveConfig(path, defaults)
         return defaults
     else
         local f = fs.open(path, "r")
@@ -343,6 +343,7 @@ function utils.promptMenu(title, choices, clearScreen)
     choices[selected].exec()
     return false
 end
+
 
 ---Prints an error message to the script and prompts
 ---the user to continue.
