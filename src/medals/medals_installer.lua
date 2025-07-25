@@ -1,5 +1,6 @@
 
 local utils = require("utils")
+utils.clear()
 
 local mon = utils.getMonitor()
 if not mon then
