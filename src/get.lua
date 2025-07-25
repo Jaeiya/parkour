@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = "2.4.2"
+local version = "2.4.3"
 
 
 ---Color code map designed strictly for use with utils.printColor()
@@ -127,14 +127,15 @@ local scriptMap = {
     utils         = { slug = "utils.lua",        fileName = "utils" },
     detectplayer  = { slug = "detectplayer.lua", fileName = "detectplayer" },
 
-    copydisk      = { slug = "copydisk.lua", fileName = "copydisk" },
+    copydisk          = { slug = "copydisk.lua",          fileName = "copydiskstartup" },
+    copydiskinstaller = { slug = "copydiskinstaller.lua", fileName = "installcopydisk" },
 }
 
 
 ---@class DiskMap
 local diskMap = {
     leaderboard = {
-        version = "2.3",
+        version = "2.4",
         scripts = {
             scriptMap.board,
             scriptMap.boardlib,
@@ -149,7 +150,7 @@ local diskMap = {
         }
     },
     monhost = {
-        version = "2.3",
+        version = "2.4",
         scripts = {
             scriptMap.monhost,
             scriptMap.monhostinstaller,
@@ -170,6 +171,14 @@ local diskMap = {
         scripts = {
             scriptMap.medals,
             scriptMap.medalsinstaller,
+            scriptMap.utils,
+        }
+    },
+    copydisk = {
+        version = "1.0",
+        scripts = {
+            scriptMap.copydisk,
+            scriptMap.copydiskinstaller,
             scriptMap.utils,
         }
     }
@@ -335,16 +344,17 @@ local function promptDisk()
         ";lgy;  1. ;wht;Leaderboard\n" ..
         ";lgy;  2. ;wht;Monitor Host\n" ..
         ";lgy;  3. ;wht;Display\n" ..
-        ";lgy;  4. ;wht;Medals\n\n" ..
+        ";lgy;  4. ;wht;Medals\n" ..
+        ";lgy;  5. ;wht;Copy Disk\n\n" ..
 
-        ";red;  5. ;wht;Exit\n"
+        ";red;  6. ;wht;Exit\n"
     )
     term.setTextColor(colors.yellow)
     write("> ")
     term.setTextColor(colors.lime)
     local choice = tonumber(read())
 
-    if not choice or choice > 5 or choice < 1 then
+    if not choice or choice > 6 or choice < 1 then
         printError("invalid choice; try again!\n")
         printAdv(";lgy;Enter to continue...")
         read()
@@ -372,9 +382,13 @@ local function promptDisk()
         info = diskMap.medals.scripts
         label = "Setup Medals v" .. diskMap.medals.version
         name = "Medals"
+    elseif choice == 5 then
+        info = diskMap.copydisk.scripts
+        label = "Setup CopyDisk v" .. diskMap.copydisk.version
+        name = "CopyDisk"
     end
 
-    if choice == 5 then
+    if choice == 6 then
         return
     end
 
