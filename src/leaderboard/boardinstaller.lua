@@ -19,6 +19,7 @@ local state = require("boardstate")
 ---
 
 
+utils.clear()
 print()
 local mon = utils.getMonitor()
 if not mon then
@@ -65,7 +66,6 @@ if not modem.isWireless() then
 end
 
 
-utils.clear()
 -- Assume that the existing configuration is accurate
 if not fs.exists(lib.configPath) then
     utils.print(";ylw;   ... Configuring Leaderboard ...")
