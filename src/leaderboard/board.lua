@@ -160,13 +160,15 @@ return function()
         if msgEvent.action == "start_run" then
             local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, onlinePlayerNames)
 
-            lib.tryAddPlayer(nearestPlayer.name)
-            lib.updateAttempt(nearestPlayer.name)
-
             if nearestPlayer.distance <= maxActuationDist then
+                lib.tryAddPlayer(nearestPlayer.name)
+                lib.updateAttempt(nearestPlayer.name)
                 runningPlayerName = nearestPlayer.name
                 renderActiveRunner(runningPlayerName)
+            else
+                os.queueEvent("timer", { action = "cancel_run" })
             end
+
 
         elseif msgEvent.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
