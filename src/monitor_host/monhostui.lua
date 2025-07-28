@@ -53,7 +53,7 @@ return function (config)
         end
 
         utils.clear()
-        utils.print("... Updating Monitor Host ...")
+        utils.print("... Updating Host Info ...")
         rednet.host(config.protocol, config.hostname)
     end
 end
