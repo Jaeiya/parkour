@@ -394,6 +394,15 @@ function term.isColor() end
 ---@return boolean
 function term.isColorDepth() end
 
+---@alias Redirect table<string, fun(...)> -- A terminal-like object
+
+---Redirects terminal output to a new terminal object (e.g., monitor or window).
+---@param target Redirect The terminal redirect the `term` API will draw to.
+---@return Redirect previous The previous terminal object, for restoring later.
+function term.redirect(target) end
+
+
+
 
 
 ---@class colors
