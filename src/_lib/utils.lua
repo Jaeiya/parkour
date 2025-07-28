@@ -133,7 +133,7 @@ end
 ---@param mon Monitor
 function utils.centerText(text, mon)
     local w = mon.getSize()
-    return string.rep(" ", (w - #text) / 2) .. text
+    return string.rep(" ", (w - #utils.stripColorCodes(text)) / 2) .. text
 end
 
 
