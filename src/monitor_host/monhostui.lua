@@ -51,5 +51,7 @@ return function (config)
         if exiting then
             return
         end
+
+        rednet.host(config.protocol, config.hostname)
     end
 end

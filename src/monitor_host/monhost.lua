@@ -63,7 +63,6 @@ local function main()
         if proto == config.protocol then
             if type(msg) ~= "string" then
                 rednet.send(senderID, "error: invalid message type", config.protocol)
-
             else
                 mon.setCursorPos(1, 1)
                 mon.write(msg)
