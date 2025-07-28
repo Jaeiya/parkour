@@ -7,7 +7,7 @@ local state = {
         isActive = false,
         milliseconds = 0,
     },
-    monitorScale = 2,
+    monitorScale = 1.5,
 }
 
 return state
