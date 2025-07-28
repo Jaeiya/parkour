@@ -415,7 +415,7 @@ function utils.print(text, mon)
     if mon then
         newLine = ""
     end
-    writeFunc(string.sub(text, pos, #text) .. "")
+    writeFunc(string.sub(text, pos, #text) .. newLine)
 end
 
 
