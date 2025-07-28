@@ -5,12 +5,15 @@ local lib = require('boardlib')
 return function(config)
     while true do
         sleep(1.5)
-        rednet.broadcast(
-            {
-                action  = "update_player_data",
-                payload = lib.get()
-            },
-            config.statsProto
-        )
+        local players = lib.get()
+        if #players > 0 then
+            rednet.broadcast(
+                {
+                    action  = "update_player_data",
+                    payload = lib.get()
+                },
+                config.statsProto
+            )
+        end
     end
 end
