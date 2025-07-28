@@ -57,10 +57,9 @@ mon.write("00:00:00.00")
 
 local function main()
     while true do
-        local senderID, msg, proto = rednet.receive(config.protocol)
+        local senderID, msg, proto = rednet.receive()
 
-        -- Ignore any old protocols
-        if proto == config.protocol then
+        if config.protocol == proto then
             if type(msg) ~= "string" then
                 rednet.send(senderID, "error: invalid message type", config.protocol)
             else
