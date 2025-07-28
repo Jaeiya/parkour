@@ -411,7 +411,11 @@ function utils.print(text, mon)
         end
     end
 
-    writeFunc(string.sub(text, pos, #text) .. "\n")
+    local newLine = "\n"
+    if mon then
+        newLine = ""
+    end
+    writeFunc(string.sub(text, pos, #text) .. "")
 end
 
 
