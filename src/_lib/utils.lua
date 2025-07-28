@@ -415,6 +415,16 @@ function utils.print(text, mon)
 end
 
 
+function utils.stripColorCodes(text)
+    for key, _ in pairs(colorCodes) do
+        if string.find(text, key, 1, true) then
+            text = string.gsub(text, key, "")
+        end
+    end
+    return text
+end
+
+
 ---Deletes only script files from the computer
 function utils.cleanScripts()
     local fileList = fs.list(".")
