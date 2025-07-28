@@ -115,6 +115,10 @@ local scriptMap = {
     boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
     boardstats     = { slug = "boardstats.lua",     fileName = "boardstats" },
 
+    statboard          = { slug = "statboard.lua",          fileName = "statboardstartup" },
+    statboardui        = { slug = "statboardui.lua",        fileName = "statboardui" },
+    statboardinstaller = { slug = "statboardinstaller.lua", fileName = "installstatboard" },
+
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "installmonhost" },
     monhost          = { slug = "monhost.lua",          fileName = "monhoststartup" },
     monhostui        = { slug = "monhostui.lua",        fileName = "monhostui"},
@@ -154,6 +158,15 @@ local diskMap = {
             scriptMap.boardstats,
             scriptMap.utils,
             scriptMap.detectplayer,
+        }
+    },
+    statboard = {
+        version = "1.0",
+        scripts = {
+            scriptMap.statboard,
+            scriptMap.statboardui,
+            scriptMap.statboardinstaller,
+            scriptMap.utils,
         }
     },
     monhost = {
@@ -350,16 +363,17 @@ local function promptDisk()
         ";lgy;  2. ;wht;Monitor Host\n" ..
         ";lgy;  3. ;wht;Display\n" ..
         ";lgy;  4. ;wht;Medals\n" ..
-        ";lgy;  5. ;wht;Copy Disk\n\n" ..
+        ";lgy;  5. ;wht;Stat Board\n" ..
+        ";lgy;  6. ;wht;Copy Disk\n\n" ..
 
-        ";red;  6. ;wht;Exit\n"
+        ";red;  7. ;wht;Exit\n"
     )
     term.setTextColor(colors.yellow)
     write("> ")
     term.setTextColor(colors.lime)
     local choice = tonumber(read())
 
-    if not choice or choice > 6 or choice < 1 then
+    if not choice or choice > 7 or choice < 1 then
         printError("invalid choice; try again!\n")
         printAdv(";lgy;Enter to continue...")
         read()
@@ -383,6 +397,9 @@ local function promptDisk()
         selectedDisk = diskMap.medals
         name = "Medals"
     elseif choice == 5 then
+        selectedDisk = diskMap.statboard
+        name = "Stat Board"
+    elseif choice == 6 then
         selectedDisk = diskMap.copydisk
         name = "CopyDisk"
     end
