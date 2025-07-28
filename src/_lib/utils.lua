@@ -148,7 +148,7 @@ function utils.getTimerStr(milliseconds)
 
     local str = string.format(
         "%02d:%02d:%02d.%02d",
-        hours   % 60,
+        hours, -- We let hours run up
         minutes % 60,
         seconds % 60,
         ticks   % 20
