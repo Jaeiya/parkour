@@ -32,9 +32,6 @@ end
 return function (config)
     while true do
         utils.clear()
-        -- Track old protocol
-        local protocol = config.protocol
-
         utils.print(
             "... Running Monitor Host ...\n\n" ..
             ";lgy;  host_name: ;cyn;"..config.hostname.."\n"..
@@ -54,7 +51,5 @@ return function (config)
         if exiting then
             return
         end
-
-        rednet.broadcast("@config_update", protocol)
     end
 end

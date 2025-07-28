@@ -64,10 +64,6 @@ local function main()
             if type(msg) ~= "string" then
                 rednet.send(senderID, "error: invalid message type", config.protocol)
 
-            elseif msg == "@update_config" then
-                config = utils.loadConfig(configFilePath, {})
-                rednet.host(config.protocol, config.hostname)
-
             else
                 mon.setCursorPos(1, 1)
                 mon.write(msg)
