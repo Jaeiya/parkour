@@ -3,9 +3,13 @@ utils.clear()
 
 local execTimer = require("boardtimer")
 local execBoard = require("board")
+local lib = require('boardlib')
 local execRedstone = require("boardredstone")
 local execPlayerDetection = require("detectplayer")
+local execBoardStats = require('boardstats')
 local execBoardUI = require("boardui")
+
+local config = lib.loadConfig()
 
 ---
 ---
@@ -31,12 +35,13 @@ end
 
 -- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
-    function() execTimer() end,
-    function() execBoard() end,
+    function() execTimer(config) end,
+    function() execBoard(config) end,
     function() execRedstone() end,
     function() execPlayerDetection({
         event = "leaderboard",
         action = "set_player_list",
     }) end,
-    function() execBoardUI() end
+    function() execBoardStats(config) end,
+    function() execBoardUI(config) end
 )

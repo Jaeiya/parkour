@@ -113,6 +113,7 @@ local scriptMap = {
     boardstartup   = { slug = "boardstartup.lua",   fileName = "boardstartup" },
     boardtimer     = { slug = "boardtimer.lua",     fileName = "boardtimer" },
     boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
+    boardstats     = { slug = "boardstats.lua",     fileName = "boardstats" },
 
     monhostinstaller = { slug = "monhostinstaller.lua", fileName = "installmonhost" },
     monhost          = { slug = "monhost.lua",          fileName = "monhoststartup" },
@@ -150,6 +151,7 @@ local diskMap = {
             scriptMap.boardstartup,
             scriptMap.boardtimer,
             scriptMap.boardstate,
+            scriptMap.boardstats,
             scriptMap.utils,
             scriptMap.detectplayer,
         }

@@ -27,7 +27,6 @@ local onlinePlayerNames = {}
 ---The player that is currently running the course (if any)
 local runningPlayerName = ""
 
-local config            = lib.loadConfig()
 local maxActuationDist  = 3 -- Max distance from configured start and end positions
 
 ---Check if a running player is the one who activated a trigger
@@ -143,7 +142,8 @@ local function renderBoard()
 end
 
 
-return function()
+---@param config BoardConfig
+return function(config)
     renderBoard()
 
     while true do
@@ -188,12 +188,6 @@ return function()
 
         elseif msgEvent.action == "set_player_list" then
             onlinePlayerNames = msgEvent.payload
-
-        elseif msgEvent.action == "set_start_pos" then
-            config.startPos = msgEvent.payload
-
-        elseif msgEvent.action == "set_end_pos" then
-            config.endPos = msgEvent.payload
         end
     end
 end

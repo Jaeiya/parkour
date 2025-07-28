@@ -71,6 +71,7 @@ if not fs.exists(lib.configPath) then
     utils.print(";ylw;   ... Configuring Leaderboard ...")
     lib.saveBoardConfig(
         utils.prompt("Enter Monitor Protocol"),
+        utils.prompt("Enter Stat Board Protocol"),
         utils.promptCoords("Enter Start Pos"),
         utils.promptCoords("Enter End Pos")
     )

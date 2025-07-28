@@ -1,8 +1,10 @@
 local utils = require('utils')
 local playerDBPath = "players.db"
 local configPath   = "board.cfg"
+---@class BoardConfig
 local config = {
-    protocol = "",
+    monProto = "",
+    statsProto = "",
     startPos = { x = 0, y = 0, z = 0, },
     endPos = { x = 0, y = 0, z = 0, },
 }
@@ -14,15 +16,10 @@ local config = {
 
 ---@class Player
 ---@field name     string
----@field time     TimeTable
----@field attempts AttemptTable
+---@field time     PlayerStats
+---@field attempts PlayerStats
 
----@class TimeTable
----@field pb      integer
----@field current integer
----@field total   integer
-
----@class AttemptTable
+---@class PlayerStats
 ---@field pb      integer
 ---@field current integer
 ---@field total   integer
@@ -170,14 +167,16 @@ end
 
 
 ---Saves the board to the configuration file
----@param protocol string The monitor protocol
+---@param monProto string The monitor protocol
+---@param statsProto string The board stats protocol
 ---@param startPos Coord The trigger point in the world for starting a run
 ---@param endPos Coord The trigger point in the world for ending a run
-function leaderboard.saveBoardConfig(protocol, startPos, endPos)
+function leaderboard.saveBoardConfig(monProto, statsProto, startPos, endPos)
     utils.saveConfig(configPath, {
-        protocol = protocol,
-        startPos = startPos,
-        endPos   = endPos
+        monProto   = monProto,
+        statsProto = statsProto,
+        startPos   = startPos,
+        endPos     = endPos
     })
 end
 

@@ -1,32 +1,19 @@
 
 local utils = require("utils")
+local lib = require('boardlib')
 
-local configFile = "board.cfg"
-local config = {
-    protocol = "",
-    startPos = {
-        x = 0,
-        y = 0,
-        z = 0,
-    },
-    endPos = {
-        x = 0,
-        y = 0,
-        z = 0,
-    },
-}
-config = utils.loadConfig(configFile, config)
 
-return function()
+return function(config)
 ::menu::
     utils.clear()
     local sp = config.startPos
     local ep = config.endPos
     utils.print(
         "... Running Leaderboard ...\n" ..
-        "\n;lgy;  start_pos: ;cyn;"..sp.x..", "..sp.y..", "..sp.z ..
-        "\n;lgy;    end_pos: ;cyn;"..ep.x..", "..ep.y..", "..ep.z ..
-        "\n;lgy;   Protocol: ;cyn;"..config.protocol
+        "\n;lgy;       start_pos: ;cyn;"..sp.x..", "..sp.y..", "..sp.z ..
+        "\n;lgy;         end_pos: ;cyn;"..ep.x..", "..ep.y..", "..ep.z ..
+        "\n;lgy;    mon_protocol: ;cyn;"..config.monProto ..
+        "\n;lgy;  stats_protocol: ;cyn;"..config.statsProto
     )
     print()
     local exiting = utils.promptMenu("Manage Configuration", {
@@ -34,24 +21,24 @@ return function()
             name = "Set Start Pos",
             exec = function ()
                 config.startPos = utils.promptCoords("Enter Start Pos")
-                utils.saveConfig(configFile, config)
-                os.queueEvent("leaderboard", {action = "set_start_pos", payload = config.startPos})
             end
         },
         {
             name = "Set End Pos",
             exec = function ()
                 config.endPos = utils.promptCoords("Enter End Pos")
-                utils.saveConfig(configFile, config)
-                os.queueEvent("leaderboard", {action = "set_end_pos", payload = config.endPos})
             end
         },
         {
             name = "Set Monitor Protocol",
             exec = function ()
-                config.protocol = utils.prompt("Enter Monitor Protocol")
-                utils.saveConfig(configFile, config)
-                os.queueEvent("timer", {action = "new_protocol", payload = config.protocol })
+                config.monProto = utils.prompt("Enter Monitor Protocol")
+            end
+        },
+        {
+            name = "Set Stats Protocol",
+            exec = function ()
+                config.statsProto = utils.prompt("Enter Stats Protocol")
             end
         }
     }, false)
@@ -59,5 +46,8 @@ return function()
     if exiting then
         return
     end
+
+    lib.saveBoardConfig(config.monProto, config.statsProto, config.startPos, config.endPos)
+
     goto menu
 end

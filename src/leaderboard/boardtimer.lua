@@ -1,5 +1,4 @@
 local utils = require("utils")
-local lib = require("boardlib")
 local state = require("boardstate")
 
 
@@ -28,7 +27,6 @@ local state = require("boardstate")
 local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local leaderBoardEvent = "leaderboard"
-local config = lib.loadConfig()
 
 local modem = utils.getModem()
 if not modem then
@@ -37,14 +35,17 @@ if not modem then
 end
 
 
-rednet.open(peripheral.getName(modem))
 
--- Always startup with monitors zero'd out
-rednet.broadcast("00:00:00.00", config.protocol)
+---@param config BoardConfig
+return function(config)
+    rednet.open(peripheral.getName(modem))
 
-return function()
+    -- Always startup with monitors zero'd out
+    rednet.broadcast("00:00:00.00", config.monProto)
+
     -- Prevent any default timer events
     local timerID = 133742069
+
     while true do
         local _, data = os.pullEvent("timer")
 
@@ -55,7 +56,7 @@ return function()
             if id == timerID then
                 iterations = iterations + 1
                 state.timer.milliseconds = iterations * (speed * 1000)
-                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.protocol)
+                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.monProto)
                 timerID = os.startTimer(speed)
             end
 
@@ -73,17 +74,14 @@ return function()
                 os.cancelTimer(timerID)
                 state.timer.isActive = false
                 state.timer.milliseconds = 0
-                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.protocol)
+                rednet.broadcast(utils.getTimerStr(state.timer.milliseconds), config.monProto)
 
             elseif msgEvent.action == "finish_run" then
                 os.cancelTimer(timerID)
                 state.timer.isActive = false
                 -- Payload should always be the millisecond time when user
                 -- pressed actuation (button/pressure plate).
-                rednet.broadcast(utils.getTimerStr(msgEvent.payload), config.protocol)
-
-            elseif msgEvent.action == "new_protocol" then
-                config.protocol = msgEvent.payload
+                rednet.broadcast(utils.getTimerStr(msgEvent.payload), config.monProto)
             end
         end
     end
