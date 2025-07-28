@@ -462,6 +462,26 @@ function utils.installDisk()
 end
 
 
+---Justifies the specified text within the specified area,
+---towards the specified direction.
+---@param text string
+---@param direction 'left'|'right'
+---@param area integer
+function utils.justifyText(text, direction, area)
+    local cleanText = utils.stripColorCodes(text)
+
+    if #cleanText > area then
+        error("area is too small to justify text")
+    end
+
+    if direction == 'left' then
+        return text..string.rep(" ", area - #cleanText)
+    elseif direction == 'right' then
+        return string.rep(" ", area - #cleanText)..text
+    end
+end
+
+
 return utils
 
 
