@@ -508,7 +508,7 @@ end
 ---Justifies the specified text within the specified area,
 ---towards the specified direction.
 ---@param text string
----@param direction 'left'|'right'
+---@param direction 'left'|'right'|'center'
 ---@param area integer
 function utils.justifyText(text, direction, area)
     local cleanText = utils.stripColorCodes(text)
@@ -521,6 +521,12 @@ function utils.justifyText(text, direction, area)
         return text..string.rep(" ", area - #cleanText)
     elseif direction == 'right' then
         return string.rep(" ", area - #cleanText)..text
+    elseif direction == 'center' then
+        return (
+            string.rep(" ", math.floor(area - #cleanText) / 2) ..
+            text ..
+            string.rep(" ", math.ceil((area - #cleanText) / 2))
+        )
     end
 end
 
