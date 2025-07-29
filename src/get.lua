@@ -115,7 +115,9 @@ local scriptMap = {
     boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
     boardstats     = { slug = "boardstats.lua",     fileName = "boardstats" },
 
-    statboard          = { slug = "statboard.lua",          fileName = "statboardstartup" },
+    statboard          = { slug = "statboard.lua",          fileName = "statboard" },
+    statboardstartup   = { slug = "statboardstartup.lua",   fileName = "statboardstartup" },
+    statboardredstone  = { slug = "statboardredstone.lua",  fileName = "statboardredstone" },
     statboardui        = { slug = "statboardui.lua",        fileName = "statboardui" },
     statboardinstaller = { slug = "statboardinstaller.lua", fileName = "installstatboard" },
 
@@ -164,6 +166,8 @@ local diskMap = {
         version = "1.0",
         scripts = {
             scriptMap.statboard,
+            scriptMap.statboardstartup,
+            scriptMap.statboardredstone,
             scriptMap.statboardui,
             scriptMap.statboardinstaller,
             scriptMap.utils,

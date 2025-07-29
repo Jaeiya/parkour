@@ -1,13 +1,12 @@
 
 local utils = require('utils')
-local ui = require("statboardui")
 utils.clear()
 
 
 local mon = utils.getMonitor()
 if not mon then
     printError("statboard terminated; missing monitor")
-    return
+    return false
 end
 
 
@@ -43,19 +42,10 @@ mon.setCursorPos(1, 2)
 utils.print(utils.centerText(";wht;... Starting Stat Board ...", mon), mon)
 
 local monWidth, monHeight = mon.getSize()
-local configFilePath = "statboard.cfg"
 
 ---@type Player[]
 local players = {}
 local playerIndex = 1
-
----@class StatBoardConfig
-local config = { protocol = "stats_w1lv1", hostname = "stats_1" }
-config = utils.loadConfig(configFilePath, config)
-
-rednet.open(peripheral.getName(modem))
-rednet.host(config.protocol, config.hostname)
-
 
 local function findPlayer(name)
     for i in ipairs(players) do
@@ -118,7 +108,6 @@ local function renderSubHeader(text, yPos)
     mon.setBackgroundColor(colors.black)
 end
 
----Renders the specified time stats to the monitor
 ---@param stats PlayerStat
 ---@param yPos integer
 local function renderTimeStats(stats, yPos)
@@ -132,7 +121,6 @@ local function renderTimeStats(stats, yPos)
 end
 
 
----Renders the specified stats to the monitor
 ---@param stats PlayerStat
 ---@param yPos integer
 local function renderAttemptStats(stats, yPos)
@@ -197,78 +185,108 @@ local function highlightButton(buttonType)
 end
 
 
-utils.clear(mon)
+---@param config StatBoardConfig
+local function statBoardHandler(config)
+    while true do
+        local _, msg, proto = rednet.receive()
 
-parallel.waitForAny(
-    function ()
-        while true do
-            renderStats()
-            local _, _, x, y = os.pullEvent("monitor_touch")
+        ---@type MessageEvent
+        local msgEvent = msg
 
-            if #players == 0 then goto continue end
+        if config.protocol ~= proto then
+            goto skip
+        end
 
-            if x <= 8 and y >= monHeight-1 then
-                playerIndex = playerIndex - 1
-                if playerIndex == 0 then
-                    playerIndex = #players
-                end
-                highlightButton()
+        if msgEvent.action ~= "update_player_data" then
+            goto skip
+        end
 
-            elseif x >= monWidth - 6 and y >= monHeight - 1 then
-                playerIndex = playerIndex + 1
-                if playerIndex > #players then
-                    playerIndex = 1
-                end
-                highlightButton("next")
+        ---@type Player[]
+        local payload = msgEvent.payload
+
+        if type(payload) ~= 'table' or #payload == 0 then
+            utils.clear(mon)
+            mon.setCursorPos(1, 3)
+            utils.print(utils.centerText(";red;Invalid Player Payload", mon), mon)
+            error("invalid player payload")
+        end
+
+        if #players == 0 then
+            players = payload
+            goto continue
+        end
+
+        for i in ipairs(payload) do
+            local player, index = findPlayer(payload[i].name)
+            if player and index then
+                players[index] = payload[i]
+            else
+                players[#players+1] = payload[i]
             end
+        end
 
         ::continue::
+        renderStats()
+    ::skip::
+    end
+end
+
+
+local function buttonHandler()
+    while true do
+        renderStats()
+        local _, _, x, y = os.pullEvent("monitor_touch")
+
+        if #players == 0 then goto continue end
+
+        if x <= 8 and y >= monHeight-1 then
+            playerIndex = playerIndex - 1
+            if playerIndex == 0 then
+                playerIndex = #players
+            end
+            highlightButton()
+
+        elseif x >= monWidth - 6 and y >= monHeight - 1 then
+            playerIndex = playerIndex + 1
+            if playerIndex > #players then
+                playerIndex = 1
+            end
+            highlightButton("next")
         end
-    end,
-    function ()
-        while true do
-            local senderID, msg, proto = rednet.receive()
 
-            ---@type MessageEvent
-            local msgEvent = msg
+    ::continue::
+    end
+end
 
-            if config.protocol ~= proto then
-                goto skip
+
+local function updateHandler()
+    while true do
+        local _, msg = os.pullEvent("update")
+
+        ---@cast msg MessageEvent
+
+        if msg.action == "view_player" then
+            local p, index = findPlayer(msg.payload)
+            if p and index then
+                playerIndex = index
+                renderStats()
             end
-
-            if msgEvent.action ~= "update_player_data" then
-                goto skip
-            end
-
-            ---@type Player[]
-            local payload = msgEvent.payload
-
-            if type(payload) ~= 'table' or #payload == 0 then
-                utils.clear(mon)
-                mon.setCursorPos(1, 3)
-                utils.print(utils.centerText(";red;Invalid Player Payload", mon), mon)
-                error("invalid player payload")
-            end
-
-            if #players == 0 then
-                players = payload
-                goto continue
-            end
-
-            for i in ipairs(payload) do
-                local player, index = findPlayer(payload[i].name)
-                if player and index then
-                    players[index] = payload[i]
-                else
-                    players[#players+1] = payload[i]
-                end
-            end
-
-            ::continue::
-            renderStats()
-        ::skip::
         end
-    end,
-    function () ui(config) end
-)
+    end
+end
+
+utils.clear(mon)
+
+
+---@param config StatBoardConfig
+return function(config)
+    rednet.open(peripheral.getName(modem))
+    rednet.host(config.protocol, config.hostname)
+
+    parallel.waitForAny(
+        function() statBoardHandler(config) end,
+        buttonHandler,
+        updateHandler
+    )
+end
 
