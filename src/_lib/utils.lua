@@ -137,6 +137,45 @@ function utils.centerText(text, mon)
 end
 
 
+---Prints the `colText` to the specified `device` in
+---fixed-size columns based on the largest string
+---inside `colText`
+---@param colText string[] An array of text to print in separate columns
+---@param spacing integer The distance between columns
+---@param maxWidth? integer Force a max column width
+---@param device? Monitor Where the text is expected to be printed (default: terminal)
+function utils.formatColumns(colText, spacing, maxWidth, device)
+    if not device then
+        device = term
+    end
+
+    local colWidth = 0
+    for i in ipairs(colText) do
+        local text = utils.stripColorCodes(colText[i])
+        if #text > colWidth then
+            colWidth = #text
+        end
+        if maxWidth and colWidth > maxWidth then
+            error("column text is too large for max width")
+        end
+    end
+
+    if maxWidth then
+        colWidth = maxWidth
+    end
+
+    local newStr = ""
+    for i in ipairs(colText) do
+        if i > 1 then
+            newStr = newStr..string.rep(" ", spacing)
+        end
+        newStr = newStr..utils.justifyText(colText[i], 'left', colWidth)
+    end
+
+    return utils.centerText(newStr, device)
+end
+
+
 ---Converts the specified milliseconds to the
 ---string format: hh:mm:ss.tt
 ---@param milliseconds integer
