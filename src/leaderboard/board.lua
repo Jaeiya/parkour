@@ -51,31 +51,17 @@ local function renderActiveRunner(playerName)
 
     utils.clear(mon)
     mon.setTextScale(2.5)
+
     mon.setBackgroundColor(colors.red)
     local w = mon.getSize()
-    local text = "WARNING: Active Runner"
-    local textWidthDiff = w - #text
-    local banner = (
-        string.rep(" ", math.ceil(textWidthDiff / 2)) ..
-        text ..
-        string.rep(" ", w - (textWidthDiff / 2))
-    )
-    utils.print(";ylw;"..banner, mon)
-
-    -- Print the player name
+    utils.print(utils.justifyText(";ylw;WARNING: Active Runner", 'center', w), mon)
     mon.setBackgroundColor(colors.black)
+
     mon.setCursorPos(1, 3)
     utils.print(";lim;"..utils.centerText(playerName, mon), mon)
-    mon.setCursorPos(1, 5)
 
-    local attemptText = "Attempt: "
-    local textWidth = #attemptText + #tostring(player.attempts.current)
-    local attemptsStr = (
-        string.rep(" ", (w - textWidth) / 2) ..
-        attemptText ..
-        ";ylw;"..player.attempts.current
-    )
-    utils.print(attemptsStr, mon)
+    mon.setCursorPos(1, 5)
+    utils.print(utils.centerText("Attempt: "..player.attempts.current, mon), mon)
 end
 
 
