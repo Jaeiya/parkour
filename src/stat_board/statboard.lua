@@ -135,30 +135,32 @@ end
 
 local function renderStats()
     utils.clear(mon)
+
     if not players or #players == 0 then
         mon.setCursorPos(1, 3)
         utils.print(utils.centerText(";org;No Player Data", mon), mon)
-    else
-        local player = players[playerIndex]
-        mon.setCursorPos(1, 2)
-        utils.print(utils.centerText(";grn;"..player.name.."'s ;org;Stats", mon), mon)
-        renderSubHeader(" Time ", 4)
-        renderTimeStats({
-            PB = player.time.pb,
-            Latest = player.time.current,
-            Total = player.time.total
-        }, 6)
-        renderSubHeader(" Attempts ", 10)
-        renderAttemptStats({
-            PB = player.attempts.pb,
-            Latest = player.attempts.current,
-            Total = player.attempts.total
-        }, 12)
+        return
+    end
 
-        if #players > 1 then
-            renderButton("  BACK  ", 1, monHeight)
-            renderButton("  NEXT  ", monWidth - 7, monHeight)
-        end
+    local player = players[playerIndex]
+    mon.setCursorPos(1, 2)
+    utils.print(utils.centerText(";grn;"..player.name.."'s ;org;Stats", mon), mon)
+    renderSubHeader(" Time ", 4)
+    renderTimeStats({
+        PB = player.time.pb,
+        Latest = player.time.current,
+        Total = player.time.total
+    }, 6)
+    renderSubHeader(" Attempts ", 10)
+    renderAttemptStats({
+        PB = player.attempts.pb,
+        Latest = player.attempts.current,
+        Total = player.attempts.total
+    }, 12)
+
+    if #players > 1 then
+        renderButton("  BACK  ", 1, monHeight)
+        renderButton("  NEXT  ", monWidth - 7, monHeight)
     end
 end
 
