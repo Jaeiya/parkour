@@ -135,7 +135,7 @@ end
 
 local function renderStats()
     utils.clear(mon)
-    if #players == 0 then
+    if not players or #players == 0 then
         mon.setCursorPos(1, 3)
         utils.print(utils.centerText(";org;No Player Data", mon), mon)
     else
@@ -197,17 +197,10 @@ local function statBoardHandler(config)
             goto skip
         end
 
-        ---@type Player[]
+        ---@type Player[]|nil
         local payload = msgEvent.payload
 
-        if type(payload) ~= 'table' or #payload == 0 then
-            utils.clear(mon)
-            mon.setCursorPos(1, 3)
-            utils.print(utils.centerText(";red;Invalid Player Payload", mon), mon)
-            error("invalid player payload")
-        end
-
-        if #players == 0 or #payload < #players then
+        if not payload or #payload == 0 or #payload < #players then
             players = payload
             playerIndex = 1
             goto continue
