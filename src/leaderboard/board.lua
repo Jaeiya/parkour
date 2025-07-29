@@ -96,7 +96,15 @@ local function renderBoard()
         utils.print(";org;"..utils.centerText("Be the first to run this level!", mon), mon)
     end
 
-    if #players == 0 then
+    ---@type Player[]
+    local playersWithPB = {}
+    for _, player in ipairs(players) do
+        if player.time.pb > 0 then
+            playersWithPB[#playersWithPB+1] = player
+        end
+    end
+
+    if #playersWithPB == 0 then
         renderNoPlayers()
         return
     end
@@ -112,32 +120,16 @@ local function renderBoard()
         end
     end
 
-    local monWidth    = mon.getSize()
-    local timeLen     = #"00:00:00.00"
-    local separator   = "....."
-    local attemptsLen = #"..x000"
-    local lineLen     = columnWidth + timeLen + #separator + attemptsLen
-    local linePadding = (monWidth - lineLen) / 2
-    local hasPlayers  = false
-
-    for _, player in ipairs(players) do
-        if player.time.pb > 0 then
-            hasPlayers = true
-            yPos = yPos + 1
-            mon.setCursorPos(1, yPos)
-            local playerStr = (
-                string.rep(" ", linePadding + (columnWidth - #player.name)) ..
-                ";wht;"..player.name..
-                ";gry;"..separator..
-                ";lbu;"..utils.getTimerStr(player.time.pb)..
-                ";gry;..;lgy;x;cyn;"..string.format("%03d", player.attempts.pb)
-            )
-            utils.print(playerStr, mon)
-        end
-    end
-
-    if not hasPlayers then
-       renderNoPlayers()
+    for _, player in ipairs(playersWithPB) do
+        yPos = yPos + 1
+        mon.setCursorPos(1, yPos)
+        local playerStr = (
+            utils.justifyText(";wht;"..player.name, 'right', columnWidth)..
+            ";gry;....."..
+            ";lbu;"..utils.getTimerStr(player.time.pb)..
+            ";gry;..;lgy;x;cyn;"..string.format("%03d", player.attempts.pb)
+        )
+        utils.print(utils.centerText(playerStr, mon), mon)
     end
 end
 
