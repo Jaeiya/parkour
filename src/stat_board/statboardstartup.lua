@@ -6,7 +6,7 @@ local execRedstone = require('statboardredstone')
 local configFilePath = "statboard.cfg"
 
 ---@class StatBoardConfig
-local config = { protocol = "stats_w1lv1", hostname = "stats_1" }
+local config = { protocol = "", hostname = "" }
 config = utils.loadConfig(configFilePath, config)
 
 if not execStats or not execRedstone then

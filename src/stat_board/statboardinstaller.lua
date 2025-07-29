@@ -54,4 +54,12 @@ if not modem.isWireless() then
 end
 
 
+local hostname = utils.prompt("Enter Host Name ;org;(unique)")
+local protocol = utils.prompt("Enter Listener Protocol ")
+
+utils.saveConfig("statboard.cfg", {
+    hostname = hostname,
+    protocol = protocol
+})
+
 utils.installDisk()
