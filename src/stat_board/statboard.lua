@@ -35,11 +35,7 @@ mon.setPaletteColor(colors.gray,   0x5A3F67)
 mon.setPaletteColor(colors.green,  0x2ABD6F)
 mon.setPaletteColor(colors.lime,   0x37FF95)
 
-utils.clear(mon)
 mon.setTextScale(1.5)
-utils.print("... Starting Stat Board ...")
-mon.setCursorPos(1, 2)
-utils.print(utils.centerText(";wht;... Starting Stat Board ...", mon), mon)
 
 local monWidth, monHeight = mon.getSize()
 
@@ -280,6 +276,10 @@ utils.clear(mon)
 
 ---@param config StatBoardConfig
 return function(config)
+    utils.clear(mon)
+    mon.setCursorPos(1, 3)
+    utils.print(utils.centerText(";wht;... Starting Stat Board ...", mon), mon)
+
     rednet.open(peripheral.getName(modem))
     rednet.host(config.protocol, config.hostname)
 
