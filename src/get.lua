@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = "2.5.0"
+local version = "2.6.0"
 
 
 ---Color code map designed strictly for use with utils.printColor()
@@ -408,7 +408,7 @@ local function promptDisk()
         name = "CopyDisk"
     end
 
-    if choice == 6 then
+    if choice == 7 then
         return
     end
 
