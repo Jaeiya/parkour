@@ -207,8 +207,9 @@ local function statBoardHandler(config)
             error("invalid player payload")
         end
 
-        if #players == 0 then
+        if #players == 0 or #payload < #players then
             players = payload
+            playerIndex = 1
             goto continue
         end
 
