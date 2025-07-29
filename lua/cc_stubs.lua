@@ -334,7 +334,7 @@ function http.checkURL(url) end---@class term
 
 
 
----@class term
+---@class Terminal
 term = {}
 
 ---Clears the terminal screen.

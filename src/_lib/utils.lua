@@ -130,9 +130,9 @@ end
 
 ---Centers text on the specified monitor
 ---@param text string The text to write to the monitor
----@param mon Monitor
-function utils.centerText(text, mon)
-    local w = mon.getSize()
+---@param device Monitor|Terminal
+function utils.centerText(text, device)
+    local w = device.getSize()
     return string.rep(" ", (w - #utils.stripColorCodes(text)) / 2) .. text
 end
 
