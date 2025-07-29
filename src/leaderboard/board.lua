@@ -61,7 +61,7 @@ local function renderActiveRunner(playerName)
     utils.print(";lim;"..utils.centerText(playerName, mon), mon)
 
     mon.setCursorPos(1, 5)
-    utils.print(utils.centerText("Attempt: "..player.attempts.current, mon), mon)
+    utils.print(utils.centerText(";lgy;Attempt: ;org;"..player.attempts.current, mon), mon)
 end
 
 
