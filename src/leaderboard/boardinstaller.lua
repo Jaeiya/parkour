@@ -66,6 +66,39 @@ if not modem.isWireless() then
 end
 
 
+---@param axis 'x'|'z'|nil
+---@param direction 'upper'|'lower'|nil
+---@param boundary BoardBoundary
+local function setBoundary(axis, direction, boundary)
+    return function()
+        boundary.axis = axis
+        boundary.direction = direction
+    end
+end
+
+
+---@param startPos Coord
+---@return BoardBoundary
+local function promptBoundaryAxis(startPos)
+    ---@type BoardBoundary
+    local boundary = { axis = nil, direction = nil }
+
+    local isExiting = utils.promptMenu("Select Boundary Axis", {
+        { name = "x = " .. startPos.x + 1, exec = setBoundary('x', 'upper', boundary) },
+        { name = "x = " .. startPos.x - 1, exec = setBoundary('x', 'lower', boundary)  },
+        { name = "z = " .. startPos.z + 1, exec = setBoundary('z', 'upper', boundary) },
+        { name = "z = " .. startPos.z - 1, exec = setBoundary('z', 'lower', boundary)  },
+    })
+
+    if isExiting then
+        printError("Installation Aborted by User")
+        error("script terminated")
+    end
+
+    return boundary
+end
+
+
 -- Assume that the existing configuration is accurate
 if not fs.exists(lib.configPath) then
     utils.print(";ylw;   ... Configuring Leaderboard ...")
@@ -77,6 +110,7 @@ if not fs.exists(lib.configPath) then
     config.statsProto = utils.prompt("Enter Stat Board Protocol")
     config.startPos   = utils.promptCoords("Enter Start Pos")
     config.endPos     = utils.promptCoords("Enter End Pos")
+    config.boundary   = promptBoundaryAxis(config.startPos)
     lib.saveBoardConfig(config)
 end
 

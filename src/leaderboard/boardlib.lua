@@ -13,7 +13,16 @@ local config = {
     ---Where the player will end their run
     ---@type Coord
     endPos = { x = 0, y = 0, z = 0, },
+    ---Defines the boundary between the run-zone and cancel-zone
+    ---@class BoardBoundary
+    ---@field axis 'x'|'z'|nil The axis of the boundary
+    ---@field direction 'upper'|'lower'|nil Determines if the boundary is in front or back of the start pos
+    boundary = {
+        axis = nil,
+        direction = nil
+    },
 }
+
 
 ---@class Coord
 ---@field x integer
