@@ -3,9 +3,15 @@ local playerDBPath = "players.db"
 local configPath   = "board.cfg"
 ---@class BoardConfig
 local config = {
+    ---Monitor Host Protocol
     monProto = "",
+    ---Stat Board Protocol
     statsProto = "",
+    ---Where the player will start their run
+    ---@type Coord
     startPos = { x = 0, y = 0, z = 0, },
+    ---Where the player will end their run
+    ---@type Coord
     endPos = { x = 0, y = 0, z = 0, },
 }
 
