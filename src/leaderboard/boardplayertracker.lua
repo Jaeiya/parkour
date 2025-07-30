@@ -35,6 +35,7 @@ local function trackPlayer(config)
                     action = "force_cancel_run",
                     payload = state.timer.milliseconds
                 })
+                return
             end
         end
 
