@@ -69,12 +69,15 @@ end
 -- Assume that the existing configuration is accurate
 if not fs.exists(lib.configPath) then
     utils.print(";ylw;   ... Configuring Leaderboard ...")
-    lib.saveBoardConfig(
-        utils.prompt("Enter Monitor Protocol"),
-        utils.prompt("Enter Stat Board Protocol"),
-        utils.promptCoords("Enter Start Pos"),
-        utils.promptCoords("Enter End Pos")
-    )
+
+    ---@type BoardConfig
+    local config = {}
+
+    config.monProto   = utils.prompt("Enter Monitor Protocol")
+    config.statsProto = utils.prompt("Enter Stat Board Protocol")
+    config.startPos   = utils.promptCoords("Enter Start Pos")
+    config.endPos     = utils.promptCoords("Enter End Pos")
+    lib.saveBoardConfig(config)
 end
 
 

@@ -47,7 +47,7 @@ return function(config)
         return
     end
 
-    lib.saveBoardConfig(config.monProto, config.statsProto, config.startPos, config.endPos)
+    lib.saveBoardConfig(config)
 
     goto menu
 end

@@ -167,17 +167,9 @@ end
 
 
 ---Saves the board to the configuration file
----@param monProto string The monitor protocol
----@param statsProto string The board stats protocol
----@param startPos Coord The trigger point in the world for starting a run
----@param endPos Coord The trigger point in the world for ending a run
-function leaderboard.saveBoardConfig(monProto, statsProto, startPos, endPos)
-    utils.saveConfig(configPath, {
-        monProto   = monProto,
-        statsProto = statsProto,
-        startPos   = startPos,
-        endPos     = endPos
-    })
+---@param cfg BoardConfig
+function leaderboard.saveBoardConfig(cfg)
+    utils.saveConfig(configPath, cfg)
 end
 
 
