@@ -24,9 +24,6 @@ mon.setTextScale(state.monitorScale)
 ---@type string[]
 local onlinePlayerNames = {}
 
----The player that is currently running the course (if any)
-local runningPlayerName = ""
-
 local maxActuationDist  = 3 -- Max distance from configured start and end positions
 
 ---Check if a running player is the one who activated a trigger
@@ -35,7 +32,7 @@ local maxActuationDist  = 3 -- Max distance from configured start and end positi
 local function isPlayerRunning(pos)
     local nearestPlayer = utils.getNearestPlayer(pos, pd, onlinePlayerNames)
     if nearestPlayer.distance <= maxActuationDist then
-        if nearestPlayer.name == runningPlayerName then
+        if nearestPlayer.name == state.runningPlayer then
             return true
         end
     end
@@ -120,6 +117,7 @@ local function renderBoard()
 end
 
 
+
 ---@param config BoardConfig
 return function(config)
     renderBoard()
@@ -141,8 +139,9 @@ return function(config)
             if nearestPlayer.distance <= maxActuationDist then
                 lib.tryAddPlayer(nearestPlayer.name)
                 lib.updateAttempt(nearestPlayer.name)
-                runningPlayerName = nearestPlayer.name
-                renderActiveRunner(runningPlayerName)
+                state.runningPlayer = nearestPlayer.name
+                os.queueEvent("playertracker", { action = "track_player" })
+                renderActiveRunner(state.runningPlayer)
             else
                 -- The timer starts no matter what, so we immediately cancel
                 -- if no player is found.
@@ -152,15 +151,21 @@ return function(config)
         elseif msgEvent.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
                 os.queueEvent("timer", { action = "cancel_run" })
-                lib.updateTime(runningPlayerName, msgEvent.payload)
-                runningPlayerName = nil
+                lib.updateTime(state.runningPlayer, msgEvent.payload)
+                state.runningPlayer = nil
                 renderBoard()
             end
+
+        elseif msgEvent.action == "force_cancel_run" then
+            os.queueEvent("timer", { action = "cancel_run" })
+            lib.updateTime(state.runningPlayer, msgEvent.payload)
+            state.runningPlayer = nil
+            renderBoard()
 
         elseif msgEvent.action == "save_player_time" then
             if isPlayerRunning(config.endPos) then
                 os.queueEvent("timer", {action = "finish_run", payload = msgEvent.payload})
-                lib.savePlayerTime(runningPlayerName, msgEvent.payload)
+                lib.savePlayerTime(state.runningPlayer, msgEvent.payload)
                 renderBoard()
             end
 

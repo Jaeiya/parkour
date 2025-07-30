@@ -105,15 +105,16 @@ end
 local scriptMap = {
     get            = { slug = "get.lua", fileName = "get" },
 
-    boardinstaller = { slug = "boardinstaller.lua", fileName = "installboard" },
-    board          = { slug = "board.lua",          fileName = "board"},
-    boardlib       = { slug = "boardlib.lua",       fileName = "boardlib" },
-    boardredstone  = { slug = "boardredstone.lua",  fileName = "boardredstone" },
-    boardui        = { slug = "boardui.lua",        fileName = "boardui" },
-    boardstartup   = { slug = "boardstartup.lua",   fileName = "boardstartup" },
-    boardtimer     = { slug = "boardtimer.lua",     fileName = "boardtimer" },
-    boardstate     = { slug = "boardstate.lua",     fileName = "boardstate" },
-    boardstats     = { slug = "boardstats.lua",     fileName = "boardstats" },
+    boardinstaller     = { slug = "boardinstaller.lua",     fileName = "installboard" },
+    board              = { slug = "board.lua",              fileName = "board"},
+    boardlib           = { slug = "boardlib.lua",           fileName = "boardlib" },
+    boardredstone      = { slug = "boardredstone.lua",      fileName = "boardredstone" },
+    boardui            = { slug = "boardui.lua",            fileName = "boardui" },
+    boardstartup       = { slug = "boardstartup.lua",       fileName = "boardstartup" },
+    boardtimer         = { slug = "boardtimer.lua",         fileName = "boardtimer" },
+    boardstate         = { slug = "boardstate.lua",         fileName = "boardstate" },
+    boardstats         = { slug = "boardstats.lua",         fileName = "boardstats" },
+    boardplayertracker = { slug = "boardplayertracker.lua", fileName = "boardplayertracker" },
 
     statboard          = { slug = "statboard.lua",          fileName = "statboard" },
     statboardstartup   = { slug = "statboardstartup.lua",   fileName = "statboardstartup" },
@@ -158,6 +159,7 @@ local diskMap = {
             scriptMap.boardtimer,
             scriptMap.boardstate,
             scriptMap.boardstats,
+            scriptMap.boardplayertracker,
             scriptMap.utils,
             scriptMap.detectplayer,
         }

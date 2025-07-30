@@ -8,6 +8,7 @@ local execRedstone = require("boardredstone")
 local execPlayerDetection = require("detectplayer")
 local execBoardStats = require('boardstats')
 local execBoardUI = require("boardui")
+local execPlayerTracker = require("boardplayertracker")
 
 local config = lib.loadConfig()
 
@@ -29,7 +30,7 @@ local config = lib.loadConfig()
 
 
 -- Check if scripts have failed initialization
-if not execTimer or not execBoard or not execPlayerDetection then
+if not execTimer or not execBoard or not execPlayerDetection or not execPlayerTracker then
     return
 end
 
@@ -43,5 +44,6 @@ parallel.waitForAny(
         action = "set_player_list",
     }) end,
     function() execBoardStats(config) end,
+    function() execPlayerTracker(config) end,
     function() execBoardUI(config) end
 )
