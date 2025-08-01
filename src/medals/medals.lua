@@ -20,7 +20,7 @@ mon.setTextScale(2)
 mon.setPaletteColor(colors.black,     0x000000) -- Force true-black background
 mon.setPaletteColor(colors.gray,      0x222222) -- zero-padding
 mon.setPaletteColor(colors.brown,     0xAE7F52) -- Mud
-mon.setPaletteColor(colors.orange,    0xCD7F32) -- Bronze
+mon.setPaletteColor(colors.orange,    0xE2801F) -- Bronze
 mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
 mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
 mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
