@@ -3,7 +3,7 @@
 local utils = {}
 
 
----Color code map designed strictly for use with utils.printColor()
+---Color code map designed strictly for use with utils.print()
 local colorCodes = {
     [";wht;"] = colors.white,
     [";org;"] = colors.orange,
