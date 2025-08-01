@@ -2,17 +2,8 @@
 local utils = require("utils")
 utils.clear()
 
----@type Monitor|nil
-local mon = nil
 
--- Find the monitor connected through the modem
-for _, name in ipairs(peripheral.getNames()) do
-    if peripheral.getType(name) == "monitor" then
-        mon = peripheral.wrap(name)
-        break
-    end
-end
-
+local mon = utils.getMonitor()
 if not mon then
     printError("display terminated; missing monitor")
     return
