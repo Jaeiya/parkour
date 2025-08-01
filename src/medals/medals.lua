@@ -3,19 +3,27 @@ utils.clear()
 
 local mon = utils.getMonitor()
 if not mon then
-    error("whoops no monitor")
+    printError("medals script terminated; missing monitor")
+    return
 end
 
-local configFilePath = "medals.cfg"
----@class MedalsConfig
-local config = {
-    mudLives    = 4,
-    bronzeLives = 4,
-    silverLives = 4,
-    goldLives   = 4,
-}
-config = utils.loadConfig(configFilePath, config)
+local modem = utils.getModem('wired')
+if not modem then
+    printError("medals script terminated; missing wired modem")
+    return
+end
 
+local dbFilePath = "medals.db"
+---@class MedalsConfig
+local lives = {
+    mud    = 4,
+    bronze = 4,
+    silver = 4,
+    gold   = 4,
+}
+lives = utils.loadConfig(dbFilePath, lives)
+
+utils.clear(mon)
 mon.setTextScale(2)
 mon.setPaletteColor(colors.black,     0x000000) -- Force true-black background
 mon.setPaletteColor(colors.gray,      0x222222) -- zero-padding
@@ -25,6 +33,10 @@ mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
 mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
 mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x444444) -- Lives
+
+local chan = 420
+modem.open(chan)
+
 
 
 local function renderMedals()
@@ -37,11 +49,11 @@ local function renderMedals()
 
     local mudPadding    = ""
     local bronzePadding = ''
-    if config.mudLives    < 10 then mudPadding    = ";gry;0" end
-    if config.bronzeLives < 10 then bronzePadding = ";gry;0" end
+    if lives.mud    < 10 then mudPadding    = ";gry;0" end
+    if lives.bronze < 10 then bronzePadding = ";gry;0" end
 
     utils.print(
-        "   "..mudPadding..";lgy;"..config.mudLives.." Lives        "..bronzePadding..";lgy;"..config.bronzeLives.." Lives",
+        "   "..mudPadding..";lgy;"..lives.mud.." Lives        "..bronzePadding..";lgy;"..lives.bronze.." Lives",
         mon
     )
 
@@ -51,11 +63,11 @@ local function renderMedals()
 
     local silverPadding = ""
     local goldPadding   = ""
-    if config.silverLives < 10 then silverPadding = ";gry;0" end
-    if config.goldLives   < 10 then goldPadding   = ";gry;0" end
+    if lives.silver < 10 then silverPadding = ";gry;0" end
+    if lives.gold   < 10 then goldPadding   = ";gry;0" end
 
     utils.print(
-        "   "..silverPadding..";lgy;"..config.silverLives.." Lives        "..goldPadding..";lgy;"..config.goldLives.." Lives",
+        "   "..silverPadding..";lgy;"..lives.silver.." Lives        "..goldPadding..";lgy;"..lives.gold.." Lives",
         mon
     )
 
@@ -80,24 +92,46 @@ local function setMedalLives(key)
             utils.promptError("over 99 lives is not allowed!")
             goto prompt
         end
-        config[key] = val
-        utils.saveConfig(configFilePath, config)
+        lives[key] = val
+        utils.saveConfig(dbFilePath, lives)
     end
 end
 
 
-while true do
-    renderMedals()
-    local exited = utils.promptMenu(
-        "Configure Medal Lives",
-        {
-            { name = "Set Mud Lives",    exec = setMedalLives('mudLives')},
-            { name = "Set Bronze Lives", exec = setMedalLives('bronzeLives')},
-            { name = "Set Silver Lives", exec = setMedalLives('silverLives')},
-            { name = "Set Gold Lives",   exec = setMedalLives('goldLives')},
-        }
-    )
-    if exited then
-        return
+
+local function renderMenu()
+    while true do
+        renderMedals()
+        local exited = utils.promptMenu(
+            "Configure Medal Lives",
+            {
+                { name = "Set Mud Lives",    exec = setMedalLives('mudLives')},
+                { name = "Set Bronze Lives", exec = setMedalLives('bronzeLives')},
+                { name = "Set Silver Lives", exec = setMedalLives('silverLives')},
+                { name = "Set Gold Lives",   exec = setMedalLives('goldLives')},
+            }
+        )
+        if exited then
+            return
+        end
+        modem.transmit(chan, chan, lives)
     end
 end
+
+
+
+
+parallel.waitForAny(
+    function()
+        while true do
+            local _, _, _, _, msg = os.pullEvent("modem_message")
+            if msg == 'send_medal_lives' then
+                modem.transmit(chan, chan, lives)
+            end
+        end
+    end,
+    renderMenu
+)
+
+
+

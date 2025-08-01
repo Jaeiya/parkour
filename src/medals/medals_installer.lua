@@ -21,4 +21,13 @@ if width < 30 or width > 30 or height > 10 or height < 10 then
     return
 end
 
+
+local modem = utils.getModem('wired')
+if not modem then
+    utils.print(
+        "\n;red;Installation Aborted\n" ..
+        ";org;Attach a ;lim;wired modem ;org;to the computer and connect it to the leaderboard computer\n"
+    )
+end
+
 utils.installDisk()
