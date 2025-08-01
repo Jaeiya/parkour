@@ -19,7 +19,7 @@ local state = require("boardstate")
 -- t = tick
 --
 -- Ticks will only count up to 20 before resetting.
--- Max Time: 59:59:59.19 (resets to 0 if exceeded)
+-- Max Time: 99:59:59.19
 -- Min Time: 00:00:00.01
 --
 
