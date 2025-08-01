@@ -122,9 +122,9 @@ function leaderboard.updateTime(name, time)
 end
 
 
----Tries to save a specified players run time, but if it
----is not faster than the players current PB, then it does
----nothing.
+---Saves all relevant time information for the specified
+---player, however if the current time is not faster
+---than their PB, then the PB is not updated.
 ---@param name string Name of the player to save
 ---@param time integer The time (in milliseconds) of the players run
 function leaderboard.savePlayerTime(name, time)
