@@ -3,6 +3,7 @@ utils.clear()
 
 local execTimer = require("boardtimer")
 local execBoard = require("board")
+local execBoardMedalBridge = require('boardmedalbridge')
 local lib = require('boardlib')
 local execRedstone = require("boardredstone")
 local execPlayerDetection = require("detectplayer")
@@ -30,14 +31,19 @@ local config = lib.loadConfig()
 
 
 -- Check if scripts have failed initialization
-if not execTimer or not execBoard or not execPlayerDetection or not execPlayerTracker then
-    return
+if not execTimer or
+   not execBoard or
+   not execPlayerDetection or
+   not execPlayerTracker or
+   not execBoardMedalBridge
+        then return
 end
 
 -- Executes the timer and any other scripts in parallel if needed
 parallel.waitForAny(
     function() execTimer(config) end,
     function() execBoard(config) end,
+    function() execBoardMedalBridge() end,
     function() execRedstone() end,
     function() execPlayerDetection({
         event = "leaderboard",

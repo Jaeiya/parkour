@@ -57,6 +57,16 @@ if not modem then
     return
 end
 
+
+local wiredModem = utils.getModem('wired')
+if not wiredModem then
+    utils.print(
+        ';red;Installation Aborted\n' ..
+        ';org;Attach a ;lim;wired modem ;org;and connect it to the medals computer using ;lim;networking cable\n'
+    )
+    return
+end
+
 if not modem.isWireless() then
     utils.print(
         ";red;Installation Aborted\n" ..
