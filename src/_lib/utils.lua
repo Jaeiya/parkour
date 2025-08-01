@@ -376,7 +376,7 @@ function utils.promptMenu(title, choices, clearScreen)
     term.setTextColor(colors.lime)
     local selected = tonumber(utils.read())
 
-    if not selected then
+    if not selected or selected > (#choices + 1) then
         utils.print(";red;invalid choice; enter a number from the menu")
         print()
         utils.print(";gry;Enter to continue...")
