@@ -291,12 +291,19 @@ end
 ---@param type 'wireless'|'wired' What kind of modem to look for
 ---@return Modem|nil
 function utils.getModem(type)
-    for p in peripheral.find("modem") do
-        ---@cast p Modem
-        if type == 'wireless' and p.isWireless() then
-            return p
-        elseif type == 'wired' then
-            return p
+    for _, side in ipairs(peripheral.getNames()) do
+        if peripheral.getType(side) == 'modem' then
+            ---@type Modem|nil
+            local m = peripheral.wrap(side)
+            if not m then error('somehow modem is missing?') end
+
+            if type == 'wireless' and m.isWireless() then
+                return m
+            end
+
+            if type == 'wired' and not m.isWireless() then
+                return m
+            end
         end
     end
     return nil
