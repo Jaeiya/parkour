@@ -17,7 +17,7 @@ if not pd then
 end
 
 
-local modem = utils.getModem()
+local modem = utils.getModem('wireless')
 if not modem then
     printError("statboard terminated; missing modem")
     return false

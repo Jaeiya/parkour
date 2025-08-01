@@ -22,7 +22,7 @@ mon.setPaletteColor(colors.lime, 0x00FF00)
 mon.setTextScale(4.5)
 mon.setTextColor(colors.lime)
 
-local modem = utils.getModem()
+local modem = utils.getModem('wireless')
 if not modem then
     print()
     printError("monhost terminated; missing modem")

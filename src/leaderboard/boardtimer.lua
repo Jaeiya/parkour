@@ -28,7 +28,7 @@ local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
 local iterations   = 0
 local leaderBoardEvent = "leaderboard"
 
-local modem = utils.getModem()
+local modem = utils.getModem('wireless')
 if not modem then
     printError("timer terminated; missing modem")
     return false

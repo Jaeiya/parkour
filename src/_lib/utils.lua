@@ -287,10 +287,19 @@ function utils.getMonitor()
 end
 
 
----Tries to find a single modem and return it
+---Gets the first modem that matches the type
+---@param type 'wireless'|'wired' What kind of modem to look for
 ---@return Modem|nil
-function utils.getModem()
-    return getSinglePeripheral("modem")
+function utils.getModem(type)
+    for p in peripheral.find("modem") do
+        ---@cast p Modem
+        if type == 'wireless' and p.isWireless() then
+            return p
+        elseif type == 'wired' then
+            return p
+        end
+    end
+    return nil
 end
 
 

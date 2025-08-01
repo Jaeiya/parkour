@@ -37,7 +37,7 @@ if monW < 11 then
     return
 end
 
-local modem = utils.getModem()
+local modem = utils.getModem('wireless')
 if not modem then
     utils.print(
         ";red;Installation Aborted\n" ..

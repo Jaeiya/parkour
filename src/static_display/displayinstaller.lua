@@ -3,7 +3,7 @@ local utils = require("utils")
 
 
 print()
-local modem = utils.getModem()
+local modem = utils.getModem('wired')
 if not modem then
     utils.print(
         ";red;Installation Aborted\n" ..
