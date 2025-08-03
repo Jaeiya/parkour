@@ -2,7 +2,7 @@
 
 ---Shared state between all scripts
 ---@class SharedState
----@field runningPlayer string|nil
+---@field runningPlayer string|nil Always set to nil when run is finished or cancelled
 local state = {
     timer = {
         isActive = false,
@@ -15,6 +15,7 @@ local state = {
         bronze = 0,
         silver = 0,
         gold   = 0,
+        heart  = 0,
     }
 }
 
