@@ -166,6 +166,7 @@ return function(config)
             if isPlayerRunning(config.endPos) then
                 os.queueEvent("timer", {action = "finish_run", payload = msgEvent.payload})
                 lib.savePlayerTime(state.runningPlayer, msgEvent.payload)
+                state.runningPlayer = nil
                 renderBoard()
             end
 
