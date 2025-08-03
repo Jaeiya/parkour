@@ -57,16 +57,32 @@ end
 ---@param time integer
 local function formatTime(time)
     local timeStr = utils.getTimerStr(time)
+
+    local hourNum = tonumber(string.sub(timeStr, 1, 2))
     local hour = ";ppl;"..string.sub(timeStr, 1, 3)
-    if string.sub(timeStr, 1, 2) == "00" then
+
+    if hourNum > 0 and hourNum < 10 then
+        hour = ";gry;0;ppl;"..tostring(hourNum)..':'
+    elseif hourNum == 0 then
         hour = ";gry;00:"
     end
+
+    local minuteNum = tonumber(string.sub(timeStr, 4, 5))
     local minute = ";ppl;"..string.sub(timeStr, 4, 6)
-    if string.sub(timeStr, 4, 5) == "00" and string.sub(timeStr, 1, 2) == "00" then
+
+    if minuteNum > 0 and minuteNum < 10 and hourNum == 0 then
+        minute = ";gry;0;ppl;"..tostring(minuteNum)..':'
+    elseif hourNum == 0 and minuteNum == 0 then
         minute = ";gry;00:"
     end
 
-    return hour..minute..";ppl;"..string.sub(timeStr, 7, #timeStr)
+    local secondNum = tonumber(string.sub(timeStr, 7, 8))
+    local second = ';ppl;'..string.sub(timeStr, 7, 9)
+    if secondNum > 0 and secondNum < 10 and minuteNum == 0 and hourNum == 0 then
+        second = ';gry;0;ppl;'..tostring(secondNum)..':'
+    end
+
+    return hour..minute..second..";ppl;"..string.sub(timeStr, 10, #timeStr)
 end
 
 
