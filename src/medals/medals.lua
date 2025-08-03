@@ -15,13 +15,14 @@ end
 
 local dbFilePath = "medals.db"
 ---@class MedalsConfig
-local lives = {
+local medalLives = {
     mud    = 4,
     bronze = 4,
     silver = 4,
     gold   = 4,
+    heart  = 0,
 }
-lives = utils.loadConfig(dbFilePath, lives)
+medalLives = utils.loadConfig(dbFilePath, medalLives)
 
 utils.clear(mon)
 mon.setTextScale(2)
@@ -49,11 +50,11 @@ local function renderMedals()
 
     local mudPadding    = ""
     local bronzePadding = ''
-    if lives.mud    < 10 then mudPadding    = ";gry;0" end
-    if lives.bronze < 10 then bronzePadding = ";gry;0" end
+    if medalLives.mud    < 10 then mudPadding    = ";gry;0" end
+    if medalLives.bronze < 10 then bronzePadding = ";gry;0" end
 
     utils.print(
-        "   "..mudPadding..";lgy;"..lives.mud.." Lives        "..bronzePadding..";lgy;"..lives.bronze.." Lives",
+        "   "..mudPadding..";lgy;"..medalLives.mud.." Lives        "..bronzePadding..";lgy;"..medalLives.bronze.." Lives",
         mon
     )
 
@@ -63,11 +64,11 @@ local function renderMedals()
 
     local silverPadding = ""
     local goldPadding   = ""
-    if lives.silver < 10 then silverPadding = ";gry;0" end
-    if lives.gold   < 10 then goldPadding   = ";gry;0" end
+    if medalLives.silver < 10 then silverPadding = ";gry;0" end
+    if medalLives.gold   < 10 then goldPadding   = ";gry;0" end
 
     utils.print(
-        "   "..silverPadding..";lgy;"..lives.silver.." Lives        "..goldPadding..";lgy;"..lives.gold.." Lives",
+        "   "..silverPadding..";lgy;"..medalLives.silver.." Lives        "..goldPadding..";lgy;"..medalLives.gold.." Lives",
         mon
     )
 
@@ -80,7 +81,7 @@ end
 
 ---Sets the medal lives for the specified key in the
 ---config table
----@param key 'mudLives'|'bronzeLives'|'silverLives'|'goldLives'
+---@param key 'mud'|'bronze'|'silver'|'gold'
 local function setMedalLives(key)
     return function ()
     ::prompt::
@@ -92,8 +93,8 @@ local function setMedalLives(key)
             utils.promptError("over 99 lives is not allowed!")
             goto prompt
         end
-        lives[key] = val
-        utils.saveConfig(dbFilePath, lives)
+        medalLives[key] = val
+        utils.saveConfig(dbFilePath, medalLives)
     end
 end
 
@@ -105,16 +106,16 @@ local function renderMenu()
         local exited = utils.promptMenu(
             "Configure Medal Lives",
             {
-                { name = "Set Mud Lives",    exec = setMedalLives('mudLives')},
-                { name = "Set Bronze Lives", exec = setMedalLives('bronzeLives')},
-                { name = "Set Silver Lives", exec = setMedalLives('silverLives')},
-                { name = "Set Gold Lives",   exec = setMedalLives('goldLives')},
+                { name = "Set Mud Lives",    exec = setMedalLives('mud')},
+                { name = "Set Bronze Lives", exec = setMedalLives('bronze')},
+                { name = "Set Silver Lives", exec = setMedalLives('silver')},
+                { name = "Set Gold Lives",   exec = setMedalLives('gold')},
             }
         )
         if exited then
             return
         end
-        modem.transmit(chan, chan, lives)
+        modem.transmit(chan, chan, medalLives)
     end
 end
 
@@ -126,7 +127,7 @@ parallel.waitForAny(
         while true do
             local _, _, _, _, msg = os.pullEvent("modem_message")
             if msg == 'send_medal_lives' then
-                modem.transmit(chan, chan, lives)
+                modem.transmit(chan, chan, medalLives)
             end
         end
     end,
