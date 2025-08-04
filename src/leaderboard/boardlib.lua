@@ -114,14 +114,14 @@ end
 ---@class Leaderboard
 ---@field playerList Player[]
 ---@field playerMap table<string, Player>
-local leaderboard  = {
+local lib  = {
     playerList = {},
     playerMap = {},
     configPath = configPath
 }
 
 -- Initialize internal database objects
-leaderboard.playerList, leaderboard.playerMap = loadPlayers()
+lib.playerList, lib.playerMap = loadPlayers()
 
 
 ---@class Medal
@@ -134,20 +134,13 @@ local Medal = {
     HEART  = 5,
 }
 
-leaderboard.medals = {'heart', 'gold', 'silver', 'bronze', 'mud'}
+lib.medals = {'heart', 'gold', 'silver', 'bronze', 'mud'}
 
 
----@param types integer[]
-local function toAvgMedalNotation(types)
-    return string.sub(leaderboard.toMedalNotation(
-        utils.round(utils.sum(table.unpack(types)) / #types),
-        0
-    ), 1, 1) .. "*"
-end
 
 ---@param medal integer
 ---@return MedalString
-function leaderboard.toMedalStr(medal)
+local function toMedalStr(medal)
     if medal == 1 then return 'mud' end
     if medal == 2 then return 'bronze' end
     if medal == 3 then return 'silver' end
@@ -158,7 +151,7 @@ end
 
 
 ---@param medalName MedalString
-function leaderboard.toMedal(medalName)
+local function toMedal(medalName)
     if medalName == 'mud'    then return Medal.MUD    end
     if medalName == 'bronze' then return Medal.BRONZE end
     if medalName == 'silver' then return Medal.SILVER end
@@ -170,7 +163,7 @@ end
 
 ---@param medal integer
 ---@param rank integer
-function leaderboard.toMedalNotation(medal, rank)
+local function toMedalNotation(medal, rank)
     if medal == Medal.MUD    then return 'M' .. tostring(rank) end
     if medal == Medal.BRONZE then return 'B' .. tostring(rank) end
     if medal == Medal.SILVER then return 'S' .. tostring(rank) end
@@ -184,15 +177,23 @@ function leaderboard.toMedalNotation(medal, rank)
 end
 
 
+---@param types integer[]
+local function toAvgMedalNotation(types)
+    return string.sub(toMedalNotation(
+        utils.round(utils.sum(table.unpack(types)) / #types),
+        0
+    ), 1, 1) .. "*"
+end
+
 
 ---Returns the medal rank of the specified medal and lives
 ---it took to achieve the medal
 ---@param medal integer
 ---@param lives integer
-function leaderboard.toMedalRank(medal, lives)
+local function toMedalRank(medal, lives)
     if medal == Medal.HEART then return 0 end
 
-    local medalName = leaderboard.toMedalStr(medal + 1)
+    local medalName = toMedalStr(medal + 1)
     return lives - state.medalLives[medalName]
 end
 
@@ -200,10 +201,10 @@ end
 ---Returns the medal associated with the specified lives used
 ---@param lives integer
 ---@return integer
-function leaderboard.getPlayerMedal(lives)
-    for _, medalName in ipairs(leaderboard.medals) do
+local function getPlayerMedal(lives)
+    for _, medalName in ipairs(lib.medals) do
         if lives <= state.medalLives[medalName] then
-            return leaderboard.toMedal(medalName)
+            return toMedal(medalName)
         end
     end
     return Medal.None
@@ -212,8 +213,8 @@ end
 
 ---Checks if a player exists
 ---@param name string The name of the player
-function leaderboard.playerExists(name)
-    if leaderboard.playerMap[name] then
+function lib.playerExists(name)
+    if lib.playerMap[name] then
         return true
     end
     return false
@@ -222,38 +223,38 @@ end
 
 ---Saves the players to the player database file and
 ---sorts them by fastest time with fewest attempts.
-function leaderboard.save()
-    table.sort(leaderboard.playerList, function(a, b)
+function lib.save()
+    table.sort(lib.playerList, function(a, b)
         if a.time.pb == b.time.pb then
             return a.attempts.pb < b.attempts.pb
         else
             return a.time.pb < b.time.pb end
         end
     )
-    utils.writeFile(playerDBPath, textutils.serialize(leaderboard.playerList))
+    utils.writeFile(playerDBPath, textutils.serialize(lib.playerList))
 end
 
 
 ---Get player data by specified name
 ---@param name string Name of the player to get
 ---@return Player|nil
-function leaderboard.findPlayer(name)
-    return leaderboard.playerMap[name]
+function lib.findPlayer(name)
+    return lib.playerMap[name]
 end
 
 
 ---Updates the current & total attempts for the specified player.
 ---@param name string Name of the player to update
-function leaderboard.updateAttempt(name)
-    local player = leaderboard.playerMap[name]
+function lib.updateAttempt(name)
+    local player = lib.playerMap[name]
     player.attempts.current = player.attempts.current + 1
     player.attempts.total = player.attempts.total + 1
-    leaderboard.save()
+    lib.save()
 end
 
 
-function leaderboard.updateMedalStats(name)
-    local player = leaderboard.playerMap[name]
+function lib.updateMedalStats(name)
+    local player = lib.playerMap[name]
 
     if player.medal.type == Medal.HEART then
         return
@@ -262,8 +263,8 @@ function leaderboard.updateMedalStats(name)
     player.medal.attempts.current = player.medal.attempts.current + 1
     player.medal.attempts.total = player.medal.attempts.total + 1
 
-    local medal = leaderboard.getPlayerMedal(player.medal.lifeCount)
-    local medalRank = leaderboard.toMedalRank(medal, player.medal.lifeCount)
+    local medal = getPlayerMedal(player.medal.lifeCount)
+    local medalRank = toMedalRank(medal, player.medal.lifeCount)
 
     local hasBetterRank = medal == player.medal.type and medalRank < player.medal.rank
 
@@ -273,8 +274,8 @@ function leaderboard.updateMedalStats(name)
         player.medal.rank = medalRank
         player.medal.lastType = medal
         player.medal.lastRank = medalRank
-        player.medal.breakdown.pb = leaderboard.toMedalNotation(medal, medalRank)
-        player.medal.breakdown.current = leaderboard.toMedalNotation(medal, medalRank)
+        player.medal.breakdown.pb = toMedalNotation(medal, medalRank)
+        player.medal.breakdown.current = toMedalNotation(medal, medalRank)
         player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
         player.medal.livesUsed.pb = player.medal.livesUsed.pb + player.medal.livesUsed.current
         player.medal.attempts.pb = player.medal.attempts.pb + player.medal.attempts.current
@@ -284,18 +285,18 @@ function leaderboard.updateMedalStats(name)
         player.medal.lastType = medal
         player.medal.types[#player.medal.types+1] = medal
         player.medal.lastRank = medalRank
-        player.medal.breakdown.current = leaderboard.toMedalNotation(medal, medalRank)
+        player.medal.breakdown.current = toMedalNotation(medal, medalRank)
         player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
     end
 
     player.medal.lifeCount = 0
 
-    leaderboard.save()
+    lib.save()
 end
 
 
-function leaderboard.updateLives(name)
-    local player = leaderboard.playerMap[name]
+function lib.updateLives(name)
+    local player = lib.playerMap[name]
 
     -- The player has already achieved max medal
     if player.medal.type == Medal.HEART then return end
@@ -303,15 +304,15 @@ function leaderboard.updateLives(name)
     player.medal.lifeCount = player.medal.lifeCount + 1
     player.medal.livesUsed.current = player.medal.livesUsed.current + 1
     player.medal.livesUsed.total = player.medal.livesUsed.total + 1
-    leaderboard.save()
+    lib.save()
 end
 
 
 ---Adds time to a players total run time.
-function leaderboard.updateTime(name, time)
-    local player = leaderboard.playerMap[name]
+function lib.updateTime(name, time)
+    local player = lib.playerMap[name]
     player.time.total = player.time.total + time
-    leaderboard.save()
+    lib.save()
 end
 
 
@@ -320,8 +321,8 @@ end
 ---than their PB, then the PB is not updated.
 ---@param name string Name of the player to save
 ---@param time integer The time (in milliseconds) of the players run
-function leaderboard.saveTime(name, time)
-    local player = leaderboard.playerMap[name]
+function lib.saveTime(name, time)
+    local player = lib.playerMap[name]
     player.time.current = time
     player.time.total = player.time.total + player.time.current
 
@@ -331,31 +332,31 @@ function leaderboard.saveTime(name, time)
         player.attempts.current = 0
     end
 
-    leaderboard.save()
+    lib.save()
 end
 
 
 ---Tries to add a player to the database if they don't
 ---already exist, otherwise it does nothing.
 ---@param name string Name of the player to add
-function leaderboard.tryAddPlayer(name)
-    if leaderboard.playerExists(name) then return end
-    local index = #leaderboard.playerList+1
+function lib.tryAddPlayer(name)
+    if lib.playerExists(name) then return end
+    local index = #lib.playerList+1
     defaultPlayerData.name = name
-    leaderboard.playerList[index] = defaultPlayerData
-    leaderboard.playerMap[name] = leaderboard.playerList[index]
-    leaderboard.save()
+    lib.playerList[index] = defaultPlayerData
+    lib.playerMap[name] = lib.playerList[index]
+    lib.save()
 end
 
 
 ---Gets a list of all saved players
-function leaderboard.get()
-    return leaderboard.playerList
+function lib.get()
+    return lib.playerList
 end
 
 
 ---Loads the board config file
-function leaderboard.loadConfig()
+function lib.loadConfig()
     if not fs.exists(configPath) then
         error("missing timer config file")
     end
@@ -365,9 +366,9 @@ end
 
 ---Saves the board to the configuration file
 ---@param cfg BoardConfig
-function leaderboard.saveBoardConfig(cfg)
+function lib.saveBoardConfig(cfg)
     utils.saveConfig(configPath, cfg)
 end
 
 
-return leaderboard
+return lib
