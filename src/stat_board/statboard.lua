@@ -29,11 +29,16 @@ end
 ---@field Latest integer
 ---@field Total integer
 
-mon.setPaletteColor(colors.black,  0x000000)
-mon.setPaletteColor(colors.purple, 0xD596F2)
-mon.setPaletteColor(colors.gray,   0x5A3F67)
-mon.setPaletteColor(colors.green,  0x2ABD6F)
-mon.setPaletteColor(colors.lime,   0x37FF95)
+mon.setPaletteColor(colors.black,     0x000000)
+mon.setPaletteColor(colors.magenta,   0xD596F2) -- Brighter & paler magenta
+mon.setPaletteColor(colors.gray,      0x5A3F67) -- Dark Magenta
+mon.setPaletteColor(colors.brown,     0xAE7F52) -- Mud
+mon.setPaletteColor(colors.orange,    0xE2801F) -- Bronze
+mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
+mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
+mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
+mon.setPaletteColor(colors.lightGray, 0x555555)
+mon.setPaletteColor(colors.green,     0xCCCCCC)
 
 mon.setTextScale(1.5)
 
@@ -59,30 +64,30 @@ local function formatTime(time)
     local timeStr = utils.getTimerStr(time)
 
     local hourNum = tonumber(string.sub(timeStr, 1, 2))
-    local hour = ";ppl;"..string.sub(timeStr, 1, 3)
+    local hour = ";mgt;"..string.sub(timeStr, 1, 3)
 
     if hourNum > 0 and hourNum < 10 then
-        hour = ";gry;0;ppl;"..tostring(hourNum)..':'
+        hour = ";gry;0;mgt;"..tostring(hourNum)..':'
     elseif hourNum == 0 then
         hour = ";gry;00:"
     end
 
     local minuteNum = tonumber(string.sub(timeStr, 4, 5))
-    local minute = ";ppl;"..string.sub(timeStr, 4, 6)
+    local minute = ";mgt;"..string.sub(timeStr, 4, 6)
 
     if minuteNum > 0 and minuteNum < 10 and hourNum == 0 then
-        minute = ";gry;0;ppl;"..tostring(minuteNum)..':'
+        minute = ";gry;0;mgt;"..tostring(minuteNum)..':'
     elseif hourNum == 0 and minuteNum == 0 then
         minute = ";gry;00:"
     end
 
     local secondNum = tonumber(string.sub(timeStr, 7, 8))
-    local second = ';ppl;'..string.sub(timeStr, 7, 9)
+    local second = ';mgt;'..string.sub(timeStr, 7, 9)
     if secondNum > 0 and secondNum < 10 and minuteNum == 0 and hourNum == 0 then
-        second = ';gry;0;ppl;'..tostring(secondNum)..':'
+        second = ';gry;0;mgt;'..tostring(secondNum)..':'
     end
 
-    return hour..minute..second..";ppl;"..string.sub(timeStr, 10, #timeStr)
+    return hour..minute..second..";mgt;"..string.sub(timeStr, 10, #timeStr)
 end
 
 
@@ -90,12 +95,25 @@ end
 ---to 3-digits. Insignificant digits are color-muted.
 local function formatInt(int)
     if int < 10 then
-        return ";gry;00;ppl;"..int
+        return ";gry;00;mgt;"..int
     elseif int < 100 then
-        return ";gry;0;ppl;"..int
+        return ";gry;0;mgt;"..int
     else
-        return ";ppl;"..int
+        return ";cyn;"..int
     end
+end
+
+
+---@param code string
+local function colorMedalCode(code)
+    local medal = string.sub(code, 1, 1)
+    if medal == 'M' then return ';bwn;'..code end
+    if medal == 'B' then return ';org;'..code end
+    if medal == 'S' then return ';wht;'..code end
+    if medal == 'G' then return ';ylw;'..code end
+    if medal == 'H' then return ';pnk;'..code end
+    if medal == 'F' then return ';red;'..code end
+    return ';red;DNF'
 end
 
 
@@ -112,39 +130,44 @@ end
 local function renderSubHeader(text, yPos)
     mon.setCursorPos(1, yPos)
     mon.setBackgroundColor(colors.blue)
-    mon.write(string.rep(" ", ((monWidth - #text) / 2)))
+    local textLen = #utils.stripColorCodes(text)
+    mon.write(string.rep(" ", ((monWidth - textLen) / 2)))
     mon.setBackgroundColor(colors.black)
-    utils.print(";lbu;"..text, mon)
+    utils.print(text, mon)
     mon.setBackgroundColor(colors.blue)
-    mon.write(string.rep(" ", ((monWidth - #text) / 2) + 1))
+    mon.write(string.rep(" ", ((monWidth - textLen) / 2) + 1))
     mon.setBackgroundColor(colors.black)
 end
 
----@param stats PlayerStat
+---@param player Player
 ---@param yPos integer
-local function renderTimeStats(stats, yPos)
-    for key, val in pairs(stats) do
+local function renderTimeStats(player, yPos)
+    for key, val in pairs(player.time) do
+        local timeStr = utils.justifyText(";grn;"..key, 'right', 7) .. ';gry;...' .. formatTime(val)
+        local attemptStr = ';gry;...;lgy;x' .. formatInt(player.attempts[key])
         mon.setCursorPos(1, yPos)
-        utils.print(";org;" ..
-            utils.centerText(utils.justifyText(key, 'right', 6)..": "..formatTime(val), mon), mon
-        )
+        utils.print(utils.centerText(timeStr..attemptStr, mon), mon)
         yPos = yPos + 1
     end
 end
 
 
----@param stats PlayerStat
----@param yPos integer
-local function renderAttemptStats(stats, yPos)
-    for key, val in pairs(stats) do
+---@param player Player
+local function renderMedalStats(player, yPos)
+    for key, val in pairs(player.medal.livesUsed) do
+        -- 'current' resets every pb, so this line won't matter if the player achieves max medal
+        if key == 'current' and player.medal.breakdown.pb == 'H0' then
+            goto continue
+        end
+
         mon.setCursorPos(1, yPos)
-        utils.print(";org;" ..
-            utils.centerText(utils.justifyText(key, 'right', 6)..": " ..
-                utils.justifyText(formatInt(val), 'left', 11), mon
-            ),
-            mon
-        )
+        local str = colorMedalCode(player.medal.breakdown[key]) ..
+                    ';gry;...;lgy;x'..formatInt(val)..';gry;...;lgy;x' ..
+                    formatInt(player.medal.attempts[key])
+
+        utils.print(utils.centerText(utils.justifyText(';grn;'..key, 'right', 7)..';lgy;...'.. str, mon), mon)
         yPos = yPos + 1
+        ::continue::
     end
 end
 
@@ -160,19 +183,12 @@ local function renderStats()
 
     local player = players[playerIndex]
     mon.setCursorPos(1, 2)
-    utils.print(utils.centerText(";grn;"..player.name.."'s ;org;Stats", mon), mon)
-    renderSubHeader(" Time ", 4)
-    renderTimeStats({
-        PB = player.time.pb,
-        Latest = player.time.current,
-        Total = player.time.total
-    }, 6)
-    renderSubHeader(" Attempts ", 10)
-    renderAttemptStats({
-        PB = player.attempts.pb,
-        Latest = player.attempts.current,
-        Total = player.attempts.total
-    }, 12)
+    utils.print(utils.centerText(";lim;"..player.name..' ;lgy;['..colorMedalCode(player.medal.breakdown.pb)..';lgy;]', mon), mon)
+    renderSubHeader(" ;lbu;Time;lgy;/;lbu;Attempts ", 4)
+    renderTimeStats(player, 6)
+
+    renderSubHeader(" ;lbu;Medal;lgy;/;lbu;Lives;lgy;/;lbu;Attempts ", 11)
+    renderMedalStats(player, 13)
 
     if #players > 1 then
         renderButton("  BACK  ", 1, monHeight)
@@ -218,7 +234,7 @@ local function statBoardHandler(config)
         ---@type Player[]|nil
         local payload = msgEvent.payload
 
-        if not payload or #payload == 0 or #payload < #players then
+        if not payload or #payload == 0 or #payload ~= #players then
             players = payload
             playerIndex = 1
             goto continue

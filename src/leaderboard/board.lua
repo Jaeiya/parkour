@@ -151,21 +151,29 @@ return function(config)
         elseif msgEvent.action == "try_cancel_run" then
             if isPlayerRunning(config.startPos) then
                 os.queueEvent("timer", { action = "cancel_run" })
+                lib.updateLives(state.runningPlayer)
                 lib.updateTime(state.runningPlayer, msgEvent.payload)
                 state.runningPlayer = nil
                 renderBoard()
             end
 
         elseif msgEvent.action == "force_cancel_run" then
-            os.queueEvent("timer", { action = "cancel_run" })
-            lib.updateTime(state.runningPlayer, msgEvent.payload)
-            state.runningPlayer = nil
-            renderBoard()
+            -- It's possible that a 'try_cancel_run' takes longer to execute with
+            -- more players online. So if it does, we make sure that the running
+            -- player still exists when this event fires later.
+            if state.runningPlayer then
+                os.queueEvent("timer", { action = "cancel_run" })
+                lib.updateLives(state.runningPlayer)
+                lib.updateTime(state.runningPlayer, msgEvent.payload)
+                state.runningPlayer = nil
+                renderBoard()
+            end
 
         elseif msgEvent.action == "save_player_time" then
             if isPlayerRunning(config.endPos) then
                 os.queueEvent("timer", {action = "finish_run", payload = msgEvent.payload})
-                lib.savePlayerTime(state.runningPlayer, msgEvent.payload)
+                lib.updateMedalStats(state.runningPlayer)
+                lib.saveTime(state.runningPlayer, msgEvent.payload)
                 state.runningPlayer = nil
                 renderBoard()
             end
