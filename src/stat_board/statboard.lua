@@ -33,11 +33,11 @@ mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
 mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
 mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x555555)
-mon.setPaletteColor(colors.green,     0xCCCCCC)
 
 mon.setTextScale(1.5)
 
 local monWidth, monHeight = mon.getSize()
+local sortedKeys = { 'pb', 'latest', 'total' }
 
 ---@type Player[]
 local players = {}
@@ -94,7 +94,7 @@ local function formatInt(int)
     elseif int < 100 then
         return ";gry;0;mgt;"..int
     else
-        return ";cyn;"..int
+        return ";mgt;"..int
     end
 end
 
@@ -137,9 +137,9 @@ end
 ---@param player Player
 ---@param yPos integer
 local function renderTimeStats(player, yPos)
-    for key, val in pairs(player.time) do
-        local timeStr = utils.justifyText(";grn;"..key, 'right', 7) .. ';gry;...' .. formatTime(val)
-        local attemptStr = ';gry;...;lgy;x' .. formatInt(player.attempts[key])
+    for _, key in ipairs(sortedKeys) do
+        local timeStr = utils.justifyText(";cyn;"..key, 'right', 7) .. ';lgy;...' .. formatTime(player.time[key])
+        local attemptStr = ';lgy;...x' .. formatInt(player.attempts[key])
         mon.setCursorPos(1, yPos)
         utils.print(utils.centerText(timeStr..attemptStr, mon), mon)
         yPos = yPos + 1
@@ -149,19 +149,35 @@ end
 
 ---@param player Player
 local function renderMedalStats(player, yPos)
-    for key, val in pairs(player.medal.livesUsed) do
-        -- 'latest' data resets every pb, so this line won't matter if the
-        -- player has max medal
-        if key == 'latest' and player.medal.breakdown.pb == 'H0' then
+    for _, key in pairs(sortedKeys) do
+        ---'latest' data resets every pb, so this line won't matter if the
+        ---player has max medal
+        if player.medal.breakdown.pb == 'H0' and key == 'latest' then
+            goto continue
+        end
+
+        ---The lives and attempts will be the same as the pb
+        ---so we ignore them
+        if player.medal.breakdown.pb == 'H0' and key == 'total' then
+            mon.setCursorPos(1, yPos)
+            utils.print(utils.centerText(
+                utils.justifyText(
+                    ';cyn;'..key..';lgy;...'..colorMedalCode(player.medal.breakdown[key]),
+                    'left',
+                    23
+                ), mon),
+                mon
+            )
+            yPos = yPos + 1
             goto continue
         end
 
         mon.setCursorPos(1, yPos)
         local str = colorMedalCode(player.medal.breakdown[key]) ..
-                    ';gry;...;lgy;x'..formatInt(val)..';gry;...;lgy;x' ..
+                    ';lgy;...x'..formatInt(player.medal.livesUsed[key])..';lgy;...x' ..
                     formatInt(player.medal.attempts[key])
 
-        utils.print(utils.centerText(utils.justifyText(';grn;'..key, 'right', 7)..';lgy;...'.. str, mon), mon)
+        utils.print(utils.centerText(utils.justifyText(';cyn;'..key, 'right', 6)..';lgy;...'.. str, mon), mon)
         yPos = yPos + 1
         ::continue::
     end
