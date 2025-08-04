@@ -44,26 +44,26 @@ local config = {
 ---@field attempts PlayerStats The players attempt usage breakdown
 
 ---@class PlayerStats
----@field pb      integer
----@field current integer
----@field total   integer
+---@field pb     integer
+---@field latest integer
+---@field total  integer
 
 ---@class MedalBreakdown
----@field pb      string
----@field current string
----@field total   string
+---@field pb     string
+---@field latest string
+---@field total  string
 
 ---@type Player
 local defaultPlayerData = {
     name = "",
     attempts = {
         pb = 0,
-        current = 0,
+        latest = 0,
         total = 0,
     },
     time = {
         pb = 0,
-        current = 0,
+        latest = 0,
         total = 0,
     },
     medal = {
@@ -75,17 +75,17 @@ local defaultPlayerData = {
         lifeCount = 0,
         breakdown = {
             pb = '',
-            current = '',
+            latest = '',
             total = '',
         },
         attempts = {
             pb = 0,
-            current = 0,
+            latest = 0,
             total = 0,
         },
         livesUsed = {
             pb = 0,
-            current = 0,
+            latest = 0,
             total = 0,
         }
     }
@@ -110,7 +110,6 @@ local function loadPlayers()
 end
 
 
-
 ---@class Leaderboard
 ---@field playerList Player[]
 ---@field playerMap table<string, Player>
@@ -119,6 +118,7 @@ local lib  = {
     playerMap = {},
     configPath = configPath
 }
+
 
 -- Initialize internal database objects
 lib.playerList, lib.playerMap = loadPlayers()
@@ -186,8 +186,7 @@ local function toAvgMedalNotation(types)
 end
 
 
----Returns the medal rank of the specified medal and lives
----it took to achieve the medal
+---Returns a numeric rank based on the specified medal and lives.
 ---@param medal integer
 ---@param lives integer
 local function toMedalRank(medal, lives)
@@ -243,11 +242,11 @@ function lib.findPlayer(name)
 end
 
 
----Updates the current & total attempts for the specified player.
+---Updates the latest & total attempts for the specified player.
 ---@param name string Name of the player to update
 function lib.updateAttempt(name)
     local player = lib.playerMap[name]
-    player.attempts.current = player.attempts.current + 1
+    player.attempts.latest = player.attempts.latest + 1
     player.attempts.total = player.attempts.total + 1
     lib.save()
 end
@@ -260,7 +259,7 @@ function lib.updateMedalStats(name)
         return
     end
 
-    player.medal.attempts.current = player.medal.attempts.current + 1
+    player.medal.attempts.latest = player.medal.attempts.latest + 1
     player.medal.attempts.total = player.medal.attempts.total + 1
 
     local medal = getPlayerMedal(player.medal.lifeCount)
@@ -275,17 +274,17 @@ function lib.updateMedalStats(name)
         player.medal.lastType = medal
         player.medal.lastRank = medalRank
         player.medal.breakdown.pb = toMedalNotation(medal, medalRank)
-        player.medal.breakdown.current = toMedalNotation(medal, medalRank)
+        player.medal.breakdown.latest = toMedalNotation(medal, medalRank)
         player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
-        player.medal.livesUsed.pb = player.medal.livesUsed.pb + player.medal.livesUsed.current
-        player.medal.attempts.pb = player.medal.attempts.pb + player.medal.attempts.current
-        player.medal.livesUsed.current = 0
-        player.medal.attempts.current = 0
+        player.medal.livesUsed.pb = player.medal.livesUsed.pb + player.medal.livesUsed.latest
+        player.medal.attempts.pb = player.medal.attempts.pb + player.medal.attempts.latest
+        player.medal.livesUsed.latest = 0
+        player.medal.attempts.latest = 0
     else
         player.medal.lastType = medal
         player.medal.types[#player.medal.types+1] = medal
         player.medal.lastRank = medalRank
-        player.medal.breakdown.current = toMedalNotation(medal, medalRank)
+        player.medal.breakdown.latest = toMedalNotation(medal, medalRank)
         player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
     end
 
@@ -302,7 +301,7 @@ function lib.updateLives(name)
     if player.medal.type == Medal.HEART then return end
 
     player.medal.lifeCount = player.medal.lifeCount + 1
-    player.medal.livesUsed.current = player.medal.livesUsed.current + 1
+    player.medal.livesUsed.latest = player.medal.livesUsed.latest + 1
     player.medal.livesUsed.total = player.medal.livesUsed.total + 1
     lib.save()
 end
@@ -317,19 +316,19 @@ end
 
 
 ---Saves all relevant time information for the specified
----player, however if the current time is not faster
+---player, however if the latest time is not faster
 ---than their PB, then the PB is not updated.
 ---@param name string Name of the player to save
 ---@param time integer The time (in milliseconds) of the players run
 function lib.saveTime(name, time)
     local player = lib.playerMap[name]
-    player.time.current = time
-    player.time.total = player.time.total + player.time.current
+    player.time.latest = time
+    player.time.total = player.time.total + player.time.latest
 
-    if player.time.current < player.time.pb or player.time.pb == 0 then
-        player.time.pb = player.time.current
-        player.attempts.pb = player.attempts.pb + player.attempts.current
-        player.attempts.current = 0
+    if player.time.latest < player.time.pb or player.time.pb == 0 then
+        player.time.pb = player.time.latest
+        player.attempts.pb = player.attempts.pb + player.attempts.latest
+        player.attempts.latest = 0
     end
 
     lib.save()

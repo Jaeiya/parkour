@@ -24,11 +24,6 @@ if not modem then
 end
 
 
----@class PlayerStat
----@field PB integer
----@field Latest integer
----@field Total integer
-
 mon.setPaletteColor(colors.black,     0x000000)
 mon.setPaletteColor(colors.magenta,   0xD596F2) -- Brighter & paler magenta
 mon.setPaletteColor(colors.gray,      0x5A3F67) -- Dark Magenta
@@ -155,8 +150,9 @@ end
 ---@param player Player
 local function renderMedalStats(player, yPos)
     for key, val in pairs(player.medal.livesUsed) do
-        -- 'current' resets every pb, so this line won't matter if the player achieves max medal
-        if key == 'current' and player.medal.breakdown.pb == 'H0' then
+        -- 'latest' data resets every pb, so this line won't matter if the
+        -- player has max medal
+        if key == 'latest' and player.medal.breakdown.pb == 'H0' then
             goto continue
         end
 
