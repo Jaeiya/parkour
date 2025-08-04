@@ -1,4 +1,10 @@
 
+---@class Coord
+---@field x integer
+---@field y integer
+---@field z integer
+
+
 ---@class Utils
 local utils = {}
 
@@ -33,6 +39,12 @@ function utils.splitString(str)
         table.insert(result, word)
     end
     return result
+end
+
+
+---@param n integer
+function utils.round(n)
+    return math.floor(n + 0.5)
 end
 
 
