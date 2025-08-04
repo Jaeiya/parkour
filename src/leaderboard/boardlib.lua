@@ -134,7 +134,7 @@ local Medal = {
     HEART  = 5,
 }
 
-lib.medals = {'heart', 'gold', 'silver', 'bronze', 'mud'}
+lib.sortedMedals = {'heart', 'gold', 'silver', 'bronze', 'mud'}
 
 
 
@@ -201,7 +201,7 @@ end
 ---@param lives integer
 ---@return integer
 local function getPlayerMedal(lives)
-    for _, medalName in ipairs(lib.medals) do
+    for _, medalName in ipairs(lib.sortedMedals) do
         if lives <= state.medalLives[medalName] then
             return toMedal(medalName)
         end
