@@ -33,6 +33,7 @@ mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
 mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
 mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x555555)
+mon.setPaletteColor(colors.green,     0x2FD97F)
 
 mon.setTextScale(1.5)
 
@@ -218,7 +219,7 @@ local function highlightButton(buttonType)
     end
 
     mon.setCursorPos(xpos, monHeight-1)
-    mon.setBackgroundColor(colors.orange)
+    mon.setBackgroundColor(colors.cyan)
     mon.write("        ")
     mon.setCursorPos(xpos, monHeight)
     utils.print(";blk;" .. btnText, mon)
