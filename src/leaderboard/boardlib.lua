@@ -282,7 +282,10 @@ function lib.updateMedalStats(name)
         player.medal.attempts.latest = 0
     else
         player.medal.lastType = medal
-        player.medal.types[#player.medal.types+1] = medal
+        ---Do not save none-types as it messes up medal calculation
+        if medal ~= Medal.None then
+            player.medal.types[#player.medal.types+1] = medal
+        end
         player.medal.lastRank = medalRank
         player.medal.breakdown.latest = toMedalNotation(medal, medalRank)
         player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
