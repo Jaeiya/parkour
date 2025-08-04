@@ -31,8 +31,10 @@ parallel.waitForAny(
         modem.transmit(chan, chan, "send_medal_lives")
 
         while true do
-            local _, _, _, _, msg, _ = os.pullEvent("modem_message")
-            state.medalLives = msg
+            local _, _, sentChan, _, msg, _ = os.pullEvent("modem_message")
+            if sentChan == chan then
+                state.medalLives = msg
+            end
             return
         end
     end,
@@ -56,7 +58,9 @@ parallel.waitForAny(
 
 return function()
     while true do
-        local _, _, _, _, msg, _ = os.pullEvent("modem_message")
-        state.medalLives = msg
+        local _, _, sentChan, _, msg, _ = os.pullEvent("modem_message")
+        if sentChan == chan then
+            state.medalLives = msg
+        end
     end
 end
