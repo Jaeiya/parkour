@@ -15,7 +15,7 @@ failing into Mud rank.
 ### Easy
 
 If a player is about to achieve a lower medal than their pb, then it should
-reset the medal count, allowing the player to attempt a 0-life run immediately.
+reset the life count, allowing the player to attempt a 0-life run immediately.
 
 - This effectively hobbles the life count since you'll need less and less lives
   to achieve the higher medals
