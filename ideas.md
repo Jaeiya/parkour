@@ -8,9 +8,11 @@ likely win out in the end_
 
 ### Normal
 
-The player can only complete a level by hitting the finish. This means that
-no matter what medal a player has achieved, they will still have the threat of
-failing into Mud rank.
+The player will only complete a level by hitting the finish. The players PB medal
+will always be their recognized rank, but a player can still run the course and
+get a Mud rank; that mud rank will only be recognized as their latest attempt,
+not as a demotion. It just allows them to see how close or how far away they
+were from their pb.
 
 ### Easy
 
