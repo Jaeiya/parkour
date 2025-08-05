@@ -1,11 +1,13 @@
 ## Medal Integration
 
-**Normal Medal Acquisition**J
+**Normal Medal Acquisition**
+
 The player can only complete a level by hitting the finish. This means that
 no matter what medal a player has achieved, they will still have the threat of
 failing into Mud rank.
 
-**Easy Medal Acquisition**J
+**Easy Medal Acquisition**
+
 If a player is about to achieve a lower medal than their pb, then it should
 reset the medal count, allowing the player to attempt a 0-life run immediately.
 
@@ -16,6 +18,7 @@ reset the medal count, allowing the player to attempt a 0-life run immediately.
   auto-reset during a cancel event (life used)
 
 **Comfortable Medal Acquisition**
+
 The player can achieve a high enough medal that it eliminates the lower medal
 thresholds. For instance, if a player achieves a Silver rank, the player would
 no longer have to worry about Mud rank. We could extend this to Gold and eliminate
