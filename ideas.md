@@ -95,3 +95,24 @@ lives threshold for each medal.
 ## Stats Board
 
 Displays all relevant player data in an easy-to-read format.
+
+- Time Display
+  - pb time and attempts it took
+  - latest time and attempts
+  - total time and attempts (cumulative)
+- Medal Display
+  - pb
+    - medal (S1, B3, etc...) colored based on medal color
+    - How many lives used
+    - How many attempts it took
+  - latest (the last medal achieved)
+    - medal (S1, B3, etc...) colored based on medal color
+    - How many lives used
+    - How many attempts it took
+  - total (an average of all medals achieved)
+    - medal (S1, B3, etc...) colored based on medal color
+    - How many lives used
+    - How many attempts it took
+- Switch between all players statistics using buttons
+- Allow player to show their stats immediately
+- Communicates with the leaderboard to receive player stats
