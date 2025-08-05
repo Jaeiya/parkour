@@ -1,23 +1,28 @@
-## Medal Integration
+**All implementation details that are prefixed by an asterisk are not implemented yet**
 
-**Normal Medal Acquisition**
+## Medal Acquisition (Theory)
+
+_All difficulties below **normal** are hypothetical and just a potential
+improvement to the **normal** vision. The **normal** acquisition will most
+likely win out in the end_
+
+### Normal
 
 The player can only complete a level by hitting the finish. This means that
 no matter what medal a player has achieved, they will still have the threat of
 failing into Mud rank.
 
-**Easy Medal Acquisition**
+### Easy
 
 If a player is about to achieve a lower medal than their pb, then it should
 reset the medal count, allowing the player to attempt a 0-life run immediately.
 
 - This effectively hobbles the life count since you'll need less and less lives
   to achieve the higher medals
-
 - This also means that you don't have to worry about finishing a level. It will
   auto-reset during a cancel event (life used)
 
-**Comfortable Medal Acquisition**
+### Comfortable
 
 The player can achieve a high enough medal that it eliminates the lower medal
 thresholds. For instance, if a player achieves a Silver rank, the player would
@@ -25,11 +30,10 @@ no longer have to worry about Mud rank. We could extend this to Gold and elimina
 Bronze ranks.
 
 - Rewards the effort of those capable of achieving difficult medals
-
 - Does not detract from the overall difficulty of the level since only the lowest
   medal ranges would be eliminated through achieving the most difficult medals.
 
-## False Start
+## False Start (Theory)
 
 A lot of times players will have a bad 'take off' and need to reset their
 attempt. Setting this to a reasonable time will prevent players from getting
@@ -40,3 +44,54 @@ punished for stupid things.
 - Internal testing reveals that 4 seconds seems to be a comfortable
   resetting time. Most accidents can be avoided within 4 seconds.
   - 2 seconds was a bit too steep, depending on the course
+
+## Leaderboard
+
+Displays all players who have run a given level, with the time & attempts that
+it took. Only their pb will appear on the board.
+
+- Players are sorted by time & attempts
+- All statistics of a players run are stored in its internal database
+- Starting a run
+  - Auto-detects player
+  - Starts timer
+  - Player attempts updated
+  - Tracks player position
+    - Allows cancelling on actuation-bound
+    - \*_Allows cancelling on fail-bound_
+- Finishing a run
+  - Auto-detects player
+  - Stops timer
+  - Updates player data
+  - Resets player lives so they can go for a better medal on their next run
+- Runs can be cancelled
+  - Only the player actively running can cancel it
+    - It is considered a fail condition to cancel a run
+  - Hitting the start-actuator during a run
+  - Moving behind the actuator-bound during a run
+  - \*_Falling into the fail-bound during a run_
+  - Cancelling a run uses a life
+    - \*_Unless a false-start_
+- \*_Allows false-starts_
+  - \*_Activated by cancelling a run_
+    - \*_Hitting actuation-bound_
+    - \*_Hitting fail-bound_
+  - \*_Threshold of 3 - 5 seconds_
+  - \*_Player data is not updated_
+  - \*_Timer is reset_
+- Communicates with the monitor host to display timer
+- Communicates with the medal board to retrieve/receive _lives_ info
+- Communicates with the stat board to send player statistics
+
+## Medal Board
+
+Displays the available medals that a player can achieve, including the
+lives threshold for each medal.
+
+- Using less lives results in getting a better medal
+- Board can be configured through the UI to update lives
+- Communicates with the leaderboard to transfer _lives_ counts
+
+## Stats Board
+
+Displays all relevant player data in an easy-to-read format.
