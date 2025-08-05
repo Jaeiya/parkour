@@ -92,6 +92,17 @@ lives threshold for each medal.
 - Board can be configured through the UI to update lives
 - Communicates with the leaderboard to transfer _lives_ counts
 
+## Medal Breakdown
+
+Players can earn medals, but the way in which they earn medals is
+through lives. This means that there can be different ranks
+among medals. The lower the rank, the better the medal.
+
+For instance if the silver rank has a threshold of 3 - 5 lives, then
+that means the possible ranks for Silver are S1 - S3. Where an S1 only
+used 1 life and an S3 used 3 lives of the Silver rank. Less lives means
+higher rank.
+
 ## Stats Board
 
 Displays all relevant player data in an easy-to-read format.
