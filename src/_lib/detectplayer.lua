@@ -1,16 +1,6 @@
 local utils = require("utils")
 
 
----
----
----Registers events for tracking players on a server.
----
----If a player leaves or joins the game, an event is sent out to all
----registered listeners, with the new player name list.
----
----
-
-
 ---Player detector listener
 ---@class PDListener
 ---@field event  string The event you're listening on
@@ -56,6 +46,7 @@ local function startListening()
         end
     )
 end
+
 
 ---Sets up listeners to send an updated player name
 ---list to.

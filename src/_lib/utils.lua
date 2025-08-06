@@ -140,8 +140,8 @@ function utils.getDistance(pos1, pos2)
 end
 
 
----Centers text on the specified monitor
----@param text string The text to write to the monitor
+---Centers text on the specified device
+---@param text string The text to write to the device
 ---@param device Monitor|Terminal
 function utils.centerText(text, device)
     local w = device.getSize()
@@ -229,8 +229,7 @@ function utils.loadConfig(path, defaults)
 end
 
 
----Saves serializes data to the specified config
----path.
+---Saves serialized data to the specified config path.
 ---@param path string Path to config file
 ---@param data any The data to serialize to config file
 function utils.saveConfig(path, data)
@@ -280,7 +279,7 @@ end
 ---than one is found or cannot be found, an error will occur.
 ---
 ---This function should never be exported as it's only used
----internally get specific peripherals.
+---internally to get specific peripherals.
 local function getSinglePeripheral(name)
     local p1, p2 = peripheral.find(name)
     if not p1 then
@@ -291,6 +290,7 @@ local function getSinglePeripheral(name)
     end
     return p1
 end
+
 
 ---Tries to find a single monitor and return it
 ---@return Monitor|nil
@@ -322,7 +322,7 @@ function utils.getModem(type)
 end
 
 
----Tries to find a player detector and return it
+---Tries to find a single player detector and return it
 ---@return PlayerDetector|nil
 function utils.getPlayerDetector()
     return getSinglePeripheral("player_detector")
