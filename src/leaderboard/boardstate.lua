@@ -1,6 +1,6 @@
 
 
----Shared state between all scripts
+---Shared state between all board scripts
 ---@class SharedState
 ---@field runningPlayer string|nil Always set to nil when run is finished or cancelled
 local state = {

@@ -10,11 +10,7 @@ end
 
 ---@param config BoardConfig
 local function trackPlayer(config)
-    while true do
-        if not state.runningPlayer then
-            return
-        end
-
+    while state.runningPlayer do
         local info = pd.getPlayerPos(state.runningPlayer)
         if not info then
             error("could not retrieve player information")

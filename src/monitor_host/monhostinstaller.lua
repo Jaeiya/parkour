@@ -1,22 +1,8 @@
 local utils = require("utils")
 
-
----
----
----Installs the monitor host on the connected computer.
----
----The monitor host is designed to be broadcasted to from the
----leaderboard. You can set up multiple monitor hosts with
----the same protocol, so that you can have multiple timer
----displays.
----
----The only unique piece of information required is the
----hostname of the device.
----
----
-
-
+utils.clear()
 print()
+
 local mon = utils.getMonitor()
 if not mon then
     utils.print(
@@ -54,11 +40,6 @@ if not modem.isWireless() then
     return
 end
 
-
----@class MonhostPaths
----@field monhost string
----@field startup string
----@field utils   string
 
 ---@type MonhostConfig
 local config = {

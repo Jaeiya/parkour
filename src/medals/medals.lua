@@ -99,7 +99,6 @@ local function setMedalLives(key)
 end
 
 
-
 local function renderMenu()
     while true do
         renderMedals()
@@ -118,8 +117,6 @@ local function renderMenu()
         modem.transmit(chan, chan, medalLives)
     end
 end
-
-
 
 
 parallel.waitForAny(

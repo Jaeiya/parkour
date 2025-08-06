@@ -21,7 +21,6 @@ if width < 30 or width > 30 or height > 10 or height < 10 then
     return
 end
 
-
 local modem = utils.getModem('wired')
 if not modem then
     utils.print(

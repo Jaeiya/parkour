@@ -35,13 +35,16 @@ mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x555555)
 mon.setPaletteColor(colors.green,     0x2FD97F) -- Button Color
 
-mon.setTextScale(1.5)
 
+local textScale = 1.5
 local monWidth, monHeight = mon.getSize()
 local sortedKeys = { 'pb', 'latest', 'total' }
 
+mon.setTextScale(textScale)
+
 ---@type Player[]
 local players = {}
+---The selected player to display
 local playerIndex = 1
 
 local function findPlayer(name)
@@ -123,6 +126,24 @@ local function renderButton(text, xPos, yPos)
 end
 
 
+local function highlightButton(buttonType)
+    local xpos = 1
+    local btnText = "  BACK  "
+    if buttonType == "next" then
+        xpos = monWidth - 7
+        btnText = "  NEXT  "
+    end
+
+    mon.setCursorPos(xpos, monHeight-1)
+    mon.setBackgroundColor(colors.cyan)
+    mon.write("        ")
+    mon.setCursorPos(xpos, monHeight)
+    utils.print(";blk;" .. btnText, mon)
+    mon.setBackgroundColor(colors.black)
+    sleep(0.2)
+end
+
+
 local function renderSubHeader(text, yPos)
     mon.setCursorPos(1, yPos)
     mon.setBackgroundColor(colors.blue)
@@ -191,6 +212,7 @@ end
 
 
 local function renderStats()
+    mon.setTextScale(textScale)
     utils.clear(mon)
 
     if not players or #players == 0 then
@@ -201,7 +223,10 @@ local function renderStats()
 
     local player = players[playerIndex]
     mon.setCursorPos(1, 2)
-    utils.print(utils.centerText(";lim;"..player.name..' ;lgy;['..colorMedalCode(player.medal.breakdown.pb)..';lgy;]', mon), mon)
+    utils.print(utils.centerText(
+        ";lim;"..player.name..' ;lgy;['..colorMedalCode(player.medal.breakdown.pb)..';lgy;]',
+        mon
+    ), mon)
     renderSubHeader(" ;lbu;Time;lgy;/;lbu;Attempts ", 4)
     renderTimeStats(player, 6)
 
@@ -215,26 +240,10 @@ local function renderStats()
 end
 
 
-local function highlightButton(buttonType)
-    local xpos = 1
-    local btnText = "  BACK  "
-    if buttonType == "next" then
-        xpos = monWidth - 7
-        btnText = "  NEXT  "
-    end
-
-    mon.setCursorPos(xpos, monHeight-1)
-    mon.setBackgroundColor(colors.cyan)
-    mon.write("        ")
-    mon.setCursorPos(xpos, monHeight)
-    utils.print(";blk;" .. btnText, mon)
-    mon.setBackgroundColor(colors.black)
-    sleep(0.2)
-end
 
 
 ---@param config StatBoardConfig
-local function statBoardHandler(config)
+local function waitForStats(config)
     while true do
         local _, msg, proto = rednet.receive()
 
@@ -301,7 +310,8 @@ local function buttonHandler()
 end
 
 
-local function updateHandler()
+---Select a specific player to display on the board
+local function waitOnPlayerSelection()
     while true do
         local _, msg = os.pullEvent("update")
 
@@ -317,8 +327,6 @@ local function updateHandler()
     end
 end
 
-utils.clear(mon)
-
 
 ---@param config StatBoardConfig
 return function(config)
@@ -330,9 +338,9 @@ return function(config)
     rednet.host(config.protocol, config.hostname)
 
     parallel.waitForAny(
-        function() statBoardHandler(config) end,
+        function() waitForStats(config) end,
         buttonHandler,
-        updateHandler
+        waitOnPlayerSelection
     )
 end
 

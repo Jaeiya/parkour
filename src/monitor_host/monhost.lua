@@ -1,30 +1,17 @@
 local utils = require("utils")
 local ui = require("monhostui")
 
-
----
----
----Allows writing to a monitor wirelessly.
----
----
-
+utils.clear()
+print()
 
 local mon = utils.getMonitor()
 if not mon then
-    print()
     printError("script terminated; missing monitor")
     return false
 end
 
-mon.setPaletteColor(colors.black, 0x000000)
-mon.setPaletteColor(colors.lime, 0x00FF00)
-
-mon.setTextScale(4.5)
-mon.setTextColor(colors.lime)
-
 local modem = utils.getModem('wireless')
 if not modem then
-    print()
     printError("monhost terminated; missing modem")
     return false
 end
@@ -34,6 +21,13 @@ if width < 11 or width > 11 then
     printError("monhost terminated; expected 5 block wide monitor")
     return false
 end
+
+
+mon.setPaletteColor(colors.black, 0x000000) -- Force pure black background
+mon.setPaletteColor(colors.lime, 0x00FF00)  -- Bright green for display text
+
+mon.setTextScale(4.5)
+mon.setTextColor(colors.lime)
 
 utils.clear()
 print("... Starting Monitor Host ...")
@@ -48,7 +42,6 @@ config = utils.loadConfig(configFilePath, config)
 
 rednet.open(peripheral.getName(modem))
 rednet.host(config.protocol, config.hostname)
-
 
 -- Default to zero values
 mon.setCursorPos(1, 1)

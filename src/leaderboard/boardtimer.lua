@@ -2,31 +2,11 @@ local utils = require("utils")
 local state = require("boardstate")
 
 
---
--- Allows you to stop and start a timer that displays to a
--- monitor constellation. The smallest increment of time
--- that can be measured is 50ms which is the limitation of
--- minecraft itself.
---
--- The smallest increments displayed are ticks. For every tick,
--- 50ms has passed, and the total number of ticks per second
--- is 20.
---               hr m  s  t
--- Example time: 00:00:00.00
--- hr = hour
--- m = minute
--- s = second
--- t = tick
---
--- Ticks will only count up to 20 before resetting.
--- Max Time: 99:59:59.19
--- Min Time: 00:00:00.01
---
+---50ms per tick (min is 0.05 because of rounding)
+local speed = 0.05
 
-
-local speed        = 0.05 -- 50ms per tick (min is 0.05 because of rounding)
+---Updated every time the time is updated
 local iterations   = 0
-local leaderBoardEvent = "leaderboard"
 
 local modem = utils.getModem('wireless')
 if not modem then
@@ -66,7 +46,7 @@ return function(config)
 
             if msgEvent.action == "start" then
                 iterations = 1
-                os.queueEvent(leaderBoardEvent, {action="start_run"})
+                os.queueEvent("leaderboard", {action="start_run"})
                 timerID = os.startTimer(speed)
                 state.timer.isActive = true
 

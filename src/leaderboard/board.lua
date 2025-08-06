@@ -15,7 +15,7 @@ if not mon then
 end
 
 utils.clear(mon)
-mon.setPaletteColor(colors.black, 0x000000)
+mon.setPaletteColor(colors.black, 0x000000) -- Force a pure black background
 mon.setTextScale(state.monitorScale)
 
 
@@ -137,9 +137,9 @@ return function(config)
             local nearestPlayer = utils.getNearestPlayer(config.startPos, pd, onlinePlayerNames)
 
             if nearestPlayer.distance <= maxActuationDist then
-                lib.tryAddPlayer(nearestPlayer.name)
-                lib.updateAttempt(nearestPlayer.name)
                 state.runningPlayer = nearestPlayer.name
+                lib.tryAddPlayer(state.runningPlayer)
+                lib.updateAttempt(state.runningPlayer)
                 os.queueEvent("playertracker", { action = "track_player" })
                 renderActiveRunner(state.runningPlayer)
             else
@@ -160,7 +160,7 @@ return function(config)
         elseif msgEvent.action == "force_cancel_run" then
             -- It's possible that a 'try_cancel_run' takes longer to execute with
             -- more players online. So if it does, we make sure that the running
-            -- player still exists when this event fires later.
+            -- player still exists if this event fires later.
             if state.runningPlayer then
                 os.queueEvent("timer", { action = "cancel_run" })
                 lib.updateLives(state.runningPlayer)
