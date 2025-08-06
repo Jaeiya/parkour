@@ -52,12 +52,14 @@ if not modem.isWireless() then
 end
 
 
-local hostname = utils.prompt("Enter Host Name ;org;(unique)")
-local protocol = utils.prompt("Enter Listener Protocol ")
+if not fs.exists('statboard.cfg') then
+    local hostname = utils.prompt("Enter Host Name ;org;(unique)")
+    local protocol = utils.prompt("Enter Listener Protocol ")
 
-utils.saveConfig("statboard.cfg", {
-    hostname = hostname,
-    protocol = protocol
-})
+    utils.saveConfig("statboard.cfg", {
+        hostname = hostname,
+        protocol = protocol
+    })
+end
 
 utils.installDisk()
