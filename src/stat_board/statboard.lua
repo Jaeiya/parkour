@@ -204,7 +204,7 @@ local function renderMedalStats(player, yPos)
         end
 
         mon.setCursorPos(1, yPos)
-        utils.print(str)
+        utils.print(str, mon)
         yPos = yPos + 1
         ::continue::
     end
