@@ -6,7 +6,7 @@ local state = require("boardstate")
 local speed = 0.05
 
 ---Updated every time the time is updated
-local iterations   = 0
+local iterations = 0
 
 local modem = utils.getModem('wireless')
 if not modem then
