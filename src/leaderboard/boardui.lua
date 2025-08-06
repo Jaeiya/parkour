@@ -74,7 +74,7 @@ return function(config)
                 promptBoundaryAxis(config.startPos, config.boundary)
             end
         }
-    }, false)
+    })
 
     if exiting then
         return
