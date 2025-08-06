@@ -28,6 +28,7 @@ if not modem then
         "\n;red;Installation Aborted\n" ..
         ";org;Attach a ;lim;wired modem ;org;to the computer and connect it to the leaderboard computer\n"
     )
+    return
 end
 
 utils.installDisk()
