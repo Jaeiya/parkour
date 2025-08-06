@@ -358,7 +358,7 @@ end
 ---Loads the board config file
 function lib.loadConfig()
     if not fs.exists(configPath) then
-        error("missing timer config file")
+        error("missing board config file")
     end
     return utils.loadConfig(configPath, config)
 end
