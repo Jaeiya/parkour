@@ -167,7 +167,7 @@ local diskMap = {
         }
     },
     statboard = {
-        version = "2.0",
+        version = "2.1",
         scripts = {
             scriptMap.statboard,
             scriptMap.statboardstartup,
