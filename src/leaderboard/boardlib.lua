@@ -124,9 +124,9 @@ local lib  = {
 lib.playerList, lib.playerMap = loadPlayers()
 
 
----@class Medal
+---@class Medal Enum-like for medals
 local Medal = {
-    None   = 0,
+    NONE   = 0,
     MUD    = 1,
     BRONZE = 2,
     SILVER = 3,
@@ -140,13 +140,13 @@ lib.sortedMedals = {'heart', 'gold', 'silver', 'bronze', 'mud'}
 
 ---@param medal integer
 ---@return MedalString
-local function toMedalStr(medal)
+local function toMedalProperty(medal)
     if medal == 1 then return 'mud' end
     if medal == 2 then return 'bronze' end
     if medal == 3 then return 'silver' end
     if medal == 4 then return 'gold' end
     if medal == 5 then return 'heart' end
-    error('invalid medal')
+    error('invalid medal: ' .. medal)
 end
 
 
@@ -157,7 +157,7 @@ local function toMedal(medalName)
     if medalName == 'silver' then return Medal.SILVER end
     if medalName == 'gold'   then return Medal.GOLD   end
     if medalName == 'heart'  then return Medal.HEART  end
-    error('invalid medal name')
+    error('invalid medal name: ' .. medalName)
 end
 
 
@@ -171,12 +171,14 @@ local function toMedalNotation(medal, rank)
     if medal == Medal.HEART  then return 'H0' end
 
     -- User failed to get a medal
-    if medal == Medal.None  then return 'F0' end
+    if medal == Medal.NONE  then return 'F0' end
 
     error('medal notation not found: ' .. tostring(medal))
 end
 
 
+---Returns the average medal a player has gotten, as
+---a notation string.
 ---@param types integer[]
 local function toAvgMedalNotation(types)
     return string.sub(toMedalNotation(
@@ -192,7 +194,7 @@ end
 local function toMedalRank(medal, lives)
     if medal == Medal.HEART then return 0 end
 
-    local medalName = toMedalStr(medal + 1)
+    local medalName = toMedalProperty(medal + 1)
     return lives - state.medalLives[medalName]
 end
 
@@ -206,7 +208,7 @@ local function getPlayerMedal(lives)
             return toMedal(medalName)
         end
     end
-    return Medal.None
+    return Medal.NONE
 end
 
 
@@ -259,36 +261,32 @@ function lib.updateMedalStats(name)
         return
     end
 
+    local medal         = getPlayerMedal(player.medal.lifeCount)
+    local medalRank     = toMedalRank(medal, player.medal.lifeCount)
+    local hasBetterRank = medal == player.medal.type and medalRank < player.medal.rank
+    local medalStr      = toMedalNotation(medal, medalRank)
+
     player.medal.attempts.latest = player.medal.attempts.latest + 1
     player.medal.attempts.total = player.medal.attempts.total + 1
 
-    local medal = getPlayerMedal(player.medal.lifeCount)
-    local medalRank = toMedalRank(medal, player.medal.lifeCount)
-
-    local hasBetterRank = medal == player.medal.type and medalRank < player.medal.rank
-
     if medal > player.medal.type or hasBetterRank then
         player.medal.type = medal
-        player.medal.types[#player.medal.types+1] = medal
         player.medal.rank = medalRank
-        player.medal.lastType = medal
-        player.medal.lastRank = medalRank
-        player.medal.breakdown.pb = toMedalNotation(medal, medalRank)
-        player.medal.breakdown.latest = toMedalNotation(medal, medalRank)
-        player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
+        player.medal.breakdown.pb = medalStr
         player.medal.livesUsed.pb = player.medal.livesUsed.pb + player.medal.livesUsed.latest
         player.medal.attempts.pb = player.medal.attempts.pb + player.medal.attempts.latest
         player.medal.livesUsed.latest = 0
         player.medal.attempts.latest = 0
-    else
-        player.medal.lastType = medal
-        ---Do not save none-types as it messes up medal calculation
-        if medal ~= Medal.None then
-            player.medal.types[#player.medal.types+1] = medal
-        end
-        player.medal.lastRank = medalRank
-        player.medal.breakdown.latest = toMedalNotation(medal, medalRank)
-        player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
+    end
+
+    player.medal.lastType = medal
+    player.medal.lastRank = medalRank
+    player.medal.breakdown.latest = medalStr
+    player.medal.breakdown.total = toAvgMedalNotation(player.medal.types)
+
+    ---Do not save none-types as it messes up medal calculation
+    if medal ~= Medal.NONE then
+        player.medal.types[#player.medal.types+1] = medal
     end
 
     player.medal.lifeCount = 0
