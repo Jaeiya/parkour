@@ -33,7 +33,7 @@ mon.setPaletteColor(colors.white,     0xF1F8FF) -- Silver
 mon.setPaletteColor(colors.yellow,    0xFFD800) -- Gold
 mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x555555)
-mon.setPaletteColor(colors.green,     0x2FD97F)
+mon.setPaletteColor(colors.green,     0x2FD97F) -- Button Color
 
 mon.setTextScale(1.5)
 
@@ -135,6 +135,7 @@ local function renderSubHeader(text, yPos)
     mon.setBackgroundColor(colors.black)
 end
 
+
 ---@param player Player
 ---@param yPos integer
 local function renderTimeStats(player, yPos)
@@ -157,28 +158,32 @@ local function renderMedalStats(player, yPos)
             goto continue
         end
 
+        local str = ""
+
         ---The lives and attempts will be the same as the pb
         ---so we ignore them
         if player.medal.breakdown.pb == 'H0' and key == 'total' then
-            mon.setCursorPos(1, yPos)
-            utils.print(utils.centerText(
+            str = utils.centerText(
                 utils.justifyText(
                     ';cyn;'..key..';lgy;...'..colorMedalCode(player.medal.breakdown[key]),
                     'left',
                     23
-                ), mon),
+                ), mon)
+        else
+            str = utils.centerText(
+                utils.justifyText(';cyn;'..key, 'right', 6) ..
+                ';lgy;...' ..
+                colorMedalCode(player.medal.breakdown[key]) ..
+                ';lgy;...x' ..
+                formatInt(player.medal.livesUsed[key]) ..
+                ';lgy;...x' ..
+                formatInt(player.medal.attempts[key]),
                 mon
             )
-            yPos = yPos + 1
-            goto continue
         end
 
         mon.setCursorPos(1, yPos)
-        local str = colorMedalCode(player.medal.breakdown[key]) ..
-                    ';lgy;...x'..formatInt(player.medal.livesUsed[key])..';lgy;...x' ..
-                    formatInt(player.medal.attempts[key])
-
-        utils.print(utils.centerText(utils.justifyText(';cyn;'..key, 'right', 6)..';lgy;...'.. str, mon), mon)
+        utils.print(str)
         yPos = yPos + 1
         ::continue::
     end
