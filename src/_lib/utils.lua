@@ -330,6 +330,34 @@ function utils.getModem(type, side)
 end
 
 
+---@class ModemMessage
+---@field side Side Which side of the computer the modem that received the message, is on
+---@field replyChannel integer The channel the sender is listening on
+---@field message MessageEvent
+
+---Pulls the 'modem_message' event and returns a table with its associated data.
+function utils.pullModemEvent()
+    local _, side, _, replyChan, msg, _ = os.pullEvent('modem_message')
+
+    ---@cast msg MessageEvent
+    if not msg or not msg.action then
+        error('modem message is not of type MessageEvent: ' .. textutils.serialize(msg))
+    end
+
+    if msg.action == utils.trim(msg.action) then
+        error('message event action is empty')
+    end
+
+    ---@type ModemMessage
+    local modemReturn = {
+        side = side,
+        replyChannel = replyChan,
+        message = msg,
+    }
+    return modemReturn
+end
+
+
 ---Tries to find a single player detector and return it
 ---@return PlayerDetector|nil
 function utils.getPlayerDetector()
