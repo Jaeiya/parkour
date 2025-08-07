@@ -251,7 +251,7 @@ function redstone.getBundledOutput(side) end
 rednet = {}
 
 ---Opens a modem on the specified side for rednet communication.
----@param side string # The side the modem is on ("left", "right", etc.)
+---@param side Side # The side the modem is on ("left", "right", etc.)
 function rednet.open(side) end
 
 ---Closes the modem on the specified side.
