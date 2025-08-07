@@ -1,8 +1,6 @@
 local utils = require('utils')
 utils.clear()
 
-local disksCreated = 0
-
 ---@type Drive|nil
 local sourceDrive = peripheral.wrap('back')
 if not sourceDrive then
@@ -30,6 +28,15 @@ mon.setPaletteColor(colors.red, 0xFF0000)
 mon.setPaletteColor(colors.orange, 0xFFD800)
 
 
+---@class CopyDiskDatabase
+---@field disksCreated integer
+local db = {
+    disksCreated = 0,
+}
+local dbPath = 'copydisk.db'
+db = utils.loadConfig(dbPath, db)
+
+
 local function validateSourceDisk()
     while not sourceDrive.isDiskPresent() do
         mon.setCursorPos(1, 3)
@@ -52,7 +59,7 @@ while true do
     utils.clear(mon)
     utils.print(
         "... Running Disk Copier ...\n\n" ..
-        "  ;lgy;disks_created: ;cyn;" .. disksCreated
+        "  ;lgy;disks_created: ;cyn;" .. db.disksCreated
     )
 
     validateSourceDisk()
@@ -92,7 +99,8 @@ while true do
     end
 
     destDrive.setDiskLabel(sourceDrive.getDiskLabel())
-    disksCreated = disksCreated + 1
+    db.disksCreated = db.disksCreated + 1
+    utils.saveConfig(dbPath, db)
     mon.setCursorPos(1, 4)
     mon.clearLine()
     utils.print(';lim;'..utils.centerText("Disk Created", mon), mon)
