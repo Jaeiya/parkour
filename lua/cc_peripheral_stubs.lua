@@ -66,7 +66,7 @@ function Monitor.setPaletteColor(color, replacement) end
 local Modem = {}
 
 ---Opens a channel.
----@param channel number
+---@param channel number Must be a number between 1 and 65535
 function Modem.open(channel) end
 
 ---Closes a channel.
