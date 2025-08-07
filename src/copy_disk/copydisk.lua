@@ -29,92 +29,76 @@ mon.setPaletteColor(colors.black, 0x000000)
 mon.setPaletteColor(colors.red, 0xFF0000)
 mon.setPaletteColor(colors.orange, 0xFFD800)
 
+
 local function validateSourceDisk()
-    if not sourceDrive.isDiskPresent() then
-        while true do
-            mon.setCursorPos(1, 3)
-            mon.clearLine()
-            utils.print(';red;'..utils.centerText("Insert Source Disk", mon), mon)
-            os.pullEvent('disk')
-            if #fs.list(sourceDrive.getMountPath()) == 0 or sourceDrive.getDiskLabel() == "" then
-                mon.clearLine()
-                mon.setCursorPos(1, 3)
-                utils.print(';org;'..utils.centerText("Needs Formatted Disk", mon), mon)
-                sourceDrive.ejectDisk()
-                sleep(2)
-            else
-                break
-            end
-        end
-    end
-end
-
-local function waitForDisk()
-    while true do
-        utils.clear()
-        utils.clear(mon)
-        utils.print(
-            "... Running Disk Copier ...\n\n" ..
-            "  ;lgy;disks_created: ;cyn;" .. disksCreated
-        )
-
-        validateSourceDisk()
-
-        -- Clear error message if there is one
+    while not sourceDrive.isDiskPresent() do
         mon.setCursorPos(1, 3)
         mon.clearLine()
+        utils.print(';red;'..utils.centerText("Insert Source Disk", mon), mon)
+        os.pullEvent('disk')
+        if #fs.list(sourceDrive.getMountPath()) == 0 or sourceDrive.getDiskLabel() == "" then
+            mon.clearLine()
+            mon.setCursorPos(1, 3)
+            utils.print(';org;'..utils.centerText("Needs Formatted Disk", mon), mon)
+            sourceDrive.ejectDisk()
+            sleep(2)
+        end
+    end
+end
 
-        mon.setCursorPos(1, 2)
-        local title = "Create " .. sourceDrive.getDiskLabel()
-        utils.print(";lbu;"..utils.centerText(title, mon), mon)
+
+while true do
+    utils.clear()
+    utils.clear(mon)
+    utils.print(
+        "... Running Disk Copier ...\n\n" ..
+        "  ;lgy;disks_created: ;cyn;" .. disksCreated
+    )
+
+    validateSourceDisk()
+
+    -- Clear error message if there is one
+    mon.setCursorPos(1, 3)
+    mon.clearLine()
+
+    mon.setCursorPos(1, 2)
+    local title = "Create " .. sourceDrive.getDiskLabel()
+    utils.print(";lbu;"..utils.centerText(title, mon), mon)
+    mon.setCursorPos(1, 4)
+    mon.clearLine()
+    utils.print(";org;"..utils.centerText("Enter Disk", mon), mon)
+
+    os.pullEvent('disk')
+
+    if not destDrive.isDiskPresent() then
+        goto continue
+    end
+
+    local srcPath = sourceDrive.getMountPath()
+    local destPath = destDrive.getMountPath()
+
+    if #fs.list(destPath) > 0 then
         mon.setCursorPos(1, 4)
         mon.clearLine()
-        utils.print(";org;"..utils.centerText("Enter Disk", mon), mon)
-
-        os.pullEvent('disk')
-
-        if not destDrive.isDiskPresent() then
-        elseif #fs.list(destDrive.getMountPath()) > 0 then
-            mon.setCursorPos(1, 4)
-            mon.clearLine()
-            utils.print(';red;'..utils.centerText("Empty Disk Required", mon), mon)
-            destDrive.ejectDisk()
-            sleep(2)
-        else
-            local srcPath = sourceDrive.getMountPath()
-            local destPath = destDrive.getMountPath()
-
-            local files = fs.list(srcPath)
-            for _, file in ipairs(files) do
-                fs.copy(fs.combine(srcPath, file), fs.combine(destPath, file))
-            end
-            destDrive.setDiskLabel(sourceDrive.getDiskLabel())
-            disksCreated = disksCreated + 1
-            mon.setCursorPos(1, 4)
-            mon.clearLine()
-            utils.print(';lim;'..utils.centerText("Disk Created", mon), mon)
-            destDrive.ejectDisk()
-            sleep(2.5)
-        end
+        utils.print(';red;'..utils.centerText("Empty Disk Required", mon), mon)
+        destDrive.ejectDisk()
+        sleep(2)
+        goto continue
     end
+
+    local files = fs.list(srcPath)
+    for _, file in ipairs(files) do
+        fs.copy(fs.combine(srcPath, file), fs.combine(destPath, file))
+    end
+
+    destDrive.setDiskLabel(sourceDrive.getDiskLabel())
+    disksCreated = disksCreated + 1
+    mon.setCursorPos(1, 4)
+    mon.clearLine()
+    utils.print(';lim;'..utils.centerText("Disk Created", mon), mon)
+    destDrive.ejectDisk()
+    sleep(2.5)
+
+    ::continue::
 end
-
-local function waitForNewSource()
-    while true do
-        local _, side = os.pullEvent("disk_eject")
-        if side == "back" then
-            os.queueEvent("disk")
-        end
-    end
-end
-
-
-parallel.waitForAny(
-    function()
-        waitForDisk()
-    end,
-    function ()
-        waitForNewSource()
-    end
-)
 
