@@ -301,12 +301,20 @@ end
 
 ---Gets the first modem that matches the type
 ---@param type 'wireless'|'wired' What kind of modem to look for
+---@param side? Side The side the modem is expected to be on
 ---@return Modem|nil
-function utils.getModem(type)
-    for _, side in ipairs(peripheral.getNames()) do
-        if peripheral.getType(side) == 'modem' then
+function utils.getModem(type, side)
+    if side then
+        if peripheral.getType(side) ~= 'modem' then
+            return nil
+        end
+        return peripheral.wrap(side)
+    end
+
+    for _, blockSide in ipairs(peripheral.getNames()) do
+        if peripheral.getType(blockSide) == 'modem' then
             ---@type Modem|nil
-            local m = peripheral.wrap(side)
+            local m = peripheral.wrap(blockSide)
             if not m then error('somehow modem is missing?') end
 
             if type == 'wireless' and m.isWireless() then
