@@ -332,12 +332,13 @@ end
 
 ---@class ModemMessage
 ---@field side Side Which side of the computer the modem that received the message, is on
+---@field channel integer The channel the message was sent on
 ---@field replyChannel integer The channel the sender is listening on
 ---@field message MessageEvent
 
 ---Pulls the 'modem_message' event and returns a table with its associated data.
 function utils.pullModemEvent()
-    local _, side, _, replyChan, msg, _ = os.pullEvent('modem_message')
+    local _, side, chan, replyChan, msg, _ = os.pullEvent('modem_message')
 
     ---@cast msg MessageEvent
     if not msg or not msg.action then
@@ -351,6 +352,7 @@ function utils.pullModemEvent()
     ---@type ModemMessage
     local modemReturn = {
         side = side,
+        channel = chan,
         replyChannel = replyChan,
         message = msg,
     }
