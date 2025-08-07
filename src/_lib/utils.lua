@@ -534,15 +534,29 @@ function utils.stripColorCodes(text)
 end
 
 
----Deletes only script files from the computer
-function utils.cleanScripts()
+---Deletes script files from the computer, but leaves
+---configuration or database files alone. Script files
+---are files that have no extension. It also skips the
+---'get' script.
+---@param path? string The path to clean
+function utils.cleanScripts(path)
+    if not path then
+        path = '.'
+    end
     local fileList = fs.list(".")
     for _, file in ipairs(fileList) do
-        if file ~= "rom" and file ~= "disk" and not string.find(file, "%.") then
+        local hasIgnoredFiles =
+            file == 'rom' or
+            file == 'disk' or
+            file == 'get'
+
+        if not hasIgnoredFiles or not string.find(file, "%.") then
             fs.delete(file)
         end
     end
 end
+
+
 
 
 ---Assumes the current disk is a formatted disk and installs
