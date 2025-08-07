@@ -48,3 +48,5 @@ function HTTPResponse.close() end
 ---@field action string The action that should be taken by the receiver
 ---@field payload? any Any data that is pertinent to the action
 
+
+---@alias Side 'right'|'left'|'top'|'bottom'|'front'|'back'
