@@ -27,6 +27,22 @@ local colorCodes = {
     [";grn;"] = colors.green,
     [";red;"] = colors.red,
     [";blk;"] = colors.black,
+    ["@wht;"] = colors.white,
+    ["@org;"] = colors.orange,
+    ["@mgt;"] = colors.magenta,
+    ["@lbu;"] = colors.lightBlue,
+    ["@ylw;"] = colors.yellow,
+    ["@lim;"] = colors.lime,
+    ["@pnk;"] = colors.pink,
+    ["@gry;"] = colors.gray,
+    ["@lgy;"] = colors.lightGray,
+    ["@cyn;"] = colors.cyan,
+    ["@ppl;"] = colors.purple,
+    ["@blu;"] = colors.blue,
+    ["@bwn;"] = colors.brown,
+    ["@grn;"] = colors.green,
+    ["@red;"] = colors.red,
+    ["@blk;"] = colors.black,
 }
 
 
@@ -511,7 +527,11 @@ function utils.print(text, mon)
         if color then
             writeFunc(string.sub(text, pos, i-1))
             text = string.gsub(text, code, "", 1)
-            display.setTextColor(color)
+            if string.sub(code, 1, 1) == '@' then
+                display.setBackgroundColor(color)
+            else
+                display.setTextColor(color)
+            end
             pos = i
         end
     end
