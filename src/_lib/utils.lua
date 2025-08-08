@@ -631,6 +631,31 @@ function utils.justifyText(text, direction, area)
 end
 
 
+---Renders a progress bar to the specified monitor with the
+---specified title.
+---@param title string
+---@param x integer
+---@param y integer
+---@param progress integer Current thing
+---@param maxProgress integer Total number of things
+---@param mon Monitor
+function utils.renderProgressBar(title, x, y, progress, maxProgress, mon)
+    local w = mon.getSize()
+    local width = math.floor(w * 0.80)
+    progress = math.floor((width / maxProgress) * progress)
+    mon.setCursorPos(x, y)
+    utils.print(utils.centerText(';org;'..title, mon), mon)
+    mon.setCursorPos(x, y+1)
+
+    local barFull  = '@blu;'..string.rep(' ', progress)
+    local barEmpty = '@blk;'..string.rep(' ', width - progress)
+
+    utils.print(utils.centerText(barFull..barEmpty, mon), mon)
+end
+
+
+
+
 return utils
 
 
