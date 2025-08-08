@@ -647,7 +647,10 @@ function utils.renderProgressBar(title, x, y, progress, maxProgress, mon)
     utils.print(utils.centerText(';org;'..title, mon), mon)
     mon.setCursorPos(x, y+1)
 
-    local barFull  = '@blu;'..string.rep(' ', progress)
+    local barFull = ''
+    if progress > 0 then
+        barFull  = '@blu;'..string.rep(' ', progress)
+    end
     local barEmpty = '@blk;'..string.rep(' ', width - progress)
 
     utils.print(utils.centerText(barFull..barEmpty, mon), mon)
