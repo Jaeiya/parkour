@@ -214,7 +214,7 @@ local diskMap = {
 
 
 ---@param script Script
-local function getScriptFile(script)
+local function getScriptContent(script)
     local apiURL =  "https://gist.githubusercontent.com/Jaeiya/74884f82055c3ac1f3ce09674e011a57/raw/"
     -- Prevents getting a cached version
     local cacheBustFragment = "?bust=" .. tostring(os.epoch("utc"))
@@ -320,7 +320,7 @@ local function createDisk(diskData)
     -- A disk should have ONLY the files created by this function.
     cleanDisk(true)
     for i, script in ipairs(diskData.scripts) do
-        local content = getScriptFile(script)
+        local content = getScriptContent(script)
         if string.find(script.fileName, "install") then
             -- Do not allow disks startup to interfere with computers
             content = [[
@@ -422,6 +422,97 @@ local function promptDisk()
 end
 
 
+---@param args string[]
+local function handleSingleArgs(args)
+    local arg1 = args[1]
+
+    if arg1 == "disk" then
+        promptDisk()
+        return true
+    end
+
+    if arg1 == "clean" then
+        cleanDisk()
+        return true
+    end
+
+    return false
+end
+
+
+---@param scriptName string
+---@param isLocal? boolean
+---@param isStartup? boolean
+local function writeScript(scriptName, isLocal, isStartup)
+    printAdv("\n ;org;Getting: ;cyn;"..scriptName)
+    local script = scriptMap[scriptName]
+    if not script then
+        printAdv(";cyn;'"..scriptName.."' ;org;could not be found\n")
+        return
+    end
+
+    local content = getScriptContent(script)
+    if isStartup then
+        script.fileName = 'startup'
+    end
+
+    writeFile("/disk/" .. script.fileName, content)
+    printAdv(";org;Saved To: ;lim;/disk/"..script.fileName)
+
+    if isLocal then
+        writeFile(script.fileName, content)
+        printAdv(";org;Saved To: ;lim;/"..script.fileName.."\n")
+    end
+end
+
+
+local flagMap = {
+    ["l clean"] = cleanComputer,
+
+    ---@param scriptName string
+    l = function (scriptName) writeScript(scriptName, true)  end,
+
+    ---@param scriptName string
+    s  = function (scriptName) writeScript(scriptName, false, true) end,
+
+    ---@param scriptName string
+    sl = function (scriptName) writeScript(scriptName, true, true) end,
+
+    ---@param scriptName string
+    ls = function (scriptName) writeScript(scriptName, true, true) end,
+}
+
+
+---@param args string[]
+local function handleMultipleArgs(args)
+    local arg1 = args[1]
+    local arg2 = args[2]
+
+    if #args > 1 then
+        local flag = arg1
+
+        -- Check for constant flag-function
+        if flagMap[flag.." "..arg2] then
+            flagMap[flag.." "..arg2]()
+            return true
+        end
+
+        local flagFunc = flagMap[flag]
+        if not flagFunc then
+            printHelp()
+            return true
+        end
+
+        local scriptName = arg2
+        flagFunc(scriptName)
+        return true
+    end
+
+    return false
+end
+
+
+
 ---@type string[]
 local args = {...}
 
@@ -430,73 +521,15 @@ if not args[1] then
     return
 end
 
-local arg1 = args[1]
-local arg2 = arg[2]
-
-if arg1 == "disk" then
-    return promptDisk()
-end
-
-if arg1 == "clean" then
-    return cleanDisk()
-end
-
-if arg1 == "l" and arg2 == "clean" then
-    return cleanComputer()
-end
-
-
-if #args > 1 then
-    local flag = arg1
-    local scriptName = arg2
-
-    if flag ~= "l" and flag ~= "sl" and flag ~= "s" and flag ~= "ls" or not scriptName then
-        printHelp()
-        return
-    end
-
-    local script = scriptMap[scriptName]
-    if not script then
-        printAdv(";cyn;'"..scriptName.."' ;org;could not be found\n")
-        return
-    end
-
-    printAdv("\n ;org;Getting: ;cyn;"..scriptName)
-
-    if flag == "s" or flag == 'sl' or flag == 'ls' then
-        script.fileName = "startup"
-    end
-
-    local content = getScriptFile(script)
-    writeFile("/disk/" .. script.fileName, content)
-
-    if flag == "l" or flag == "sl" or flag == "ls" then
-        writeFile(script.fileName, content)
-    end
-
-    if flag == "l" or flag == "sl" or flag == "ls" then
-        printAdv(
-            ";org;Saved To: ;lim;/disk/"..script.fileName ..
-            "\n;org;Saved To: ;lim;/"..script.fileName.."\n"
-        )
-    else
-        printAdv(";org;Saved To: ;lim;/"..script.fileName.."\n")
-    end
+if handleSingleArgs(args) then
     return
 end
 
-
-local scriptName = arg1
-local script = scriptMap[scriptName]
-if not script then
-    printAdv(";cyn;'"..scriptName.."' ;org;could not be found\n")
+if handleMultipleArgs(args) then
     return
 end
 
+writeScript(args[1])
 
-printAdv( "\n ;org;Getting: ;cyn;"..scriptName)
 
-local content = getScriptFile(script)
-writeFile("/disk/" .. script.fileName, content)
 
-printAdv(";org;Saved To: ;lim;/disk/"..script.fileName.."\n")
