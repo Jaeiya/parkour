@@ -569,17 +569,17 @@ end
 ---@param path? string The path to clean
 function utils.cleanScripts(path)
     if not path then
-        path = '.'
+        path = '/'
     end
-    local fileList = fs.list(".")
+    local fileList = fs.list(path)
     for _, file in ipairs(fileList) do
         local hasIgnoredFiles =
             file == 'rom' or
             file == 'disk' or
             file == 'get'
 
-        if not hasIgnoredFiles or not string.find(file, "%.") then
-            fs.delete(file)
+        if not hasIgnoredFiles and not string.find(file, "%.") then
+            fs.delete(fs.combine(path, file))
         end
     end
 end
