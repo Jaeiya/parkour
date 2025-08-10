@@ -361,7 +361,7 @@ function utils.pullModemEvent()
         error('modem message is not of type MessageEvent: ' .. textutils.serialize(msg))
     end
 
-    if msg.action == utils.trim(msg.action) then
+    if utils.trim(msg.action) == "" then
         error('message event action is empty')
     end
 
