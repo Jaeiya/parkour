@@ -144,13 +144,15 @@ local scriptMap = {
 ---@class FormattedDisk
 ---@field version string
 ---@field scripts Script[]
+---@field name string
 
-
----@class DiskMap
+---@type table<string, FormattedDisk>
 local diskMap = {
     leaderboard = {
         version = "4.0",
+        name = "Leaderboard",
         scripts = {
+            scriptMap.get,
             scriptMap.board,
             scriptMap.boardlib,
             scriptMap.boardui,
@@ -168,7 +170,9 @@ local diskMap = {
     },
     statboard = {
         version = "2.1",
+        name = "Stat Board",
         scripts = {
+            scriptMap.get,
             scriptMap.statboard,
             scriptMap.statboardstartup,
             scriptMap.statboardredstone,
@@ -179,7 +183,9 @@ local diskMap = {
     },
     monhost = {
         version = "2.5",
+        name = "Monitor Host",
         scripts = {
+            scriptMap.get,
             scriptMap.monhost,
             scriptMap.monhostinstaller,
             scriptMap.monhostui,
@@ -188,7 +194,9 @@ local diskMap = {
     },
     display = {
         version = "2.2",
+        name = "Display",
         scripts = {
+            scriptMap.get,
             scriptMap.display,
             scriptMap.displayinstaller,
             scriptMap.utils,
@@ -196,7 +204,9 @@ local diskMap = {
     },
     medals = {
         version = "1.1",
+        name = "Medal Board",
         scripts = {
+            scriptMap.get,
             scriptMap.medals,
             scriptMap.medalsinstaller,
             scriptMap.utils,
@@ -204,7 +214,9 @@ local diskMap = {
     },
     copydisk = {
         version = "1.1",
+        name = "CopyDisk",
         scripts = {
+            scriptMap.get,
             scriptMap.copydisk,
             scriptMap.copydiskinstaller,
             scriptMap.utils,
@@ -388,35 +400,22 @@ local function promptDisk()
         goto restart
     end
 
-    local name = ""
     ---@type FormattedDisk
     local selectedDisk
 
-    if choice == 1 then
-        selectedDisk = diskMap.leaderboard
-        name = "Leaderboard"
-    elseif choice == 2 then
-        selectedDisk = diskMap.monhost
-        name = "Monitor Host"
-    elseif choice == 3 then
-        selectedDisk = diskMap.display
-        name = "Display"
-    elseif choice == 4 then
-        selectedDisk = diskMap.medals
-        name = "Medals"
-    elseif choice == 5 then
-        selectedDisk = diskMap.statboard
-        name = "Stat Board"
-    elseif choice == 6 then
-        selectedDisk = diskMap.copydisk
-        name = "CopyDisk"
+    if     choice == 1 then selectedDisk = diskMap.leaderboard
+    elseif choice == 2 then selectedDisk = diskMap.monhost
+    elseif choice == 3 then selectedDisk = diskMap.display
+    elseif choice == 4 then selectedDisk = diskMap.medals
+    elseif choice == 5 then selectedDisk = diskMap.statboard
+    elseif choice == 6 then selectedDisk = diskMap.copydisk
     end
 
     if choice == 7 then
         return
     end
 
-    local diskLabel = name .. " v"..selectedDisk.version
+    local diskLabel = selectedDisk.name .. " v"..selectedDisk.version
     createDisk(selectedDisk)
     finalizeDisk(diskLabel, name)
 end
