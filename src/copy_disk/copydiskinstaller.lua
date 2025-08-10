@@ -38,4 +38,12 @@ if width ~= 29 or height ~= 5 then
     return
 end
 
+if not utils.getModem('wired', 'bottom') then
+    utils.print(
+        ';red;Installation Aborted\n' ..
+        ';org;Attach a ;lim;Modem ;org;to the ;lim;bottom ;org;of the computer.\n'
+    )
+    return
+end
+
 utils.installDisk()

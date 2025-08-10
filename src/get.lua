@@ -101,6 +101,7 @@ end
 ---@field slug string The gist slug (ex: name-of-file)
 ---@field fileName string The filename the script should have when saved
 
+
 ---@class ScriptMap
 local scriptMap = {
     get = { slug = "get.lua", fileName = "get" },
@@ -138,6 +139,9 @@ local scriptMap = {
 
     copydisk          = { slug = "copydisk.lua",          fileName = "copydiskstartup" },
     copydiskinstaller = { slug = "copydiskinstaller.lua", fileName = "installcopydisk" },
+
+    diskupdater          = { slug = 'diskupdater.lua',          fileName = 'diskupdaterstartup' },
+    diskupdaterinstaller = { slug = 'diskupdaterinstaller.lua', fileName = 'diskupdaterinstaller' }
 }
 
 
@@ -219,6 +223,16 @@ local diskMap = {
             scriptMap.get,
             scriptMap.copydisk,
             scriptMap.copydiskinstaller,
+            scriptMap.utils,
+        }
+    },
+    diskupdater = {
+        version = '1.0',
+        name = 'Disk Updater',
+        scripts = {
+            scriptMap.get,
+            scriptMap.diskupdater,
+            scriptMap.diskupdaterinstaller,
             scriptMap.utils,
         }
     }
@@ -323,6 +337,7 @@ local function cleanComputer()
     printAdv("\n;org;Computer has been cleaned\n")
 end
 
+
 ---Cleans and downloads all scripts required to
 ---create a specific disk.
 ---@param diskData FormattedDisk
@@ -348,6 +363,49 @@ if fs.exists("startup") then return shell.run("startup") end
         writeProgress("Creating Disk", i, #diskData.scripts)
     end
 end
+
+
+---Downloads all scripts required to store the
+---specified disk data.
+---@param diskData FormattedDisk
+local function createDiskStore(diskData)
+    print()
+    writeProgress("Storing Disk", 0, #diskData.scripts)
+    local storePath = '/disk_store'
+    if fs.exists(storePath) then
+        fs.delete(storePath)
+    end
+
+
+    local diskInfoPath = fs.combine(storePath, 'disk_info.txt')
+    writeFile(diskInfoPath, 'v'..diskData.version..' '..tostring(#diskData.scripts))
+
+    -- Give enough time to read file_count
+    sleep(0.1)
+
+    for i, script in ipairs(diskData.scripts) do
+        local content = getScriptContent(script)
+
+        if string.find(script.fileName, "install") then
+            -- Do not allow disks startup to interfere with computers
+            content = [[
+-- Auto-injected by disk creator
+if fs.exists("startup") then return shell.run("startup") end
+]] .. content
+            script.fileName = "startup"
+
+        elseif string.find(script.fileName, "startup") then
+            -- We do not want the disk to startup with the computer
+            script.fileName = "startup_"
+        end
+
+        writeFile(fs.combine(storePath, script.fileName), content)
+        writeProgress("Storing Disk", i, #diskData.scripts)
+    end
+
+    fs.delete(diskInfoPath)
+end
+
 
 local function printHelp()
     term.clear()
@@ -384,16 +442,17 @@ local function promptDisk()
         ";lgy;  3. ;wht;Display\n" ..
         ";lgy;  4. ;wht;Medals\n" ..
         ";lgy;  5. ;wht;Stat Board\n" ..
-        ";lgy;  6. ;wht;Copy Disk\n\n" ..
+        ";lgy;  6. ;wht;Copy Disk\n" ..
+        ";lgy;  7. ;wht;Disk Updater\n\n" ..
 
-        ";red;  7. ;wht;Exit\n"
+        ";red;  8. ;wht;Exit\n"
     )
     term.setTextColor(colors.yellow)
     write("> ")
     term.setTextColor(colors.lime)
     local choice = tonumber(read())
 
-    if not choice or choice > 7 or choice < 1 then
+    if not choice or choice > 8 or choice < 1 then
         printError("invalid choice; try again!\n")
         printAdv(";lgy;Enter to continue...")
         read()
@@ -409,9 +468,10 @@ local function promptDisk()
     elseif choice == 4 then selectedDisk = diskMap.medals
     elseif choice == 5 then selectedDisk = diskMap.statboard
     elseif choice == 6 then selectedDisk = diskMap.copydisk
+    elseif choice == 7 then selectedDisk = diskMap.diskupdater
     end
 
-    if choice == 7 then
+    if choice == 8 then
         return
     end
 
@@ -484,6 +544,13 @@ local flagMap = {
     ---@param scriptName string
     ls = function (scriptName) writeScript(scriptName, true, true) end,
 }
+
+
+---Adds all disk flags for creating a disk storage folder:
+---"get d <script_name>"
+for scriptName in pairs(diskMap) do
+    flagMap['d '..scriptName] = function() createDiskStore(diskMap[scriptName]) end
+end
 
 
 ---@param args string[]
