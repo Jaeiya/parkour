@@ -103,7 +103,10 @@ end
 
 ---@class ScriptMap
 local scriptMap = {
-    get            = { slug = "get.lua", fileName = "get" },
+    get = { slug = "get.lua", fileName = "get" },
+
+    utils         = { slug = "utils.lua",        fileName = "utils" },
+    detectplayer  = { slug = "detectplayer.lua", fileName = "detectplayer" },
 
     boardinstaller     = { slug = "boardinstaller.lua",     fileName = "installboard" },
     board              = { slug = "board.lua",              fileName = "board"},
@@ -132,9 +135,6 @@ local scriptMap = {
 
     medals          = { slug = "medals.lua",          fileName = "medalsstartup" },
     medalsinstaller = { slug = "medalsinstaller.lua", fileName = "installmedals" },
-
-    utils         = { slug = "utils.lua",        fileName = "utils" },
-    detectplayer  = { slug = "detectplayer.lua", fileName = "detectplayer" },
 
     copydisk          = { slug = "copydisk.lua",          fileName = "copydiskstartup" },
     copydiskinstaller = { slug = "copydiskinstaller.lua", fileName = "installcopydisk" },
