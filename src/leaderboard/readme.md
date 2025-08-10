@@ -1,13 +1,15 @@
 ## `_boardstartup`
 
-As the name suggests, this is the file that will execute all other leader board processes.
+As the name suggests, this is the file that will execute all other leaderboard processes.
 Unless a file is imported as a library, all other files in this directory should be considered
 modules, that will be imported and executed by this startup file.
 
 ## `boardinstaller`
 
-Again, as the name suggests, this is the install script for the leader board. During the
-installation process, the user will be prompted to configure the leaderboard.
+Again, as the name suggests, this is the install script for the leaderboard. During the
+installation process, the user will be prompted to configure the leaderboard. The user
+will only be prompted for configuration info if the configuration doesn't already
+exist on the computer.
 
 ## `board`
 
@@ -66,7 +68,7 @@ to interact with leaderboard data, will be in this file.
 
 ## `boardstate`
 
-As the name suggests, this is state information for the leader board. Any data that
+As the name suggests, this is state information for the leaderboard. Any data that
 needs to be read/updated in more than one file, will be in this file.
 
 ## `boardredstone`
