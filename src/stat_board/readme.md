@@ -24,7 +24,8 @@ a player detector. That player detector will be used to display that specific pl
 stats when a player steps on the pressure plate.
 
 If the redstone trigger (pressure plate) is not placed within the vicinity of the connected
-player detector, it will not work as intended, as the player will not be found.
+player detector, it will not work as intended, as the player will not be found. The
+redstone signal can be sent to any open side of the computer.
 
 ## `statboardui`
 
