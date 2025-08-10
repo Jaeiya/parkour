@@ -417,25 +417,7 @@ local function promptDisk()
 
     local diskLabel = selectedDisk.name .. " v"..selectedDisk.version
     createDisk(selectedDisk)
-    finalizeDisk(diskLabel, name)
-end
-
-
----@param args string[]
-local function handleSingleArgs(args)
-    local arg1 = args[1]
-
-    if arg1 == "disk" then
-        promptDisk()
-        return true
-    end
-
-    if arg1 == "clean" then
-        cleanDisk()
-        return true
-    end
-
-    return false
+    finalizeDisk(diskLabel, selectedDisk.name)
 end
 
 
@@ -461,7 +443,29 @@ local function writeScript(scriptName, isLocal, isStartup)
     if isLocal then
         writeFile(script.fileName, content)
         printAdv(";org;Saved To: ;lim;/"..script.fileName.."\n")
+    else
+        print()
     end
+end
+
+
+
+
+---@param args string[]
+local function handleSingleArgs(args)
+    local arg1 = args[1]
+
+    if arg1 == "disk" then
+        promptDisk()
+        return true
+    end
+
+    if arg1 == "clean" then
+        cleanDisk()
+        return true
+    end
+
+    return false
 end
 
 
