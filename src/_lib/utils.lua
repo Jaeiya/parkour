@@ -375,6 +375,14 @@ function utils.pullModemEvent()
     return modemReturn
 end
 
+---@param modem Modem
+---@param sendChan integer
+---@param receiveChan integer
+---@param msgEvent MessageEvent
+function utils.transmit(modem, sendChan, receiveChan, msgEvent)
+    modem.transmit(sendChan, receiveChan, msgEvent)
+end
+
 
 ---Tries to find a single player detector and return it
 ---@return PlayerDetector|nil
