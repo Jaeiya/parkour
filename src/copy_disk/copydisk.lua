@@ -65,22 +65,49 @@ local dbPath = 'copydisk.db'
 db = utils.loadConfig(dbPath, db)
 local announceChannel = 1336
 
+local SourceState = {
+    MISSING = 1,
+    INVALID = 2,
+    GOOD    = 3
+}
+
+local state = {
+    source = SourceState.MISSING
+}
+
 modem.open(db.channel)
 modem.open(announceChannel)
 
 
 local function validateSourceDisk()
-    while not sourceDrive.isDiskPresent() do
+    if not sourceDrive.isDiskPresent() then
+        state.source = SourceState.MISSING
         mon.setCursorPos(1, 3)
         mon.clearLine()
         utils.print(';red;'..utils.centerText("Insert Source Disk", mon), mon)
-        os.pullEvent('disk')
-        if #fs.list(sourceDrive.getMountPath()) == 0 or sourceDrive.getDiskLabel() == "" then
-            mon.clearLine()
+
+    elseif #fs.list(sourceDrive.getMountPath()) == 0 or sourceDrive.getDiskLabel() == "" then
+        state.source = SourceState.INVALID
+        mon.clearLine()
+        mon.setCursorPos(1, 3)
+        utils.print(';org;'..utils.centerText("Needs Formatted Disk", mon), mon)
+        sourceDrive.ejectDisk()
+        sleep(2)
+    else
+        state.source = SourceState.GOOD
+    end
+end
+
+
+local function validateOnEjection()
+    while true do
+        local side = utils.pullDiskEvent('eject')
+
+        if side == 'back' and state.source ~= SourceState.INVALIDthen
+            state.source = SourceState.MISSING
+            utils.clear(mon)
             mon.setCursorPos(1, 3)
-            utils.print(';org;'..utils.centerText("Needs Formatted Disk", mon), mon)
-            sourceDrive.ejectDisk()
-            sleep(2)
+            utils.print(';red;'..utils.centerText("Insert Source Disk", mon), mon)
         end
     end
 end
@@ -89,18 +116,19 @@ end
 local function waitForDisk()
     while true do
         utils.clear()
-        utils.clear(mon)
         utils.print(
             "... Running Disk Copier ...\n\n" ..
             "  ;lgy;disks_created: ;cyn;" .. db.disksCreated
         )
 
         validateSourceDisk()
+        if state.source ~= SourceState.GOOD then
+            ---Poll for valid source disk
+            sleep(0.15)
+            goto continue
+        end
 
-        -- Clear error message if there is one
-        mon.setCursorPos(1, 3)
-        mon.clearLine()
-
+        utils.clear(mon)
         mon.setCursorPos(1, 2)
         local title = "Create " .. sourceDrive.getDiskLabel()
         utils.print(";lbu;"..utils.centerText(title, mon), mon)
@@ -108,9 +136,11 @@ local function waitForDisk()
         mon.clearLine()
         utils.print(";org;"..utils.centerText("Enter Disk", mon), mon)
 
-        os.pullEvent('disk')
+        local side = utils.pullDiskEvent('insert')
 
-        if not destDrive.isDiskPresent() then
+        ---We have received a source drive insertion event so we
+        ---force a validation
+        if side == 'back' then
             goto continue
         end
 
@@ -185,6 +215,7 @@ end
 
 
 parallel.waitForAny(
+    validateOnEjection,
     waitForDisk,
     waitForUpdate
 )
