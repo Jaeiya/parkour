@@ -375,6 +375,23 @@ function utils.pullModemEvent()
     return modemReturn
 end
 
+
+---Pulls the specified disk event and returns the side of
+---the computer that the event came from.
+---@param evtType 'insert'|'eject'
+---@return Side
+function utils.pullDiskEvent(evtType)
+    if evtType == 'insert' then
+        local _, side = os.pullEvent('disk')
+        return side
+
+    else
+        local _, side = os.pullEvent('disk_eject')
+        return side
+    end
+end
+
+
 ---@param modem Modem
 ---@param sendChan integer
 ---@param receiveChan integer
