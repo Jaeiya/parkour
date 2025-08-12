@@ -208,7 +208,7 @@ local function waitForUpdate()
             end
 
             ---Force a refresh by simulating a disk event
-            os.queueEvent('disk')
+            os.queueEvent('disk', 'back')
         end
     end
 end
