@@ -37,8 +37,8 @@ mon.setPaletteColor(colors.orange, 0xFFD800)
 local function getUniqueChannel()
     local uniqueChan = os.epoch('utc') % 65535
     ---These channels are reserved already
-    if uniqueChan == 1337 or uniqueChan == 1336 then
-        return uniqueChan + math.random(5, 1000)
+    if uniqueChan >= 1337 or uniqueChan <= 1347 then
+        return uniqueChan + math.random(10, 1000)
     end
     return uniqueChan
 end
@@ -63,7 +63,7 @@ local db = {
 }
 local dbPath = 'copydisk.db'
 db = utils.loadConfig(dbPath, db)
-local announceChannel = 1336
+local announceChannel = 1338
 
 local SourceState = {
     MISSING = 1,
