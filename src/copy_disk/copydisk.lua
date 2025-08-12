@@ -82,8 +82,8 @@ modem.open(announceChannel)
 local function validateSourceDisk()
     if not sourceDrive.isDiskPresent() then
         state.source = SourceState.MISSING
+        utils.clear(mon)
         mon.setCursorPos(1, 3)
-        mon.clearLine()
         utils.print(';red;'..utils.centerText("Insert Source Disk", mon), mon)
 
     elseif #fs.list(sourceDrive.getMountPath()) == 0 or sourceDrive.getDiskLabel() == "" then
@@ -103,7 +103,7 @@ local function validateOnEjection()
     while true do
         local side = utils.pullDiskEvent('eject')
 
-        if side == 'back' and state.source ~= SourceState.INVALIDthen
+        if side == 'back' and state.source ~= SourceState.INVALID then
             state.source = SourceState.MISSING
             utils.clear(mon)
             mon.setCursorPos(1, 3)
