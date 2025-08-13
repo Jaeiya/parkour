@@ -78,6 +78,8 @@ local function waitForDiskProgress(diskName)
         name = diskName
     }
 
+    utils.clear(mon)
+
     while true do
         if not state.isUpdating then
             local f = fs.open(fs.combine(diskStorePath, 'disk_info.txt'), 'r')
@@ -184,6 +186,11 @@ end
 
 local function execUserInterface()
     ::prompt::
+    utils.clear(mon)
+    mon.setCursorPos(1, 2)
+    utils.print(utils.centerText(';lbu;Disk Updater', mon), mon)
+    mon.setCursorPos(1, 4)
+    utils.print(utils.centerText(';ylw;Open Terminal to Use', mon), mon)
 
     ---@type PromptMenuChoice[]
     local choices = {
