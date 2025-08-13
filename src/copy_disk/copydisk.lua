@@ -192,6 +192,15 @@ local function waitForUpdate()
             })
         end
 
+        if isUpdating and eventData.message.action == 'confirm_address' then
+            utils.clear(mon)
+            mon.setCursorPos(1, 2)
+            utils.print(utils.centerText(';ylw;Updating Source Disk',mon), mon)
+            mon.setCursorPos(1, 4)
+            utils.print(utils.centerText(';red;Do Not Interact', mon), mon)
+            utils.transmit(modem, eventData.replyChannel, db.channel, { action = 'address_confirmed' })
+        end
+
         if isUpdating and eventData.message.action == 'update_disk' then
             ---@type Disk
             local disk = eventData.message.payload
