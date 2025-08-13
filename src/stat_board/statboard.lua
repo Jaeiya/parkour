@@ -35,12 +35,12 @@ mon.setPaletteColor(colors.pink,      0xFC00FF) -- Heart
 mon.setPaletteColor(colors.lightGray, 0x555555)
 mon.setPaletteColor(colors.green,     0x2FD97F) -- Button Color
 
-
 local textScale = 1.5
+mon.setTextScale(textScale)
+
 local monWidth, monHeight = mon.getSize()
 local sortedKeys = { 'pb', 'latest', 'total' }
 
-mon.setTextScale(textScale)
 
 ---@type Player[]
 local players = {}
