@@ -217,7 +217,7 @@ local diskMap = {
         }
     },
     copydisk = {
-        version = "1.1",
+        version = "2.0",
         name = "CopyDisk",
         scripts = {
             scriptMap.get,
