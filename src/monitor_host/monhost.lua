@@ -16,6 +16,7 @@ if not modem then
     return false
 end
 
+mon.setTextScale(4.5)
 local width = mon.getSize()
 if width < 11 or width > 11 then
     printError("monhost terminated; expected 5 block wide monitor")
@@ -26,7 +27,6 @@ end
 mon.setPaletteColor(colors.black, 0x000000) -- Force pure black background
 mon.setPaletteColor(colors.lime, 0x00FF00)  -- Bright green for display text
 
-mon.setTextScale(4.5)
 mon.setTextColor(colors.lime)
 
 utils.clear()
