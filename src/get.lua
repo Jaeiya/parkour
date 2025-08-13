@@ -153,7 +153,7 @@ local scriptMap = {
 ---@type table<string, FormattedDisk>
 local diskMap = {
     leaderboard = {
-        version = "4.0",
+        version = "4.1",
         name = "Leaderboard",
         scripts = {
             scriptMap.get,
