@@ -258,25 +258,8 @@ local function waitForStats(config)
             goto skip
         end
 
-        ---@type Player[]|nil
-        local payload = msgEvent.payload
+        players = msgEvent.payload
 
-        if not payload or #payload == 0 or #payload ~= #players then
-            players = payload
-            playerIndex = 1
-            goto continue
-        end
-
-        for i in ipairs(payload) do
-            local player, index = findPlayer(payload[i].name)
-            if player and index then
-                players[index] = payload[i]
-            else
-                players[#players+1] = payload[i]
-            end
-        end
-
-        ::continue::
         renderStats()
     ::skip::
     end
