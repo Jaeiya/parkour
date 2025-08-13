@@ -34,16 +34,18 @@ return function(config)
     utils.clear()
     local sp = config.startPos
     local ep = config.endPos
-    utils.print(
+    ---@type string
+    local infoHeader = (
         "... Running Leaderboard ...\n" ..
         "\n;lgy;       start_pos: ;cyn;"..sp.x..", "..sp.y..", "..sp.z ..
         "\n;lgy;         end_pos: ;cyn;"..ep.x..", "..ep.y..", "..ep.z ..
         "\n;lgy;    mon_protocol: ;cyn;"..config.monProto ..
         "\n;lgy;  stats_protocol: ;cyn;"..config.statsProto ..
-        "\n;lgy;    cancel_bound: ;cyn;"..config.boundary.direction..'('..config.boundary.axis..')'
+        "\n;lgy;    cancel_bound: ;cyn;"..config.boundary.direction..'('..config.boundary.axis..')\n\n' ..
+        ';ylw;Manage Configuration'
     )
     print()
-    local exiting = utils.promptMenu("Manage Configuration", {
+    local exiting = utils.promptMenu(infoHeader, {
         {
             name = "Set Start Pos",
             exec = function ()
