@@ -14,10 +14,12 @@ end
 
 
 local receiveChannel = 1337
-local announceChannel = 1336
+local announceChannel = 1338
+local confirmChannel = 1339
 
 utils.clear(mon)
 modem.open(receiveChannel)
+modem.open(confirmChannel)
 
 local configPath = 'updatedisk.cfg'
 ---@type table<string, integer> The name of the disk maps to the channel
@@ -80,7 +82,7 @@ local function waitForDiskProgress(diskName)
         if not state.isUpdating then
             local f = fs.open(fs.combine(diskStorePath, 'disk_info.txt'), 'r')
             if f then
-            local fileParts = utils.splitString(f.readAll())
+                local fileParts = utils.splitString(f.readAll())
                 state.diskVersion = fileParts[1]
                 state.fileCount = tonumber(fileParts[2])
                 state.isUpdating = true
@@ -132,30 +134,65 @@ local function waitForDiskProgress(diskName)
 end
 
 
+local function promptUpdateDisk()
+    utils.clear()
+
+    ---@type PromptMenuChoice[]
+    local choices = {}
+
+    for key in pairs(config) do
+        choices[#choices+1] = {
+            name = key,
+            exec = function()
+                utils.clear()
+                utils.print('... Confirming Connection ...')
+                utils.transmit(modem, config[key], confirmChannel, { action = 'confirm_address' })
+                local confirmed = false
+
+                parallel.waitForAny(
+                    function() sleep(1.5) end,
+                    function ()
+                        local eventData = utils.pullModemEvent()
+                        if eventData.message.action == 'address_confirmed' then
+                            confirmed = true
+                        end
+                    end
+                )
+
+                term.setCursorPos(1, 1)
+                term.clearLine()
+
+                if confirmed then
+                    utils.print('... Updating '..key..' ...')
+                    parallel.waitForAll(
+                        function() waitForDiskProgress(key) end,
+                        function() shell.run('disk/get d '..diskNameMap[key]) end
+                    )
+                else
+                    utils.promptError('Failed to connect to "'..key..' Disk" computer')
+                end
+
+            end
+        }
+    end
+
+    if utils.promptMenu('Select Disk to Update', choices) then
+        return
+    end
+end
+
+
 local function execUserInterface()
     ::prompt::
 
     ---@type PromptMenuChoice[]
     local choices = {
         { name = 'Lookup Disks', exec = lookupDisks },
-        { name = 'Refresh Menu', exec = function () sleep(0.05) end}
+        { name = 'Refresh Menu', exec = function () sleep(0.05) end},
+        { name = 'Update Disk', exec = promptUpdateDisk },
     }
 
-    for key in pairs(config) do
-        choices[#choices+1] = {
-            name = 'Updating '..key,
-            exec = function()
-                utils.clear()
-                utils.print('... Updating Disk ...')
-                parallel.waitForAll(
-                    function() waitForDiskProgress(key) end,
-                    function() shell.run('disk/get d '..diskNameMap[key]) end
-                )
-            end
-        }
-    end
-
-    if utils.promptMenu('Disk Updater', { table.unpack(choices) }) then
+    if utils.promptMenu('Disk Updater', choices) then
         return
     end
 
