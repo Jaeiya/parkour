@@ -31,7 +31,7 @@ local diskNameMap = {
     ['Monitor Host'] = 'monhost',
     ['Stat Board']   = 'statboard',
     ['Display']      = 'display',
-    ['Medal Board']  = 'medals',
+    ['Medals Board'] = 'medalsboard',
     ['CopyDisk']     = 'copydisk',
     ['Disk Updater'] = 'diskupdater',
 }

@@ -134,8 +134,8 @@ local scriptMap = {
     display          = { slug = "display.lua",          fileName = "displaystartup" },
     displayinstaller = { slug = "displayinstaller.lua", fileName = "installdisplay" },
 
-    medals          = { slug = "medals.lua",          fileName = "medalsstartup" },
-    medalsinstaller = { slug = "medalsinstaller.lua", fileName = "installmedals" },
+    medalsboard          = { slug = "medalsboard.lua",          fileName = "medalsboardstartup" },
+    medalsboardinstaller = { slug = "medalsboardinstaller.lua", fileName = "installmedalsboard" },
 
     copydisk          = { slug = "copydisk.lua",          fileName = "copydiskstartup" },
     copydiskinstaller = { slug = "copydiskinstaller.lua", fileName = "installcopydisk" },
@@ -206,13 +206,13 @@ local diskMap = {
             scriptMap.utils,
         }
     },
-    medals = {
-        version = "1.1",
-        name = "Medal Board",
+    medalsboard = {
+        version = "1.2",
+        name = "Medals Board",
         scripts = {
             scriptMap.get,
-            scriptMap.medals,
-            scriptMap.medalsinstaller,
+            scriptMap.medalsboard,
+            scriptMap.medalsboardinstaller,
             scriptMap.utils,
         }
     },
@@ -465,7 +465,7 @@ local function promptDisk()
     if     choice == 1 then selectedDisk = diskMap.leaderboard
     elseif choice == 2 then selectedDisk = diskMap.monhost
     elseif choice == 3 then selectedDisk = diskMap.display
-    elseif choice == 4 then selectedDisk = diskMap.medals
+    elseif choice == 4 then selectedDisk = diskMap.medalsboard
     elseif choice == 5 then selectedDisk = diskMap.statboard
     elseif choice == 6 then selectedDisk = diskMap.copydisk
     elseif choice == 7 then selectedDisk = diskMap.diskupdater
