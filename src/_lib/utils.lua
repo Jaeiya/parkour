@@ -409,9 +409,18 @@ end
 
 
 ---Tries to find a single drive and return it
+---@param side? Side
 ---@return Drive|nil
-function utils.getDrive()
-    return getSinglePeripheral("drive")
+function utils.getDrive(side)
+    if not side then
+        return getSinglePeripheral("drive")
+    else
+        local pType = peripheral.getType(side)
+        if pType ~= 'drive' then
+            return nil
+        end
+        return peripheral.wrap(side)
+    end
 end
 
 
