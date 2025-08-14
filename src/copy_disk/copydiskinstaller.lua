@@ -3,7 +3,7 @@ local utils = require('utils')
 
 utils.clear()
 
-if not peripheral.wrap('back') then
+if not utils.getDrive('back') then
     utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach a ;lim;disk drive ;org;to the back of the computer.\n"
@@ -11,7 +11,7 @@ if not peripheral.wrap('back') then
     return
 end
 
-if not peripheral.wrap('right') then
+if not utils.getDrive('right') then
     utils.print(
         ";red;Installation Aborted\n" ..
         ";org;Attach a ;lim;disk drive ;org;to the right side of the computer.\n"

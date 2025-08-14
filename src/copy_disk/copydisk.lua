@@ -2,28 +2,28 @@ local utils = require('utils')
 utils.clear()
 
 ---@type Drive|nil
-local sourceDrive = peripheral.wrap('back')
+local sourceDrive = utils.getDrive('back')
 if not sourceDrive then
-    printError("script terminated; missing source drive")
+    printError("copydisk terminated; missing source drive")
     return
 end
 
 ---@type Drive|nil
-local destDrive = peripheral.wrap('right')
+local destDrive = utils.getDrive('right')
 if not destDrive then
-    printError("script terminated; missing destination drive")
+    printError("copydisk terminated; missing destination drive")
     return
 end
 
 local mon = utils.getMonitor()
 if not mon then
-    printError("script terminated; missing monitors")
+    printError("copydisk terminated; missing monitors")
     return
 end
 
 local modem = utils.getModem('wired', 'bottom')
 if not modem then
-    printError('script terminated; missing bottom modem')
+    printError('copydisk terminated; missing bottom modem')
     return
 end
 
