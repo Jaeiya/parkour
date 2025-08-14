@@ -194,8 +194,10 @@ local function execUserInterface()
 
     ---@type PromptMenuChoice[]
     local choices = {
+        -- Whenever a disk updates, we'll need to use this command to get the proper
+        -- version of the disk.
+        { name = 'Update Get', exec = function () shell.run('disk/get get') end},
         { name = 'Lookup Disks', exec = lookupDisks },
-        { name = 'Refresh Menu', exec = function () sleep(0.05) end},
         { name = 'Update Disk', exec = promptUpdateDisk },
     }
 
