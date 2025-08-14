@@ -544,7 +544,8 @@ function utils.print(text, mon)
     ---Track where we are in the string
     local pos = 1
 
-    for i = 1, #text do
+    local i = 1
+    while i <= #text do
         if i + 4 > #text then break end
 
         local code = string.sub(text, i, i + 4)
@@ -558,6 +559,8 @@ function utils.print(text, mon)
                 display.setTextColor(color)
             end
             pos = i
+        else
+            i = i + 1
         end
     end
 
