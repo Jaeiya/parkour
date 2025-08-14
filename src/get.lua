@@ -227,7 +227,7 @@ local diskMap = {
         }
     },
     diskupdater = {
-        version = '1.0',
+        version = '1.1',
         name = 'Disk Updater',
         scripts = {
             scriptMap.get,
