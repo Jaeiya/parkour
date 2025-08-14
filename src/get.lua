@@ -19,7 +19,7 @@
 
 
 -- Should be kept up to date with latest tagged version of repository
-local version = "3.0.0"
+local version = "3.1.0"
 
 
 ---Color code map designed strictly for use with utils.printColor()
