@@ -118,11 +118,9 @@ end
 
 local function renderButton(text, xPos, yPos)
     mon.setCursorPos(xPos, yPos-1)
-    mon.setBackgroundColor(colors.green)
-    mon.write(string.rep(" ", #text))
+    utils.print('@grn;'..string.rep(' ', #text), mon)
     mon.setCursorPos(xPos, yPos)
-    utils.print(";blk;"..text, mon)
-    mon.setBackgroundColor(colors.black)
+    utils.print(string.format(";blk;%s@blk;", text), mon)
 end
 
 
@@ -135,25 +133,18 @@ local function highlightButton(buttonType)
     end
 
     mon.setCursorPos(xpos, monHeight-1)
-    mon.setBackgroundColor(colors.cyan)
-    mon.write("        ")
+    utils.print('@cyn;        ', mon)
     mon.setCursorPos(xpos, monHeight)
-    utils.print(";blk;" .. btnText, mon)
-    mon.setBackgroundColor(colors.black)
+    utils.print(string.format(";blk;%s@blk;", btnText), mon)
     sleep(0.2)
 end
 
 
 local function renderSubHeader(text, yPos)
     mon.setCursorPos(1, yPos)
-    mon.setBackgroundColor(colors.blue)
     local textLen = #utils.stripColorCodes(text)
-    mon.write(string.rep(" ", ((monWidth - textLen) / 2)))
-    mon.setBackgroundColor(colors.black)
-    utils.print(text, mon)
-    mon.setBackgroundColor(colors.blue)
-    mon.write(string.rep(" ", ((monWidth - textLen) / 2) + 1))
-    mon.setBackgroundColor(colors.black)
+    local border = string.rep(" ", ((monWidth - textLen) / 2))
+    utils.print(string.format("@blu;%s@blk;%s@blu;%s @blk;", border, text, border), mon)
 end
 
 

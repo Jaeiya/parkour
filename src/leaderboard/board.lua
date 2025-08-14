@@ -49,10 +49,8 @@ local function renderActiveRunner(playerName)
     utils.clear(mon)
     mon.setTextScale(2.5)
 
-    mon.setBackgroundColor(colors.red)
     local w = mon.getSize()
-    utils.print(utils.justifyText(";ylw;WARNING: Active Runner", 'center', w), mon)
-    mon.setBackgroundColor(colors.black)
+    utils.print(utils.justifyText("@red;;ylw;WARNING: Active Runner", 'center', w)..'@blk;', mon)
 
     mon.setCursorPos(1, 3)
     utils.print(";lim;"..utils.centerText(playerName, mon), mon)
