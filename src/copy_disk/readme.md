@@ -35,4 +35,4 @@ then it tells the player to avoid using it until the update is finished.
 ## `copydiskinstaller`
 
 Installs the CopyDisk scripts to the computer and checks to make sure that all
-necessary peripherals are installed before completing the install.
+necessary peripherals are attached before completing the install.
