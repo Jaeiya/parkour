@@ -69,6 +69,12 @@ as expected, even if a Stat Board is not receiving the player data.
 
 # File Breakdown
 
+All files are documented below this line. The following descriptions are a detailed
+paraphrasing of the purpose and priority of each individual script, as well as how
+they are connected either to each other or external scripts. Some of the information
+may be redundant for certain scripts, as they may have been described in the above
+summary.
+
 ## `_boardstartup`
 
 As the name suggests, this is the file that will execute all other leaderboard processes.
