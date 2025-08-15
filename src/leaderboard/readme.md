@@ -1,3 +1,70 @@
+# Leaderboard
+
+All player data related to times, attempts, and medals, is managed by the Leader Board. The
+leaderboard interfaces with the Medals Board, Stat Board, and Monitor Host. The leaderboard
+doesn't just display times & attempts, it's literally responsible for calculating all related
+player data and managing the start/stop of a course run.
+
+**It is the brain of the course.**
+
+### Timer
+
+The timer script interfaces directly with the Monitor Host and is required in order to
+operate properly. The timer will still work, but without a display, there's nothing to
+see (obviously).
+
+The time is displayed like a traditional timer, but with a caveat; ticks. Most timers
+display up to millisecond precision, but that is unfortunately not possible with Minecraft.
+The best resolution we can achieve is `50ms` (milliseconds) chunks, which are called ticks.
+
+Each time minecraft ticks, `50ms` has passed. There are `20` ticks in a second. This means
+that no matter what, the timer can only calculate up to the nearest tick. For this reason,
+the timers smallest measurement is in ticks.
+
+The timer format is as follows: `hh:mm:ss.tt` where `t` is ticks and rolls over at `20` because
+that's when the seconds will increment.
+
+Max possible time: `99:59:59.19`
+Min possible time: `00:00:00.01`
+
+The time is formatted in hours, minutes, seconds, and ticks.
+
+The max time is not actually the max internal time, it's the max time before which the
+monitor host will no longer be able to display the time correctly. We can assume that
+no course will be longer than `10 minutes` and no player will stay on a course long
+enough before failing, to exceed `99 hours`.
+
+The minimum time is a theoretical minimum, not an actual minimum. From start to cancel,
+it will take at least a full second, when using pressure plates as the trigger. If a lever
+is used, you can get closer to the minimum, but a human being is not capable of pressing
+the mouse button twice within a `50ms` time period.
+
+Even if a human being were capable of pressing the button that quickly, the mechanical
+actuation of the button is not designed to be pressed that fast. If the button were pressed
+a second time within `50ms`, the mouse would not even be able to register the press, as it
+wouldn't have had enough time to 'release'.
+
+Couple all of the above with the time it takes for a redstone signal to trigger the
+computer, stopping the timer, and you get a situation where the minimum time is
+purely theoretical; it's entirely impossible.
+
+### Medals Board
+
+In order for the `leaderboard` to work properly, it needs information from the Medals
+Board, which it gets through the `boardmedalbridge` script. This script interfaces with
+the Medals Board and grabs the necessary life count for each possible medal for the course.
+
+The Medal Lives are **NOT** stored with the leaderboard data, they are retrieved on
+startup every time. If the Medals Board is not active, the leaderboard will wait until
+it gets a response.
+
+### Stat Board
+
+This is more of a passive relationship. The `leaderboard` will send out a signal with
+all the player data, every `n` seconds. This data is expected to be consumed by the
+Stat Board, but there is no confirmation. The leaderboard will continue to work
+as expected, even if a Stat Board is not receiving the player data.
+
 ## `_boardstartup`
 
 As the name suggests, this is the file that will execute all other leaderboard processes.
