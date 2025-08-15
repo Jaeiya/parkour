@@ -29,3 +29,8 @@ attached monitor.
 Furthermore, if a previously detected `copydisk` computer is no longer available on
 the network, an update request will yield an error message letting the player know
 that it failed to connect to that computer.
+
+## `diskupdaterinstaller`
+
+Installs the Disk Updater scripts to the computer and checks to make sure that all
+necessary peripherals are attached before completing the install.
