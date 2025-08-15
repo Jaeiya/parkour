@@ -24,8 +24,10 @@ the timers smallest measurement is in ticks.
 The timer format is as follows: `hh:mm:ss.tt` where `t` is ticks and rolls over at `20` because
 that's when the seconds will increment.
 
-Max possible time: `99:59:59.19`
-Min possible time: `00:00:00.01`
+```
+Max time: 99:59:59.19
+Min time: 00:00:00.01
+```
 
 The time is formatted in hours, minutes, seconds, and ticks.
 
