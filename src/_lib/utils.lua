@@ -309,9 +309,17 @@ end
 
 
 ---Tries to find a single monitor and return it
+---@param side? Side
 ---@return Monitor|nil
-function utils.getMonitor()
-    return getSinglePeripheral("monitor")
+function utils.getMonitor(side)
+    if not side then
+        return getSinglePeripheral("monitor")
+    end
+
+    if peripheral.getType(side) ~= 'monitor' then
+        return nil
+    end
+    return peripheral.wrap(side)
 end
 
 
