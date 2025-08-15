@@ -67,6 +67,8 @@ all the player data, every `n` seconds. This data is expected to be consumed by 
 Stat Board, but there is no confirmation. The leaderboard will continue to work
 as expected, even if a Stat Board is not receiving the player data.
 
+# File Breakdown
+
 ## `_boardstartup`
 
 As the name suggests, this is the file that will execute all other leaderboard processes.
