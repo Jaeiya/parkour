@@ -422,13 +422,13 @@ end
 function utils.getDrive(side)
     if not side then
         return getSinglePeripheral("drive")
-    else
-        local pType = peripheral.getType(side)
-        if pType ~= 'drive' then
-            return nil
-        end
-        return peripheral.wrap(side)
     end
+
+    local pType = peripheral.getType(side)
+    if pType ~= 'drive' then
+        return nil
+    end
+    return peripheral.wrap(side)
 end
 
 
