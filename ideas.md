@@ -1,4 +1,4 @@
-**All implementation details that are prefixed by an asterisk are not implemented yet**
+**All implementation details that are prefixed by an asterisk (\*) are not implemented yet**
 
 ## Medal Acquisition (Theory)
 
