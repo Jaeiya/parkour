@@ -140,3 +140,26 @@ Displays all relevant player data in an easy-to-read format.
 - Switch between all players statistics using buttons
 - Allow player to show their stats immediately
 - Communicates with the leaderboard to receive player stats
+
+## Global Board (Theory)
+
+_Everything below is currently theoretical and **none of it** has been implemented_
+
+This would be a chunk loaded computer that aggregates player data from every
+world and level on the map. This data would then be analyzed to display
+specific player statistics and possibly reward players with certain
+achievements.
+
+- Achievements (different thresholds can represent higher tiers)
+  - Total failed starts
+  - Total cancels
+  - Total attempts
+  - Total completed levels
+  - Total completed worlds
+  - How many 'best' times a player holds
+  - How many 'best' medals a player holds
+  - Total time spent running
+- Global player ranking
+  - Players with the fastest times
+  - Players with the best medals
+  - Players with the most achievements
