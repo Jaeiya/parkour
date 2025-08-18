@@ -54,6 +54,8 @@ it took. Only their pb will appear on the board.
 
 - Players are sorted by time & attempts
   - \*_If two players match time & attempts, then we sort by earliest time stamp of completion_
+- \*_Rainbow name_
+  - \*_A player with the fastest time & best medal, will have their name printed in rainbow colors_
 - All statistics of a players run are stored in its internal database
 - Starting a run
   - Auto-detects player
