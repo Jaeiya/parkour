@@ -114,6 +114,14 @@ Displays all relevant player data in an easy-to-read format.
   - pb time and attempts it took
   - latest time and attempts
   - total time and attempts (cumulative)
+- Name Display
+  - Player name is displayed in a default color
+  - The highest medal a player has achieved is displayed in rank notation next to the players name
+    - `S1` would be Silver 1
+    - `G3` would be Gold 3
+    - The lower the number, the higher the rank
+  - \*_Rainbow name_
+    - \*_A player with the fastest time & best medal, will have their name printed in rainbow colors_
 - Medal Display
   - pb
     - medal (S1, B3, etc...) colored based on medal color
