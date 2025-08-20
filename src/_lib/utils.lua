@@ -322,6 +322,70 @@ local function getSinglePeripheral(name)
 end
 
 
+---Gets the Chat Box peripheral
+---@param side? Side
+---@return ChatBox|nil
+function utils.getChatBox(side)
+    if not side then
+        return getSinglePeripheral('chat_box')
+    end
+
+    if peripheral.getType(side) ~= 'chat_box' then
+        return nil
+    end
+    return peripheral.wrap(side)
+end
+
+
+---Sends a message using a chat box, to the whole server
+---@param chatbox ChatBox
+---@param msg TextComponent[]
+---@param prefix? string
+---@param brackets? string
+---@param bracketColor? string
+---@param range? number
+function utils.sendChat(chatbox, msg, prefix, brackets, bracketColor, range)
+    return chatbox.sendFormattedMessage(
+        textutils.serializeJSON(msg),
+        prefix,
+        brackets,
+        bracketColor,
+        range
+    )
+end
+
+
+---Sends a message using a chat box, to the specific username
+---@param chatbox ChatBox
+---@param username string
+---@param msg TextComponent[]
+---@param prefix? string
+---@param brackets? string
+---@param bracketColor? string
+---@param range? number
+function utils.sendChatTo(chatbox, username, msg, prefix, brackets, bracketColor, range)
+    return chatbox.sendFormattedMessageToPlayer(
+        textutils.serializeJSON(msg),
+        username,
+        prefix,
+        brackets,
+        bracketColor,
+        range
+    )
+end
+
+
+---
+---Sends a message to all players on the server, using the
+---provided `msgData`.
+---
+---🔴 Will not work without importing and running the `chatbox` module
+---@param msgData ChatData
+function utils.queueServerMessage(msgData)
+    os.queueEvent('send_chat', msgData)
+end
+
+
 ---Tries to find a single monitor and return it
 ---@param side? Side
 ---@return Monitor|nil
