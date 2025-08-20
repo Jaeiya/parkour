@@ -102,8 +102,8 @@ local function waitForDiskProgress(diskName)
             end
             utils.renderProgressBar('Updating: '..diskName, 1, 2, state.progress, state.fileCount, mon)
 
-            -- Allow player to see 100% progress
             if state.progress == state.fileCount then
+                -- Allow player to see 100% progress
                 sleep(0.2)
                 disk.name = disk.name..' '..state.diskVersion
                 fileList = fs.list(diskStorePath)
@@ -136,45 +136,48 @@ local function waitForDiskProgress(diskName)
 end
 
 
+---@param diskName string
+local function updateDisk(diskName)
+    utils.clear()
+    utils.print('... Confirming Connection ...')
+    utils.transmit(modem, config[diskName], confirmChannel, { action = 'confirm_address' })
+    local confirmed = false
+
+    parallel.waitForAny(
+        function() sleep(1.5) end,
+        function ()
+            local eventData = utils.pullModemEvent()
+            if eventData.message.action == 'address_confirmed' then
+                confirmed = true
+            end
+        end
+    )
+
+    term.setCursorPos(1, 1)
+    term.clearLine()
+
+    if confirmed then
+        utils.print('... Updating '..diskName..' ...')
+        parallel.waitForAll(
+            function() waitForDiskProgress(diskName) end,
+            function() shell.run('disk/get d '..diskNameMap[diskName]) end
+        )
+    else
+        utils.promptError('Failed to connect to "'..diskName..' Disk" computer')
+    end
+end
+
+
 local function promptUpdateDisk()
     utils.clear()
 
     ---@type PromptMenuChoice[]
     local choices = {}
 
-    for key in pairs(config) do
+    for diskName in pairs(config) do
         choices[#choices+1] = {
-            name = key,
-            exec = function()
-                utils.clear()
-                utils.print('... Confirming Connection ...')
-                utils.transmit(modem, config[key], confirmChannel, { action = 'confirm_address' })
-                local confirmed = false
-
-                parallel.waitForAny(
-                    function() sleep(1.5) end,
-                    function ()
-                        local eventData = utils.pullModemEvent()
-                        if eventData.message.action == 'address_confirmed' then
-                            confirmed = true
-                        end
-                    end
-                )
-
-                term.setCursorPos(1, 1)
-                term.clearLine()
-
-                if confirmed then
-                    utils.print('... Updating '..key..' ...')
-                    parallel.waitForAll(
-                        function() waitForDiskProgress(key) end,
-                        function() shell.run('disk/get d '..diskNameMap[key]) end
-                    )
-                else
-                    utils.promptError('Failed to connect to "'..key..' Disk" computer')
-                end
-
-            end
+            name = diskName,
+            exec = function() updateDisk(diskName) end
         }
     end
 
