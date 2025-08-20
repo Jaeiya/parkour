@@ -58,6 +58,20 @@ function utils.splitString(str)
 end
 
 
+---@generic T
+---@param sourceList T[]
+---@vararg T[]
+---@return T[]
+function utils.concatList(sourceList, ...)
+    for _, list in ipairs({...}) do
+        for _, val in ipairs(list) do
+            sourceList[#sourceList+1] = val
+        end
+    end
+    return sourceList
+end
+
+
 ---@param n integer
 function utils.round(n)
     return math.floor(n + 0.5)
