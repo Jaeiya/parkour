@@ -50,3 +50,21 @@ function HTTPResponse.close() end
 
 
 ---@alias Side 'right'|'left'|'top'|'bottom'|'front'|'back'
+
+
+---@class TextComponent
+---@field text string
+---@field underlined? boolean
+---@field bold? boolean
+---@field italic? boolean
+---@field color? string
+
+
+---@class ChatData
+---@field msg TextComponent[]
+---@field username? string
+---@field prefix? string
+---@field brackets? string
+---@field bracketColor? string
+
+
