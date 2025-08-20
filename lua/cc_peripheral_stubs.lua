@@ -177,3 +177,75 @@ function drive.stopAudio() end
 ---Checks whether the music disc is currently playing.
 ---@return boolean
 function drive.isAudioPlaying() end
+
+
+---@class ChatBox
+local ChatBox = {}
+
+---Broadcast a message in chat.
+---@param message string The message to send
+---@param prefix? string Prefix shown before the message
+---@param brackets? boolean Whether to wrap the prefix in brackets
+---@param bracketColor? string Minecraft color code (e.g. "red", "gold")
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success True if successful
+---@return string? error Error message if failed
+function ChatBox.sendMessage(message, prefix, brackets, bracketColor, range) end
+
+---Send a private chat message to a specific player.
+---@param message string The message to send
+---@param username string Target player's username
+---@param prefix? string Prefix shown before the message
+---@param brackets? boolean Whether to wrap the prefix in brackets
+---@param bracketColor? string Minecraft color code
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success
+---@return string? error
+function ChatBox.sendMessageToPlayer(message, username, prefix, brackets, bracketColor, range) end
+
+---Send a toast notification to a specific player.
+---@param message string Body text of the toast
+---@param title string Title of the toast
+---@param username string Target player's username
+---@param prefix? string Prefix shown before the message
+---@param brackets? boolean Whether to wrap the prefix in brackets
+---@param bracketColor? string Minecraft color code
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success
+---@return string? error
+function ChatBox.sendToastToPlayer(message, title, username, prefix, brackets, bracketColor, range) end
+
+---Send a JSON-formatted message in chat.
+---@param json string Raw JSON chat component
+---@param prefix? string Prefix shown before the message
+---@param brackets? string The brackets to use: (), [], <>, etc...
+---@param bracketColor? string Minecraft color code
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success
+---@return string? error
+function ChatBox.sendFormattedMessage(json, prefix, brackets, bracketColor, range) end
+
+---Send a JSON-formatted message to a specific player.
+---@param json string Raw JSON chat component
+---@param username string Target player's username
+---@param prefix? string Prefix shown before the message
+---@param brackets? string The brackets to use: (), [], <>, etc...
+---@param bracketColor? string Minecraft color code
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success
+---@return string? error
+function ChatBox.sendFormattedMessageToPlayer(json, username, prefix, brackets, bracketColor, range) end
+
+---Send a JSON-formatted toast notification to a specific player.
+---@param messageJson string JSON chat component for the message
+---@param titleJson string JSON chat component for the title
+---@param username string Target player's username
+---@param prefix? string Prefix shown before the message
+---@param brackets? boolean Whether to wrap the prefix in brackets
+---@param bracketColor? string Minecraft color code
+---@param range? number Max range for message (-1 = unlimited)
+---@return boolean success
+---@return string? error
+function ChatBox.sendFormattedToastToPlayer(messageJson, titleJson, username, prefix, brackets, bracketColor, range) end
+
+
